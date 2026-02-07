@@ -15,6 +15,37 @@ const compression = require("compression");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
+// ─── Secrets & Cloudflare Management ──────────────────────────────
+let secretsManager = null;
+let cfManager = null;
+try {
+  const { secretsManager: sm, registerSecretsRoutes } = require("./src/hc_secrets_manager");
+  const { CloudflareManager, registerCloudflareRoutes } = require("./src/hc_cloudflare");
+  secretsManager = sm;
+  cfManager = new CloudflareManager(secretsManager);
+
+  // Register non-Cloudflare secrets from manifest
+  const manifestSecrets = [
+    { id: "render_api_key", name: "Render API Key", envVar: "RENDER_API_KEY", tags: ["render", "api-key"], dependents: ["render-deploy"] },
+    { id: "heady_api_key", name: "Heady API Key", envVar: "HEADY_API_KEY", tags: ["heady", "auth"], dependents: ["api-gateway"] },
+    { id: "admin_token", name: "Admin Token", envVar: "ADMIN_TOKEN", tags: ["heady", "admin"], dependents: ["admin-panel"] },
+    { id: "database_url", name: "PostgreSQL Connection", envVar: "DATABASE_URL", tags: ["database"], dependents: ["persistence"] },
+    { id: "hf_token", name: "Hugging Face Token", envVar: "HF_TOKEN", tags: ["huggingface", "ai"], dependents: ["pythia-node"] },
+    { id: "notion_token", name: "Notion Integration Token", envVar: "NOTION_TOKEN", tags: ["notion"], dependents: ["notion-sync"] },
+    { id: "github_token", name: "GitHub PAT", envVar: "GITHUB_TOKEN", tags: ["github", "vcs"], dependents: ["heady-sync"] },
+    { id: "stripe_secret_key", name: "Stripe Secret Key", envVar: "STRIPE_SECRET_KEY", tags: ["stripe", "payments"], dependents: ["billing"] },
+    { id: "stripe_webhook_secret", name: "Stripe Webhook Secret", envVar: "STRIPE_WEBHOOK_SECRET", tags: ["stripe", "webhook"], dependents: ["billing-webhooks"] },
+  ];
+  for (const s of manifestSecrets) {
+    secretsManager.register({ ...s, source: "env" });
+  }
+  secretsManager.restoreState();
+  console.log("  \u221e Secrets Manager: LOADED (" + secretsManager.getAll().length + " secrets tracked)");
+  console.log("  \u221e Cloudflare Manager: LOADED (token " + (cfManager.isTokenValid() ? "valid" : "needs refresh") + ")");
+} catch (err) {
+  console.warn(`  \u26a0 Secrets/Cloudflare not loaded: ${err.message}`);
+}
+
 const PORT = Number(process.env.PORT || 3300);
 const app = express();
 
@@ -85,7 +116,22 @@ app.get("/api/pulse", (req, res) => {
       "/api/self/improvement", "/api/self/improvements", "/api/self/diagnose", "/api/self/diagnostics",
       "/api/self/connection-health", "/api/self/connections", "/api/self/meta-analysis",
       "/api/pricing/tiers", "/api/pricing/fair-access", "/api/pricing/metrics",
+      "/api/secrets/status", "/api/secrets", "/api/secrets/:id", "/api/secrets/alerts",
+      "/api/secrets/check", "/api/secrets/:id/refresh", "/api/secrets/audit",
+      "/api/cloudflare/status", "/api/cloudflare/refresh", "/api/cloudflare/zones",
+      "/api/cloudflare/domains", "/api/cloudflare/verify",
+      "/api/aloha/status", "/api/aloha/protocol", "/api/aloha/de-optimization",
+      "/api/aloha/stability", "/api/aloha/priorities", "/api/aloha/checklist",
+      "/api/aloha/crash-report", "/api/aloha/de-opt-check", "/api/aloha/web-baseline",
     ],
+    aloha: alohaState ? {
+      mode: alohaState.mode,
+      protocols: alohaState.protocols,
+      stabilityDiagnosticMode: alohaState.stabilityDiagnosticMode,
+      crashReports: alohaState.crashReports.length,
+    } : null,
+    secrets: secretsManager ? secretsManager.getSummary() : null,
+    cloudflare: cfManager ? { tokenValid: cfManager.isTokenValid(), expiresIn: cfManager.expiresAt ? cfManager._timeUntil(cfManager.expiresAt) : null } : null,
   });
 });
 
@@ -908,6 +954,166 @@ app.post("/api/buddy/pipeline/continuous", (req, res) => {
   res.json({
     ok: true, action: "started", running: continuousPipeline.running,
     cycleCount: continuousPipeline.cycleCount, gates: continuousPipeline.gateResults,
+    ts: new Date().toISOString(),
+  });
+});
+
+// ─── Secrets & Cloudflare Routes ─────────────────────────────────────
+try {
+  if (secretsManager) {
+    const { registerSecretsRoutes } = require("./src/hc_secrets_manager");
+    registerSecretsRoutes(app);
+    secretsManager.startMonitor(60_000); // check every 60s
+  }
+  if (cfManager) {
+    const { registerCloudflareRoutes } = require("./src/hc_cloudflare");
+    registerCloudflareRoutes(app, cfManager);
+  }
+} catch (err) {
+  console.warn(`  ⚠ Secrets/Cloudflare routes not registered: ${err.message}`);
+}
+
+// ─── Aloha Protocol System (Always-On) ───────────────────────────────
+const alohaProtocol = loadYamlConfig("aloha-protocol.yaml");
+const deOptProtocol = loadYamlConfig("de-optimization-protocol.yaml");
+const stabilityFirst = loadYamlConfig("stability-first.yaml");
+
+const alohaState = {
+  mode: "aloha",
+  activeSince: new Date().toISOString(),
+  protocols: {
+    aloha: !!alohaProtocol,
+    deOptimization: !!deOptProtocol,
+    stabilityFirst: !!stabilityFirst,
+  },
+  stabilityDiagnosticMode: false,
+  crashReports: [],
+  deOptChecks: 0,
+};
+
+if (alohaProtocol) console.log("  \u221e Aloha Protocol: LOADED (always-on)");
+if (deOptProtocol) console.log("  \u221e De-Optimization Protocol: LOADED (simplicity > speed)");
+if (stabilityFirst) console.log("  \u221e Stability First: LOADED (the canoe must not sink)");
+
+app.get("/api/aloha/status", (req, res) => {
+  res.json({
+    ok: true,
+    mode: alohaState.mode,
+    activeSince: alohaState.activeSince,
+    protocols: alohaState.protocols,
+    stabilityDiagnosticMode: alohaState.stabilityDiagnosticMode,
+    crashReportCount: alohaState.crashReports.length,
+    deOptChecksRun: alohaState.deOptChecks,
+    priorities: alohaProtocol ? alohaProtocol.priorities : null,
+    ts: new Date().toISOString(),
+  });
+});
+
+app.get("/api/aloha/protocol", (req, res) => {
+  if (!alohaProtocol) return res.status(404).json({ error: "Aloha protocol not found" });
+  res.json({ ok: true, ...alohaProtocol, ts: new Date().toISOString() });
+});
+
+app.get("/api/aloha/de-optimization", (req, res) => {
+  if (!deOptProtocol) return res.status(404).json({ error: "De-optimization protocol not found" });
+  res.json({ ok: true, ...deOptProtocol, ts: new Date().toISOString() });
+});
+
+app.get("/api/aloha/stability", (req, res) => {
+  if (!stabilityFirst) return res.status(404).json({ error: "Stability first protocol not found" });
+  res.json({ ok: true, ...stabilityFirst, ts: new Date().toISOString() });
+});
+
+app.get("/api/aloha/priorities", (req, res) => {
+  if (!alohaProtocol) return res.status(404).json({ error: "Aloha protocol not found" });
+  res.json({
+    ok: true,
+    priorities: alohaProtocol.priorities,
+    no_assist: alohaProtocol.no_assist,
+    web_baseline: alohaProtocol.web_baseline,
+    ts: new Date().toISOString(),
+  });
+});
+
+app.get("/api/aloha/checklist", (req, res) => {
+  if (!deOptProtocol) return res.status(404).json({ error: "De-optimization protocol not found" });
+  res.json({
+    ok: true,
+    checklist: deOptProtocol.checklist,
+    code_rules: deOptProtocol.code_generation,
+    arch_rules: deOptProtocol.architecture_suggestions,
+    prompt_rules: deOptProtocol.prompt_and_workflow,
+    ts: new Date().toISOString(),
+  });
+});
+
+app.post("/api/aloha/crash-report", (req, res) => {
+  const { description, context, severity } = req.body;
+  const report = {
+    id: `crash-${Date.now()}`,
+    description: description || "IDE/system crash reported",
+    context: context || "unknown",
+    severity: severity || "high",
+    ts: new Date().toISOString(),
+  };
+  alohaState.crashReports.push(report);
+  alohaState.stabilityDiagnosticMode = true;
+
+  // Wire crash report into self-critique
+  if (selfCritiqueEngine) {
+    selfCritiqueEngine.recordCritique({
+      context: "stability:crash",
+      weaknesses: [`System crash: ${report.description}`],
+      severity: "critical",
+      suggestedImprovements: [
+        "Enter Stability Diagnostic Mode",
+        "Reduce local resource usage",
+        "Disable non-essential extensions",
+      ],
+    });
+  }
+
+  // Wire into story driver
+  if (storyDriver) {
+    storyDriver.ingestSystemEvent({
+      type: "STABILITY_CRASH_REPORTED",
+      refs: { crashId: report.id, description: report.description },
+      source: "aloha_protocol",
+    });
+  }
+
+  res.json({
+    ok: true,
+    report,
+    diagnosticMode: true,
+    checklist: stabilityFirst ? stabilityFirst.crash_response.diagnostic_mode.checks : [],
+    message: "Stability Diagnostic Mode activated. Follow the checklist.",
+  });
+});
+
+app.post("/api/aloha/de-opt-check", (req, res) => {
+  const { suggestion, context } = req.body;
+  alohaState.deOptChecks++;
+
+  const result = {
+    checkNumber: alohaState.deOptChecks,
+    suggestion: suggestion || "unnamed",
+    context: context || "general",
+    questions: deOptProtocol ? deOptProtocol.checklist.steps : [],
+    recommendation: "Prefer the simpler alternative unless measured need exists",
+    ts: new Date().toISOString(),
+  };
+
+  res.json({ ok: true, ...result });
+});
+
+app.get("/api/aloha/web-baseline", (req, res) => {
+  if (!alohaProtocol) return res.status(404).json({ error: "Aloha protocol not found" });
+  res.json({
+    ok: true,
+    non_negotiable: true,
+    requirements: alohaProtocol.web_baseline,
+    message: "Websites must be fully functional as baseline. This is the easy thing to do.",
     ts: new Date().toISOString(),
   });
 });

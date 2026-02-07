@@ -193,6 +193,30 @@ liveDocuments:
     reviewBy: "2026-05-06"
     description: Heady Buddy cross-device companion — launch modes, channels, sync
 
+  - path: configs/aloha-protocol.yaml
+    type: governance
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Hawaiian-inspired Aloha Mode — priority stack, no-assist guard, web baseline, crew roles
+
+  - path: configs/de-optimization-protocol.yaml
+    type: governance
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: De-optimization protocol — simplicity over speed, KISS/YAGNI defaults, checklist
+
+  - path: configs/stability-first.yaml
+    type: governance
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Stability First — crash prevention, diagnostic mode, local machine protection
+
   # ─── WORKFLOWS ─────────────────────────────────────────────────────
   - path: .windsurf/workflows/monte-carlo-optimization.md
     type: workflow
