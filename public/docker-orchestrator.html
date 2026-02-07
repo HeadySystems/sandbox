@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heady Docker Orchestrator - Sacred Container Deployment</title>
+    <link rel="stylesheet" href="sacred-geometry.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--heady-void);
+            color: var(--heady-white);
+            min-height: 100vh;
+        }
+
+        .docker-app {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+        }
+
+        /* Sacred Header */
+        .docker-header {
+            background: rgba(10, 10, 26, 0.95);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .docker-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--heady-cyan), var(--heady-magenta), var(--heady-gold), var(--heady-cyan));
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .docker-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #2496ED, #0D7BC0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 0 30px rgba(36, 150, 237, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .docker-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: rotate 3s linear infinite;
+        }
+
+        .docker-icon::after {
+            content: '🐳';
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-text h1 {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #2496ED, var(--heady-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 13px;
+            color: var(--heady-gray);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-btn.primary {
+            background: linear-gradient(135deg, #2496ED, var(--heady-cyan));
+            color: white;
+        }
+
+        .header-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(36, 150, 237, 0.3);
+        }
+
+        .header-btn.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--heady-white);
+        }
+
+        /* Main Dashboard */
+        .docker-dashboard {
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 300px 1fr 320px;
+            gap: 24px;
+            background: 
+                radial-gradient(ellipse at 10% 20%, rgba(36, 150, 237, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(0, 217, 255, 0.05) 0%, transparent 50%),
+                var(--heady-void);
+        }
+
+        /* Profile Selector */
+        .profile-panel {
+            background: rgba(26, 26, 62, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--heady-gold);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-card {
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .profile-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+
+        .profile-card.active {
+            background: rgba(36, 150, 237, 0.15);
+            border-color: #2496ED;
+        }
+
+        .profile-card.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 30px;
+            background: linear-gradient(to bottom, var(--heady-cyan), #2496ED);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .profile-icon {
+            font-size: 20px;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .profile-desc {
+            font-size: 12px;
+            color: var(--heady-gray);
+            line-height: 1.4;
+        }
+
+        /* Container Visualization */
+        .containers-view {
+            background: rgba(26, 26, 62, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .containers-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .containers-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .status-filter {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--heady-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: rgba(0, 255, 136, 0.15);
+            border-color: rgba(0, 255, 136, 0.3);
+            color: #00FF88;
+        }
+
+        /* Container Cards */
+        .container-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .container-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            transition: all 0.3s;
+        }
+
+        .container-card:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(36, 150, 237, 0.3);
+            transform: translateX(4px);
+        }
+
+        .container-status {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            position: relative;
+        }
+
+        .container-status.running {
+            background: rgba(0, 255, 136, 0.15);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .container-status.running::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 14px;
+            border: 2px solid #00FF88;
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0; }
+        }
+
+        .container-info {
+            flex: 1;
+        }
+
+        .container-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .container-tag {
+            padding: 2px 8px;
+            background: rgba(36, 150, 237, 0.2);
+            border-radius: 4px;
+            font-size: 10px;
+            color: #2496ED;
+            font-weight: 500;
+        }
+
+        .container-meta {
+            font-size: 12px;
+            color: var(--heady-gray);
+            display: flex;
+            gap: 16px;
+        }
+
+        .container-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .action-icon:hover {
+            background: rgba(36, 150, 237, 0.2);
+            border-color: #2496ED;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(26, 26, 62, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .stat-card h3 {
+            font-size: 13px;
+            color: var(--heady-gray);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--heady-cyan), #2496ED);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--heady-cyan), #2496ED);
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+
+        /* Resource Gauges */
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .gauge-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gauge-visual {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
+        .gauge-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 6;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke: url(#gaugeGradient);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 157;
+            stroke-dashoffset: 40;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .gauge-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .gauge-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .gauge-info p {
+            font-size: 12px;
+            color: var(--heady-gray);
+        }
+
+        /* Footer Status Bar */
+        .docker-footer {
+            background: rgba(10, 10, 26, 0.95);
+            border-top: 1px solid rgba(212, 175, 55, 0.15);
+            padding: 12px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00FF88;
+            box-shadow: 0 0 10px #00FF88;
+        }
+
+        .status-label {
+            color: var(--heady-gray);
+        }
+
+        .status-value {
+            color: var(--heady-white);
+            font-weight: 500;
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--heady-gray);
+        }
+
+        .footer-action {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .footer-action:hover {
+            background: rgba(36, 150, 237, 0.2);
+            border-color: #2496ED;
+            color: var(--heady-cyan);
+        }
+
+        /* Animated Background Pattern */
+        .docker-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(36, 150, 237, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 217, 255, 0.03) 0%, transparent 50%);
+        }
+
+        .docker-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(36, 150, 237, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(36, 150, 237, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="docker-bg"></div>
+    
+    <div class="docker-app">
+        <!-- Header -->
+        <header class="docker-header">
+            <div class="header-brand">
+                <div class="docker-icon"></div>
+                <div class="brand-text">
+                    <h1>Heady Docker Orchestrator</h1>
+                    <p>Deploy • Scale • Monitor • Automate</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn secondary">📁 Import Compose</button>
+                <button class="header-btn primary">▶ Deploy Stack</button>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <main class="docker-dashboard">
+            <!-- Left: Deployment Profiles -->
+            <aside class="profile-panel">
+                <div class="panel-title">⚡ Deployment Profiles</div>
+                
+                <div class="profile-card active">
+                    <div class="profile-header">
+                        <span class="profile-icon">🖥️</span>
+                        <span class="profile-name">Local Offline</span>
+                    </div>
+                    <p class="profile-desc">Everything on-device with local models via Ollama</p>
+                </div>
+
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <span class="profile-icon">⚡</span>
+                        <span class="profile-name">Hybrid Mode</span>
+                    </div>
+                    <p class="profile-desc">Local orchestrator + cloud fallback for heavy tasks</p>
+                </div>
+
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <span class="profile-icon">☁️</span>
+                        <span class="profile-name">Cloud SaaS</span>
+                    </div>
+                    <p class="profile-desc">Full cloud deployment with managed infrastructure</p>
+                </div>
+
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <span class="profile-icon">🌐</span>
+                        <span class="profile-name">Full Suite</span>
+                    </div>
+                    <p class="profile-desc">Everything: API, Web, MCP, Voice, Desktop agents</p>
+                </div>
+
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <span class="profile-icon">🔌</span>
+                        <span class="profile-name">API Only</span>
+                    </div>
+                    <p class="profile-desc">Headless API server for custom integrations</p>
+                </div>
+            </aside>
+
+            <!-- Center: Container Management -->
+            <section class="containers-view">
+                <div class="containers-header">
+                    <h2>🐳 Running Containers</h2>
+                    <div class="status-filter">
+                        <button class="filter-btn active">All</button>
+                        <button class="filter-btn">Running</button>
+                        <button class="filter-btn">Stopped</button>
+                    </div>
+                </div>
+
+                <div class="container-list">
+                    <div class="container-card">
+                        <div class="container-status running">🟢</div>
+                        <div class="container-info">
+                            <div class="container-name">
+                                heady-api
+                                <span class="container-tag">core</span>
+                            </div>
+                            <div class="container-meta">
+                                <span>🖥️ Port 3300</span>
+                                <span>⏱️ 2d 4h</span>
+                                <span>💾 128MB</span>
+                            </div>
+                        </div>
+                        <div class="container-actions">
+                            <button class="action-icon" title="Logs">📄</button>
+                            <button class="action-icon" title="Restart">🔄</button>
+                            <button class="action-icon" title="Stop">⏹️</button>
+                        </div>
+                    </div>
+
+                    <div class="container-card">
+                        <div class="container-status running">🟢</div>
+                        <div class="container-info">
+                            <div class="container-name">
+                                heady-orchestrator
+                                <span class="container-tag">agent</span>
+                            </div>
+                            <div class="container-meta">
+                                <span>🔗 Connected</span>
+                                <span>⏱️ 2d 4h</span>
+                                <span>💾 256MB</span>
+                            </div>
+                        </div>
+                        <div class="container-actions">
+                            <button class="action-icon" title="Logs">📄</button>
+                            <button class="action-icon" title="Restart">🔄</button>
+                            <button class="action-icon" title="Stop">⏹️</button>
+                        </div>
+                    </div>
+
+                    <div class="container-card">
+                        <div class="container-status running">🟢</div>
+                        <div class="container-info">
+                            <div class="container-name">
+                                ollama
+                                <span class="container-tag">model</span>
+                            </div>
+                            <div class="container-meta">
+                                <span>🤖 llama3.2, mistral</span>
+                                <span>⏱️ 2d 4h</span>
+                                <span>💾 4.2GB</span>
+                            </div>
+                        </div>
+                        <div class="container-actions">
+                            <button class="action-icon" title="Logs">📄</button>
+                            <button class="action-icon" title="Restart">🔄</button>
+                            <button class="action-icon" title="Stop">⏹️</button>
+                        </div>
+                    </div>
+
+                    <div class="container-card">
+                        <div class="container-status running">🟢</div>
+                        <div class="container-info">
+                            <div class="container-name">
+                                postgres
+                                <span class="container-tag">db</span>
+                            </div>
+                            <div class="container-meta">
+                                <span>🐘 pgvector enabled</span>
+                                <span>⏱️ 2d 4h</span>
+                                <span>💾 512MB</span>
+                            </div>
+                        </div>
+                        <div class="container-actions">
+                            <button class="action-icon" title="Logs">📄</button>
+                            <button class="action-icon" title="Restart">🔄</button>
+                            <button class="action-icon" title="Stop">⏹️</button>
+                        </div>
+                    </div>
+
+                    <div class="container-card">
+                        <div class="container-status running">🟢</div>
+                        <div class="container-info">
+                            <div class="container-name">
+                                mcp-gateway
+                                <span class="container-tag">tools</span>
+                            </div>
+                            <div class="container-meta">
+                                <span>🔌 6 tools connected</span>
+                                <span>⏱️ 2d 4h</span>
+                                <span>💾 64MB</span>
+                            </div>
+                        </div>
+                        <div class="container-actions">
+                            <button class="action-icon" title="Logs">📄</button>
+                            <button class="action-icon" title="Restart">🔄</button>
+                            <button class="action-icon" title="Stop">⏹️</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: Stats & Resources -->
+            <aside class="stats-panel">
+                <!-- System Stats -->
+                <div class="stat-card">
+                    <h3>Container Health</h3>
+                    <div class="stat-value">5/5</div>
+                    <div class="stat-bar">
+                        <div class="stat-bar-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <!-- Resource Gauges -->
+                <div class="stat-card">
+                    <h3>Resource Usage</h3>
+                    <div class="gauge-container">
+                        <svg width="0" height="0">
+                            <defs>
+                                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#00D9FF"/>
+                                    <stop offset="100%" style="stop-color:#2496ED"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+
+                        <div class="gauge-item">
+                            <div class="gauge-visual">
+                                <svg class="gauge-svg" viewBox="0 0 60 60">
+                                    <circle class="gauge-bg" cx="30" cy="30" r="25"/>
+                                    <circle class="gauge-fill" cx="30" cy="30" r="25" style="stroke-dashoffset: 60"/>
+                                </svg>
+                                <div class="gauge-text">62%</div>
+                            </div>
+                            <div class="gauge-info">
+                                <h4>CPU</h4>
+                                <p>8 cores active</p>
+                            </div>
+                        </div>
+
+                        <div class="gauge-item">
+                            <div class="gauge-visual">
+                                <svg class="gauge-svg" viewBox="0 0 60 60">
+                                    <circle class="gauge-bg" cx="30" cy="30" r="25"/>
+                                    <circle class="gauge-fill" cx="30" cy="30" r="25" style="stroke-dashoffset: 30"/>
+                                </svg>
+                                <div class="gauge-text">42%</div>
+                            </div>
+                            <div class="gauge-info">
+                                <h4>Memory</h4>
+                                <p>6.8GB / 16GB</p>
+                            </div>
+                        </div>
+
+                        <div class="gauge-item">
+                            <div class="gauge-visual">
+                                <svg class="gauge-svg" viewBox="0 0 60 60">
+                                    <circle class="gauge-bg" cx="30" cy="30" r="25"/>
+                                    <circle class="gauge-fill" cx="30" cy="30" r="25" style="stroke-dashoffset: 120"/>
+                                </svg>
+                                <div class="gauge-text">24%</div>
+                            </div>
+                            <div class="gauge-info">
+                                <h4>Storage</h4>
+                                <p>120GB / 500GB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Network Stats -->
+                <div class="stat-card">
+                    <h3>Network I/O</h3>
+                    <div style="display: flex; justify-content: space-between; margin-top: 12px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 14px; color: #00FF88;">⬆ 2.4 MB/s</div>
+                            <div style="font-size: 11px; color: var(--heady-gray); margin-top: 4px;">Upload</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 14px; color: var(--heady-cyan);">⬇ 8.6 MB/s</div>
+                            <div style="font-size: 11px; color: var(--heady-gray); margin-top: 4px;">Download</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <footer class="docker-footer">
+            <div class="footer-left">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span class="status-label">Docker Engine:</span>
+                    <span class="status-value">Running</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Images:</span>
+                    <span class="status-value">12</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Volumes:</span>
+                    <span class="status-value">8</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Networks:</span>
+                    <span class="status-value">4</span>
+                </div>
+            </div>
+            <div class="footer-right">
+                <span>🔄 Auto-refresh: ON</span>
+                <span class="footer-action">View Logs</span>
+                <span class="footer-action">Settings</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Simulate container status updates
+        setInterval(() => {
+            const stats = document.querySelectorAll('.stat-bar-fill');
+            stats.forEach(stat => {
+                const width = Math.floor(Math.random() * 30) + 60;
+                stat.style.width = width + '%';
+            });
+        }, 5000);
+
+        // Profile selection
+        document.querySelectorAll('.profile-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            });
+        });
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

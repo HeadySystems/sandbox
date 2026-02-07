@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  heady-manager:
+    build: .
+    ports:
+      - "3300:3300"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://headyuser:headypass@heady-postgres:5432/headydb
+      - REDIS_URL=redis://heady-redis:6379
+    depends_on:
+      - heady-postgres
+      - heady-redis
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3300/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  heady-postgres:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=headydb
+      - POSTGRES_USER=headyuser
+      - POSTGRES_PASSWORD=headypass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  heady-redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

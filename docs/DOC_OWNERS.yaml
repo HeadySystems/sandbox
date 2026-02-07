@@ -96,6 +96,86 @@ liveDocuments:
     reviewBy: "2026-05-06"
     description: NotebookLM-ready comprehensive project reference document
 
+  - path: docs/HEADY_STACK_DISTRIBUTION_PROTOCOL.md
+    type: architecture
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: HeadyStack Distribution Protocol — 25-section master blueprint for mono-repo, hybrid architecture, payment schemes, all extensions, MCP, Docker profiles, HeadyOS forms, E:\ mirror
+
+  - path: scripts/sync-to-e-drive.ps1
+    type: script
+    owner: system
+    reviewCadence: on_major_release
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Sync distribution pack to OnePlus Open CrossDevice E:\ drive via robocopy
+
+  - path: docs/HEADY_BROWSER_BUDDY_IDE_PROTOCOL.md
+    type: architecture
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Heady Browser + Buddy + IDE — 25-section master build protocol for Android/Windows/Linux
+
+  - path: configs/heady-browser.yaml
+    type: config
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Heady Browser architecture config — platforms, layers, feature fusion, build phases
+
+  - path: configs/heady-buddy-always-on.yaml
+    type: config
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Buddy always-on behavior spec — Android foreground service, Windows tray, Linux systemd, LLM router
+
+  - path: scripts/phone-ssh-setup.sh
+    type: script
+    owner: system
+    reviewCadence: on_major_release
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Termux SSH setup script for Android — installs sshd, creates helper commands, auto-start on boot
+
+  - path: docs/HEADY_AUTO_IDE.md
+    type: system-prompt
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: HeadyAutoIDE master instruction set — 24 sections covering orchestration, routing, two-base fusion, Drupal, connection kits, all-follow mode
+
+  - path: HeadyConnectionKits/00-Overview/README.md
+    type: distribution
+    owner: system
+    reviewCadence: on_major_release
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Connection Kits overview — 10 subfolders covering every way to connect (Docker, K8s, CLI, SDK, API, email, enterprise, custom)
+
+  - path: docs/MULTI_AGENT_TRANSPARENCY.md
+    type: governance
+    owner: system
+    reviewCadence: quarterly
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Multi-agent transparency policy — Arena Mode evidence, enforcement rules, burden of proof
+
+  - path: docs/ITERATIVE_REBUILD_PROTOCOL.md
+    type: governance
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Iterative rebuild protocol — error-elimination, convergence model, testing pyramid, retrospectives
+
   # ─── CONFIGS (Auto-validated at pipeline run) ─────────────────────
   - path: configs/hcfullpipeline.yaml
     type: pipeline-config
@@ -233,6 +313,14 @@ liveDocuments:
     lastReviewed: "2026-02-06"
     reviewBy: "2026-05-06"
     description: Full system verification workflow (23 steps)
+
+  - path: .windsurf/workflows/two-base-fusion.md
+    type: workflow
+    owner: system
+    reviewCadence: on_pipeline_run
+    lastReviewed: "2026-02-06"
+    reviewBy: "2026-05-06"
+    description: Two-Base Fusion workflow — reusable pattern for fusing two platforms into one app
 
   - path: .windsurf/workflows/hc-full-pipeline.md
     type: workflow

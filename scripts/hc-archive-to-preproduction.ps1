@@ -178,3 +178,4 @@ if ($failCount -eq 0) {
 } else {
     Write-Host "Some renames failed. Check GitHub permissions and retry." -ForegroundColor Yellow
 }
+

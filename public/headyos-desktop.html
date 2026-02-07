@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeadyOS Desktop - Sacred AI Interface</title>
+    <link rel="stylesheet" href="sacred-geometry.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--heady-void);
+            color: var(--heady-white);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Floating Heady Orb - Always Available */
+        #heady-orb-container {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 10000;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        #heady-orb-container:hover {
+            transform: scale(1.1);
+        }
+
+        #heady-orb-container.active {
+            bottom: 50%;
+            right: 50%;
+            transform: translate(50%, 50%) scale(2);
+        }
+
+        /* Side Panel Chat */
+        #side-panel {
+            position: fixed;
+            right: -420px;
+            top: 0;
+            width: 420px;
+            height: 100vh;
+            background: rgba(10, 10, 26, 0.95);
+            backdrop-filter: blur(30px);
+            border-left: 1px solid rgba(212, 175, 55, 0.2);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #side-panel.open {
+            right: 0;
+        }
+
+        .panel-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--heady-gold), var(--heady-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .panel-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: var(--heady-white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .panel-close:hover {
+            background: rgba(255, 0, 160, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: var(--radius-card);
+            font-size: 14px;
+            line-height: 1.6;
+            animation: message-appear 0.3s ease;
+        }
+
+        @keyframes message-appear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 217, 255, 0.05));
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            background: rgba(26, 26, 62, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.assistant::before {
+            content: '✦';
+            color: var(--heady-gold);
+            margin-right: 8px;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(26, 26, 62, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-pill);
+            padding: 6px 6px 6px 20px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--heady-white);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: var(--heady-gray);
+        }
+
+        .voice-btn, .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .voice-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--heady-gray);
+        }
+
+        .voice-btn:hover, .voice-btn.recording {
+            background: rgba(255, 0, 160, 0.3);
+            color: var(--heady-magenta);
+            box-shadow: var(--glow-magenta);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--heady-cyan), var(--heady-magenta));
+            color: var(--heady-white);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--glow-cyan);
+        }
+
+        /* Main Dashboard */
+        #main-dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            height: 100vh;
+            gap: 24px;
+            padding: 24px;
+        }
+
+        /* Left Sidebar - Workspaces & Agents */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-section {
+            background: rgba(26, 26, 62, 0.4);
+            border-radius: var(--radius-sacred);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--heady-gold);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .workspace-item, .agent-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 4px;
+        }
+
+        .workspace-item:hover, .agent-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .workspace-item.active {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .agent-item.active {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .item-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .item-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00FF88;
+            box-shadow: 0 0 10px #00FF88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Center - Active Project/Chat */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 28px;
+            background: rgba(26, 26, 62, 0.4);
+            border-radius: var(--radius-sacred);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .project-info h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, var(--heady-white), var(--heady-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .project-info p {
+            color: var(--heady-gray);
+            font-size: 14px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-button);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--heady-white);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .action-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .chat-area {
+            flex: 1;
+            background: rgba(26, 26, 62, 0.3);
+            border-radius: var(--radius-sacred);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Right Panel - Tools & Context */
+        .tools-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: rgba(26, 26, 62, 0.4);
+            border-radius: var(--radius-sacred);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tool-card h3 {
+            font-size: 14px;
+            color: var(--heady-gold);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .context-preview {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 13px;
+            color: var(--heady-gray);
+            border-left: 3px solid var(--heady-cyan);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .quick-action {
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+        }
+
+        .quick-action:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .quick-action-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        /* Voice Visualization Overlay */
+        #voice-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 26, 0.95);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        #voice-overlay.active {
+            display: flex;
+        }
+
+        .voice-orb {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--heady-cyan), var(--heady-magenta), var(--heady-gold), var(--heady-cyan));
+            animation: breathe 3s ease-in-out infinite, rotate-slow 10s linear infinite;
+            position: relative;
+            box-shadow: 0 0 100px rgba(0, 217, 255, 0.5);
+        }
+
+        .voice-orb::before {
+            content: '';
+            position: absolute;
+            inset: 15px;
+            border-radius: 50%;
+            background: var(--heady-void);
+        }
+
+        .voice-orb::after {
+            content: '🎙️';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .voice-text {
+            font-size: 20px;
+            color: var(--heady-gray);
+            text-align: center;
+        }
+
+        .voice-hint {
+            font-size: 14px;
+            color: var(--heady-gold);
+            margin-top: 8px;
+        }
+
+        /* Hotkey hint */
+        .hotkey-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 12px;
+            color: var(--heady-gray);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        body:hover .hotkey-hint {
+            opacity: 1;
+        }
+
+        .kbd {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--heady-gold);
+        }
+    </style>
+</head>
+<body class="sacred-bg">
+    <!-- Floating Heady Orb -->
+    <div id="heady-orb-container" onclick="toggleSidePanel()">
+        <div class="heady-orb"></div>
+    </div>
+
+    <!-- Side Panel Chat -->
+    <div id="side-panel">
+        <div class="panel-header">
+            <div class="panel-title">
+                <span style="font-size: 24px;">✦</span>
+                <span>Heady Assistant</span>
+            </div>
+            <button class="panel-close" onclick="toggleSidePanel()">✕</button>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message assistant">
+                Welcome to HeadyOS. I'm your sacred AI companion. How can I assist your journey today?
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" placeholder="Ask anything..." id="chat-input">
+                <button class="voice-btn" onclick="startVoice()">🎤</button>
+                <button class="send-btn" onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Overlay -->
+    <div id="voice-overlay">
+        <div class="voice-orb"></div>
+        <div class="voice-text">Listening...</div>
+        <div class="voice-hint">Press ESC to cancel</div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="main-dashboard">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">
+                    <span>◆</span> Workspaces
+                </div>
+                <div class="workspace-item active">
+                    <div class="item-icon">🏠</div>
+                    <span class="item-name">Personal</span>
+                    <div class="item-status"></div>
+                </div>
+                <div class="workspace-item">
+                    <div class="item-icon">💼</div>
+                    <span class="item-name">HeadySystems</span>
+                    <div class="item-status"></div>
+                </div>
+                <div class="workspace-item">
+                    <div class="item-icon">🌐</div>
+                    <span class="item-name">HeadyConnection</span>
+                    <div class="item-status"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">
+                    <span>✦</span> Active Agents
+                </div>
+                <div class="agent-item active">
+                    <div class="item-icon">🔬</div>
+                    <span class="item-name">Researcher</span>
+                    <div class="item-status"></div>
+                </div>
+                <div class="agent-item">
+                    <div class="item-icon">💻</div>
+                    <span class="item-name">Code Assistant</span>
+                    <div class="item-status"></div>
+                </div>
+                <div class="agent-item">
+                    <div class="item-icon">📝</div>
+                    <span class="item-name">Grant Writer</span>
+                    <div class="item-status"></div>
+                </div>
+                <div class="agent-item">
+                    <div class="item-icon">🎨</div>
+                    <span class="item-name">Creative Director</span>
+                    <div class="item-status"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="project-header">
+                <div class="project-info">
+                    <h1>HeadyStack Distribution System</h1>
+                    <p>Building the ultimate AI distribution pack — Docker, Ollama, MCP, and all the ways</p>
+                </div>
+                <div class="project-actions">
+                    <button class="action-btn">📋 Tasks</button>
+                    <button class="action-btn">📁 Files</button>
+                    <button class="action-btn">⚙️ Settings</button>
+                </div>
+            </div>
+
+            <div class="chat-area">
+                <!-- Main chat interface goes here -->
+                <div style="padding: 40px; text-align: center; color: var(--heady-gray);">
+                    <div style="font-size: 48px; margin-bottom: 20px;">✦</div>
+                    <p>Select an agent or start typing to begin</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Tools Panel -->
+        <aside class="tools-panel">
+            <div class="tool-card">
+                <h3>🎯 Context</h3>
+                <div class="context-preview">
+                    Current focus: distribution/ folder architecture<br><br>
+                    Building Docker profiles, MCP configs, billing schemes
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <h3>⚡ Quick Actions</h3>
+                <div class="quick-actions">
+                    <div class="quick-action">
+                        <span class="quick-action-icon">📄</span>
+                        Summarize
+                    </div>
+                    <div class="quick-action">
+                        <span class="quick-action-icon">💡</span>
+                        Brainstorm
+                    </div>
+                    <div class="quick-action">
+                        <span class="quick-action-icon">🔍</span>
+                        Research
+                    </div>
+                    <div class="quick-action">
+                        <span class="quick-action-icon">⚡</span>
+                        Automate
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <h3>🗣️ Voice Mode</h3>
+                <div style="text-align: center; padding: 20px;">
+                    <div class="voice-wave" style="justify-content: center;">
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--heady-gray); margin-top: 12px;">
+                        Click the orb or press <kbd class="kbd">Ctrl+H</kbd>
+                    </p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Hotkey Hint -->
+    <div class="hotkey-hint">
+        <kbd class="kbd">Ctrl+Shift+H</kbd> Toggle Heady &nbsp;|&nbsp; 
+        <kbd class="kbd">Ctrl+\</kbd> Side Panel &nbsp;|&nbsp;
+        <kbd class="kbd">Alt+V</kbd> Voice Mode
+    </div>
+
+    <script>
+        function toggleSidePanel() {
+            const panel = document.getElementById('side-panel');
+            const orb = document.getElementById('heady-orb-container');
+            panel.classList.toggle('open');
+            orb.classList.toggle('active');
+        }
+
+        function startVoice() {
+            document.getElementById('voice-overlay').classList.add('active');
+            document.addEventListener('keydown', function escHandler(e) {
+                if (e.key === 'Escape') {
+                    document.getElementById('voice-overlay').classList.remove('active');
+                    document.removeEventListener('keydown', escHandler);
+                }
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message) {
+                const messages = document.getElementById('chat-messages');
+                messages.innerHTML += `<div class="message user">${message}</div>`;
+                input.value = '';
+                messages.scrollTop = messages.scrollHeight;
+                
+                // Simulate response
+                setTimeout(() => {
+                    messages.innerHTML += `<div class="message assistant">I'm processing your request about "${message}"...</div>`;
+                    messages.scrollTop = messages.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Global hotkeys
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+                e.preventDefault();
+                toggleSidePanel();
+            }
+            if (e.altKey && e.key === 'v') {
+                e.preventDefault();
+                startVoice();
+            }
+        });
+    </script>
+</body>
+</html>

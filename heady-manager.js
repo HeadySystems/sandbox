@@ -15,6 +15,15 @@ const compression = require("compression");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
+// ─── Imagination Engine ─────────────────────────────────────────────
+let imaginationRoutes = null;
+try {
+  imaginationRoutes = require("./src/routes/imagination-routes");
+  console.log("  ∞ Imagination Engine: ROUTES LOADED");
+} catch (err) {
+  console.warn(`  ⚠ Imagination routes not loaded: ${err.message}`);
+}
+
 // ─── Secrets & Cloudflare Management ──────────────────────────────
 let secretsManager = null;
 let cfManager = null;
@@ -63,6 +72,11 @@ app.use("/api/", rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 }));
+
+// ─── Imagination Routes ────────────────────────────────────────────
+if (imaginationRoutes) {
+  app.use("/api/imagination", imaginationRoutes);
+}
 
 // ─── Static Assets ─────────────────────────────────────────────────
 const frontendBuildPath = path.join(__dirname, "frontend", "dist");
@@ -123,6 +137,8 @@ app.get("/api/pulse", (req, res) => {
       "/api/aloha/status", "/api/aloha/protocol", "/api/aloha/de-optimization",
       "/api/aloha/stability", "/api/aloha/priorities", "/api/aloha/checklist",
       "/api/aloha/crash-report", "/api/aloha/de-opt-check", "/api/aloha/web-baseline",
+      "/api/imagination/primitives", "/api/imagination/concepts", "/api/imagination/imagine",
+      "/api/imagination/hot-concepts", "/api/imagination/top-concepts", "/api/imagination/ip-packages",
     ],
     aloha: alohaState ? {
       mode: alohaState.mode,

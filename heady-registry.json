@@ -1,6 +1,6 @@
 {
-  "registryVersion": "3.0.0",
-  "updatedAt": "2026-02-06T00:00:00.000Z",
+  "registryVersion": "3.1.0",
+  "updatedAt": "2026-02-07T04:14:00.000Z",
   "description": "HeadyRegistry — Central catalog and control point for the Heady ecosystem",
 
   "components": [
@@ -212,6 +212,69 @@
       "lastUpdated": "2026-02-06"
     },
     {
+      "id": "heady-browser",
+      "name": "HeadyBrowser",
+      "type": "browser",
+      "version": "1.0.0",
+      "sourceOfTruth": "docs/HEADY_BROWSER_BUDDY_IDE_PROTOCOL.md",
+      "responsibilities": ["tabbedBrowsing", "adBlocking", "trackingProtection", "buddySidebar", "workspaces", "featureFusion", "crossPlatformSync"],
+      "platforms": ["android", "windows", "linux"],
+      "ownership": "core",
+      "status": "planned",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "buddy-always-on",
+      "name": "BuddyAlwaysOn",
+      "type": "service",
+      "version": "1.0.0",
+      "sourceOfTruth": "configs/heady-buddy-always-on.yaml",
+      "responsibilities": ["alwaysOnAssistant", "foregroundService", "trayApp", "systemdService", "llmRouter", "encryptedMemory", "crossPlatformSync"],
+      "platforms": ["android", "windows", "linux"],
+      "ownership": "core",
+      "status": "planned",
+      "criticality": "critical",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "phone-ssh",
+      "name": "PhoneSSH",
+      "type": "infrastructure",
+      "version": "1.0.0",
+      "sourceOfTruth": "scripts/phone-ssh-setup.sh",
+      "responsibilities": ["sshAccess", "termuxSetup", "remoteManagement", "autoStartBoot"],
+      "platforms": ["android"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "heady-auto-ide",
+      "name": "HeadyAutoIDE",
+      "type": "orchestration",
+      "version": "1.0.0",
+      "sourceOfTruth": "docs/HEADY_AUTO_IDE.md",
+      "responsibilities": ["masterOrchestrator", "agentHierarchy", "communicationRouting", "twoBaseFusion", "verticalPlanning", "connectionKits", "allFollowMode"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "critical",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "connection-kits",
+      "name": "HeadyConnectionKits",
+      "type": "distribution",
+      "version": "1.0.0",
+      "sourceOfTruth": "HeadyConnectionKits/",
+      "responsibilities": ["cloudWebAccess", "dockerOnPrem", "kubernetesMarketplaces", "cliTools", "sdksSnippets", "apiPostman", "emailOnboarding", "enterpriseCompliance", "customIntegrations"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
       "id": "desktop-overlay",
       "name": "DesktopOverlay",
       "type": "desktop-app",
@@ -222,6 +285,293 @@
       "status": "active",
       "criticality": "low",
       "lastUpdated": "2025-07-01"
+    },
+    {
+      "id": "headybrowser-mobile",
+      "name": "HeadyBrowser Mobile",
+      "type": "mobile-app",
+      "version": "0.1.0",
+      "sourceOfTruth": "headybrowser-mobile/",
+      "responsibilities": ["mobileBrowsing", "adBlocking", "aiSidebar", "crossDeviceSync"],
+      "ownership": "core",
+      "status": "scaffold",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "headybrowser-desktop",
+      "name": "HeadyBrowser Desktop",
+      "type": "desktop-app",
+      "version": "0.1.0",
+      "sourceOfTruth": "headybrowser-desktop/",
+      "responsibilities": ["desktopBrowsing", "adBlocking", "aiSidebar", "extensions", "crossDeviceSync"],
+      "ownership": "core",
+      "status": "scaffold",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "headybuddy-mobile",
+      "name": "HeadyBuddy Mobile",
+      "type": "mobile-app",
+      "version": "0.1.0",
+      "sourceOfTruth": "headybuddy-mobile/",
+      "responsibilities": ["alwaysOnCompanion", "foregroundService", "shareTarget", "floatingBubble"],
+      "ownership": "core",
+      "status": "scaffold",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "heady-ide",
+      "name": "HeadyIDE",
+      "type": "web-ide",
+      "version": "1.0.0",
+      "sourceOfTruth": "configs/heady-ide.yaml",
+      "responsibilities": ["codeServer", "aiAssistant", "crossDeviceAccess", "sacredGeometryTheme"],
+      "ownership": "core",
+      "status": "planned",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "distribution-pack",
+      "name": "HeadyStack Distribution Pack",
+      "type": "distribution",
+      "version": "1.0.0",
+      "sourceOfTruth": "distribution/",
+      "responsibilities": ["billingConfigs", "browserExtensions", "ideExtensions", "mcpServerStubs", "dockerProfiles", "bundleDefinitions", "apiClientSDKs", "automationConnectors", "headyOSForms", "mobileInstall", "installDocs", "paymentSchemes", "revenueShare"],
+      "contents": {
+        "files": 195,
+        "billingConfigs": 4,
+        "browserExtensions": ["chrome", "firefox", "edge", "safari"],
+        "browserShells": ["local", "hybrid", "cloud"],
+        "bundles": ["personal-suite", "pro-suite", "dev-pack", "creator-pack", "automations-pack", "enterprise-suite", "social-impact-pack", "browser-assistant-only"],
+        "dockerProfiles": ["local-dev", "local-offline", "hybrid", "cloud-saas", "api-only", "full-suite", "browser-only", "dev-tools", "minimal", "voice-enabled"],
+        "headyOSForms": ["desktop", "browser-shell", "web-shell", "mobile-shell", "cli", "embedded"],
+        "ideExtensions": ["vscode", "jetbrains", "neovim", "sublime", "visual-studio", "xcode"],
+        "mcpServers": ["github", "slack", "notion", "drive", "docker", "calendar", "email", "filesystem", "browser", "database", "search"],
+        "apiClients": ["js", "python", "go", "cli"],
+        "automations": ["zapier", "n8n", "make", "webhooks", "custom-webhooks"],
+        "connectors": ["slack-bot", "discord-bot", "teams-bot", "email-agent", "calendar-agent", "crm-connector", "document-stores"],
+        "ideExtensionsExtra": ["eclipse", "windsurf", "emacs", "vim"],
+        "mcpToolServers": ["github", "slack", "notion", "drive", "docker", "calendar", "filesystem", "terminal", "browser", "duckduckgo"]
+      },
+      "mirrors": ["C:/Users/erich/CrossDevice/E's OnePlus Open/HeadyStack/distribution/"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "browser-extension-edge",
+      "name": "Heady AI Browser Extension (Edge)",
+      "type": "browser-extension",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/browser/extensions/edge/",
+      "responsibilities": ["aiSidebar", "pageSummarization", "contextMenuActions"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "ide-extension-emacs",
+      "name": "Heady Dev Companion (Emacs)",
+      "type": "ide-extension",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/ide/emacs/heady.el",
+      "responsibilities": ["chatCommands", "codeExplain", "testGeneration", "docGeneration"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "ide-extension-vim",
+      "name": "Heady Dev Companion (Vim)",
+      "type": "ide-extension",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/ide/vim/plugin/heady.vim",
+      "responsibilities": ["chatCommands", "codeExplain", "testGeneration", "docGeneration"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "ide-extension-sublime",
+      "name": "Heady Dev Companion (Sublime Text)",
+      "type": "ide-extension",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/ide/sublime/HeadyAI.py",
+      "responsibilities": ["chatCommands", "codeExplain", "testGeneration", "docGeneration"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "mcp-tool-servers",
+      "name": "Heady MCP Tool Servers",
+      "type": "mcp-servers",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/mcp/servers/",
+      "responsibilities": ["github", "slack", "notion", "drive", "docker", "calendar", "filesystem", "terminal", "browser", "duckduckgo"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "heady-sdk-typescript",
+      "name": "Heady SDK (TypeScript)",
+      "type": "sdk",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/api-clients/javascript/src/index.ts",
+      "responsibilities": ["apiClient", "chatIntegration", "mcpCalls", "codeCompletion"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "headyos-cli",
+      "name": "HeadyOS CLI",
+      "type": "cli",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/headyos/cli/",
+      "responsibilities": ["terminalChat", "replMode", "healthCheck", "layerSwitch"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "termux-bootstrap",
+      "name": "Termux Bootstrap",
+      "type": "script",
+      "version": "1.0.0",
+      "sourceOfTruth": "scripts/termux-bootstrap.sh",
+      "responsibilities": ["phoneSSH", "phoneServer", "remoteAccess", "autoStart"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "browser-extension-chrome",
+      "name": "Heady AI Browser Extension (Chrome)",
+      "type": "browser-extension",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/browser/extensions/chrome/",
+      "responsibilities": ["aiSidebar", "pageSummarization", "contextMenuActions", "crossBrowserChat"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "browser-extension-firefox",
+      "name": "Heady AI Browser Extension (Firefox)",
+      "type": "browser-extension",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/browser/extensions/firefox/",
+      "responsibilities": ["aiSidebar", "pageSummarization", "contextMenuActions", "sidebarChat"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "imagination-engine",
+      "name": "Heady Imagination Engine",
+      "type": "ai-system",
+      "version": "1.0.0",
+      "sourceOfTruth": "src/hc_imagination.js",
+      "responsibilities": ["autonomousConceptGeneration", "ipDiscovery", "primitiveManagement", "recombinationOperators", "noveltyEvaluation", "safetyChecking", "metaLearning"],
+      "contents": {
+        "coreModule": "src/hc_imagination.js",
+        "routes": "src/routes/imagination-routes.js",
+        "config": "configs/imagination-engine.yaml",
+        "examples": "src/examples/imagination-agent-guide.js",
+        "docs": "docs/IMAGINATION_ENGINE.md",
+        "workflow": ".windsurf/workflows/imagination-engine.md"
+      },
+      "operators": ["BLEND", "SUBSTITUTE", "EXTEND", "INVERT", "MORPH"],
+      "integrations": ["pattern-engine", "self-critique", "monte-carlo", "story-driver"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "imagination-routes",
+      "name": "Imagination Engine API Routes",
+      "type": "api-routes",
+      "version": "1.0.0",
+      "sourceOfTruth": "src/routes/imagination-routes.js",
+      "responsibilities": ["primitivesApi", "conceptsApi", "operatorsApi", "ipPackagesApi", "safetyApi", "statsApi"],
+      "endpoints": [
+        "/api/imagination/primitives",
+        "/api/imagination/concepts",
+        "/api/imagination/imagine",
+        "/api/imagination/operators/{blend,substitute,extend,invert,morph}",
+        "/api/imagination/ip-packages",
+        "/api/imagination/safety-check"
+      ],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "ide-extension-vscode",
+      "name": "Heady Dev Companion (VS Code)",
+      "type": "ide-extension",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/ide/vscode/",
+      "responsibilities": ["inlineCompletions", "chatSidebar", "codeExplain", "testGeneration", "docGeneration", "agentMode", "voiceInput"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "ide-extension-neovim",
+      "name": "Heady Dev Companion (Neovim)",
+      "type": "ide-extension",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/ide/neovim/heady.lua",
+      "responsibilities": ["chatCommands", "codeExplain", "testGeneration", "docGeneration"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "heady-sdk-js",
+      "name": "Heady SDK (JavaScript)",
+      "type": "sdk",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/api-clients/js/heady-sdk.js",
+      "responsibilities": ["apiClient", "chatIntegration", "mcMetrics", "patternAccess", "layerSwitch"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "heady-sdk-python",
+      "name": "Heady SDK (Python)",
+      "type": "sdk",
+      "version": "0.1.0",
+      "sourceOfTruth": "distribution/api-clients/python/heady_sdk.py",
+      "responsibilities": ["apiClient", "chatIntegration", "cliMode", "mcMetrics", "patternAccess"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "medium",
+      "lastUpdated": "2026-02-06"
     },
     {
       "id": "aloha-protocol",
@@ -246,6 +596,57 @@
       "status": "active",
       "criticality": "critical",
       "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "hcip-infrastructure",
+      "name": "HCIP Infrastructure Setup",
+      "type": "infrastructure",
+      "version": "1.0.0",
+      "sourceOfTruth": "scripts/hc-infrastructure-setup.ps1",
+      "responsibilities": ["localhostToDomainMigration", "deviceProvisioning", "cleanBuildOrchestration", "extensionDeployment", "serviceDiscovery"],
+      "contents": {
+        "script": "scripts/hc-infrastructure-setup.ps1",
+        "config": "configs/service-domains.yaml",
+        "deviceConfig": "configs/device-management.yaml",
+        "ciWorkflow": ".github/workflows/clean-build.yml",
+        "workflow": ".windsurf/workflows/hcip-infrastructure-setup.md"
+      },
+      "serviceDomains": [
+        "manager.heady.local",
+        "worker.heady.local",
+        "dashboard.heady.local",
+        "api.heady.local",
+        "cache.heady.local",
+        "db.heady.local"
+      ],
+      "deploymentModes": ["inventory", "migrate", "provision", "clean-build", "full-setup"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-07"
+    },
+    {
+      "id": "clean-build-pipeline",
+      "name": "Clean Build CI/CD Pipeline",
+      "type": "ci-cd",
+      "version": "1.0.0",
+      "sourceOfTruth": ".github/workflows/clean-build.yml",
+      "responsibilities": ["deterministicBuilds", "errorClassification", "transientRetry", "artifactVerification", "securityScan"],
+      "triggers": ["push", "pull_request", "schedule"],
+      "jobs": [
+        "preflight",
+        "build-manager",
+        "build-frontend",
+        "build-worker",
+        "integration-tests",
+        "security-scan",
+        "deploy-staging",
+        "deploy-production"
+      ],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-07"
     },
     {
       "id": "stability-first",
@@ -379,6 +780,16 @@
       "inputs": ["git-remotes"],
       "outputs": ["synced-repos"],
       "dependencies": [],
+      "status": "active"
+    },
+    {
+      "id": "two-base-fusion",
+      "name": "Two-Base Fusion",
+      "owner": "core",
+      "sourceOfTruth": ".windsurf/workflows/two-base-fusion.md",
+      "inputs": ["baseA", "baseB", "verticalContext"],
+      "outputs": ["fusedArchitecture", "phasedRoadmap", "agentAssignments"],
+      "dependencies": ["heady-auto-ide"],
       "status": "active"
     },
     {
@@ -618,6 +1029,41 @@
       "lastUpdated": "2026-02-06"
     },
     {
+      "id": "multi-agent-transparency",
+      "path": "docs/MULTI_AGENT_TRANSPARENCY.md",
+      "type": "governance",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "iterative-rebuild-protocol",
+      "path": "docs/ITERATIVE_REBUILD_PROTOCOL.md",
+      "type": "governance",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "headystack-distribution-protocol",
+      "path": "docs/HEADY_STACK_DISTRIBUTION_PROTOCOL.md",
+      "type": "architecture",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "cross-platform-protocol",
+      "path": "docs/HEADY_CROSS_PLATFORM_PROTOCOL.md",
+      "type": "deployment-protocol",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "heady-ide-config",
+      "path": "configs/heady-ide.yaml",
+      "type": "config",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
       "id": "copilot-instructions",
       "path": ".github/copilot-instructions.md",
       "type": "agent-protocol",
@@ -642,6 +1088,41 @@
       "id": "stability-first-config",
       "path": "configs/stability-first.yaml",
       "type": "config",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "browser-buddy-ide-protocol",
+      "path": "docs/HEADY_BROWSER_BUDDY_IDE_PROTOCOL.md",
+      "type": "architecture",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "heady-browser-config",
+      "path": "configs/heady-browser.yaml",
+      "type": "config",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "buddy-always-on-config",
+      "path": "configs/heady-buddy-always-on.yaml",
+      "type": "config",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "heady-auto-ide-doc",
+      "path": "docs/HEADY_AUTO_IDE.md",
+      "type": "system-prompt",
+      "status": "current",
+      "lastUpdated": "2026-02-06"
+    },
+    {
+      "id": "connection-kits-overview",
+      "path": "HeadyConnectionKits/00-Overview/README.md",
+      "type": "distribution",
       "status": "current",
       "lastUpdated": "2026-02-06"
     }

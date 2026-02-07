@@ -17,6 +17,7 @@
 
 const { EventEmitter } = require("events");
 const fs = require("fs");
+const fsp = fs.promises;
 const path = require("path");
 const crypto = require("crypto");
 
@@ -27,6 +28,10 @@ const CONVERGENCE_CV_MAX = 0.05;
 const CONVERGENCE_MIN_SAMPLES = 20;
 const STAGNATION_CHECK_WINDOW = 20;
 const IMPROVEMENT_THRESHOLD = 0.02; // 2% improvement to count as "improving"
+
+// ─── ADAPTIVE INTERVALS ──────────────────────────────────────────────
+const ANALYSIS_INTERVAL_MS = 120000; // 2 minutes (was 30s)
+const SAVE_DEBOUNCE_MS = 5000; // 5s (was 2s)
 
 // ─── PATTERN CATEGORIES ──────────────────────────────────────────────
 
@@ -49,7 +54,7 @@ const STATE = {
   LOCKED: "locked",             // Manually locked by user (rare)
 };
 
-// ─── PERSISTENCE ─────────────────────────────────────────────────────
+// ─── PERSISTENCE (ASYNC) ─────────────────────────────────────────────
 
 function loadPatternStore() {
   try {
@@ -60,6 +65,15 @@ function loadPatternStore() {
   return { patterns: {}, metadata: { created: new Date().toISOString(), version: "1.0.0" } };
 }
 
+async function savePatternStoreAsync(store) {
+  try {
+    const dir = path.dirname(PATTERN_STORE_PATH);
+    await fsp.mkdir(dir, { recursive: true });
+    await fsp.writeFile(PATTERN_STORE_PATH, JSON.stringify(store, null, 2), "utf8");
+  } catch (_) {}
+}
+
+// Legacy sync version for shutdown hooks
 function savePatternStore(store) {
   try {
     const dir = path.dirname(PATTERN_STORE_PATH);
@@ -106,9 +120,10 @@ class HCPatternEngine extends EventEmitter {
     super();
     this.store = loadPatternStore();
     this.analysisInterval = null;
-    this.analysisIntervalMs = options.analysisIntervalMs || 30000;
+    this.analysisIntervalMs = options.analysisIntervalMs || ANALYSIS_INTERVAL_MS; // 2 min default
     this._observationBuffer = [];
     this._improvementTasks = [];
+    this._isRunning = false;
   }
 
   // ─── Start continuous analysis ─────────────────────────────────────
@@ -116,10 +131,10 @@ class HCPatternEngine extends EventEmitter {
   start() {
     if (this.analysisInterval) return;
     this.analysisInterval = setInterval(() => {
-      try { this._runAnalysisCycle(); } catch (_) {}
+      this._runAnalysisCycle().catch(() => {});
     }, this.analysisIntervalMs);
-    // Immediate first cycle
-    try { this._runAnalysisCycle(); } catch (_) {}
+    // Immediate first cycle (async)
+    this._runAnalysisCycle().catch(() => {});
     this.emit("engine:started");
   }
 
@@ -360,7 +375,10 @@ class HCPatternEngine extends EventEmitter {
 
   // ─── Run analysis cycle (called periodically) ──────────────────────
 
-  _runAnalysisCycle() {
+  async _runAnalysisCycle() {
+    if (this._isRunning) return; // Prevent overlapping cycles
+    this._isRunning = true;
+    
     const patterns = Object.values(this.store.patterns);
 
     for (const pattern of patterns) {
@@ -383,9 +401,10 @@ class HCPatternEngine extends EventEmitter {
     // Detect cross-pattern anomalies
     this._detectAnomalies(patterns);
 
-    // Save
-    savePatternStore(this.store);
+    // Save (async, non-blocking)
+    await savePatternStoreAsync(this.store);
 
+    this._isRunning = false;
     this.emit("analysis:cycle_complete", {
       patternsAnalyzed: patterns.length,
       ts: new Date().toISOString(),
@@ -575,10 +594,10 @@ class HCPatternEngine extends EventEmitter {
   _bufferSave() {
     // Debounced save — don't write on every observation
     if (this._saveTimeout) return;
-    this._saveTimeout = setTimeout(() => {
+    this._saveTimeout = setTimeout(async () => {
       this._saveTimeout = null;
-      savePatternStore(this.store);
-    }, 2000);
+      await savePatternStoreAsync(this.store);
+    }, SAVE_DEBOUNCE_MS);
   }
 }
 

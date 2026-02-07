@@ -607,7 +607,7 @@ class MonteCarloGlobal {
     this.history = [];
     this.eventLog = [];
     this.autoRunInterval = null;
-    this.backgroundCycleMs = 60000; // auto-refresh every 60s
+    this.backgroundCycleMs = 120000; // auto-refresh every 2 min (aligned with Pattern Engine)
     this._systemRefs = {};
   }
 
