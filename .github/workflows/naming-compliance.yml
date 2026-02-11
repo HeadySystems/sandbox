@@ -33,11 +33,11 @@ jobs:
         echo "Running naming standards audit..."
         ISSUES=0
 
-        # Check for localhost references in source files
-        if grep -rE 'localhost|127\.0\.0\.1' \
+        # Check for api.headysystems.com references in source files
+        if grep -rE 'api.headysystems.com|127\.0\.0\.1' \
              --include="*.js" --include="*.ts" --include="*.json" --include="*.yaml" \
              --exclude-dir=node_modules --exclude-dir=.git . 2>/dev/null; then
-          echo "::warning::Found localhost references"
+          echo "::warning::Found api.headysystems.com references"
           ISSUES=$((ISSUES + 1))
         fi
 

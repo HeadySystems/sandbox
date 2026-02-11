@@ -529,4 +529,4 @@ pipeline:
       - name: start_headybuddy
         command: Start-Service -Name HeadyBuddy
       - name: trigger_state_sync
-        command: Invoke-WebRequest -Uri http://localhost:3300/api/buddy/sync-events
+        command: Invoke-WebRequest -Uri http://api.headysystems.com:3300/api/buddy/sync-events

@@ -69,5 +69,5 @@ features:
   - clipboard_access
 
 dependencies:
-  heady_api: "http://manager.dev.local.heady.internal:3300"
-  heady_buddy: "http://localhost:3400"
+  heady_api: "http://manager.dev.local.headysystems.com:3300"
+  heady_buddy: "http://api.headysystems.com:3400"

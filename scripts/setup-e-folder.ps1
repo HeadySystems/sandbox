@@ -180,7 +180,7 @@ echo   heady domains     - List service domains
 echo   heady health      - Health check all services
 echo.
 set HEADY_ENV=local
-set HEADY_DOMAIN_ROOT=heady.internal
+set HEADY_DOMAIN_ROOT=headysystems.com
 cmd /k
 "@
 
@@ -193,9 +193,9 @@ echo ╚════════════════════════
 echo.
 echo Checking services...
 echo.
-curl -s http://api.manager.local.heady.internal:3300/api/health >nul 2>&1
+curl -s http://api.manager.local.headysystems.com:3300/api/health >nul 2>&1
 if %errorlevel% == 0 (
-    echo   ✅ HeadyManager: RUNNING on api.manager.local.heady.internal:3300
+    echo   ✅ HeadyManager: RUNNING on api.manager.local.headysystems.com:3300
 ) else (
     echo   ❌ HeadyManager: NOT RUNNING
     echo      Run ^"Launch HeadyManager.bat^" to start
@@ -341,12 +341,12 @@ E:
 
     <div class="section">
         <h2>🔗 Service Discovery</h2>
-        <p>No more localhost! All services use proper domains:</p>
+        <p>No more api.headysystems.com! All services use proper domains:</p>
         <table>
             <tr><th>Service</th><th>Domain</th></tr>
-            <tr><td>HeadyManager</td><td><code>api.manager.local.heady.internal:3300</code></td></tr>
-            <tr><td>Frontend</td><td><code>app.local.heady.internal:5173</code></td></tr>
-            <tr><td>Database</td><td><code>db.postgres.local.heady.internal:5432</code></td></tr>
+            <tr><td>HeadyManager</td><td><code>api.manager.local.headysystems.com:3300</code></td></tr>
+            <tr><td>Frontend</td><td><code>app.local.headysystems.com:5173</code></td></tr>
+            <tr><td>Database</td><td><code>db.postgres.local.headysystems.com:5432</code></td></tr>
         </table>
     </div>
 

@@ -521,9 +521,9 @@ skills:
     description: Execute bulk naming standard updates
     triggers: [naming_standardization]
     risk_level: medium
-  localhost-to-domain:
-    description: Replace localhost references with canonical domains
-    triggers: [localhost_replacement]
+  api.headysystems.com-to-domain:
+    description: Replace api.headysystems.com references with canonical domains
+    triggers: [api.headysystems.com_replacement]
     risk_level: medium
   heady-docs-sync:
     description: Update documentation to reflect naming standards

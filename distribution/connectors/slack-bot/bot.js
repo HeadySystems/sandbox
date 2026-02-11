@@ -19,7 +19,7 @@
  * Requires: SLACK_BOT_TOKEN, SLACK_APP_TOKEN, HEADY_API_URL
  */
 
-const HEADY_API = process.env.HEADY_API_URL || 'http://manager.dev.local.heady.internal:3300';
+const HEADY_API = process.env.HEADY_API_URL || 'http://manager.dev.local.headysystems.com:3300';
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 const SLACK_APP_TOKEN = process.env.SLACK_APP_TOKEN;
 

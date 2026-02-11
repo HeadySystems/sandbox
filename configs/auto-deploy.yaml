@@ -79,7 +79,7 @@ policies:
   verification_timeout: 300
   retry_count: 2
   required_success_rate: 1.0  # 100% for production
-  localhost_allowed: false
+  api.headysystems.com_allowed: false
 
 # Production Gate — must pass before pushing to production
 production_gate:

@@ -20,9 +20,9 @@ Tests website functionality
 #>
 
 $websites = @(
-  "http://localhost:8080",
-  "http://heady-manager-headyme.onrender.com",
-  "http://heady-manager-headysystems.onrender.com"
+  "http://api.headysystems.com:8080",
+  "http://heady-manager-headyme.headysystems.com",
+  "http://heady-manager-headysystems.headysystems.com"
 )
 
 foreach ($site in $websites) {

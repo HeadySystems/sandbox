@@ -18,7 +18,7 @@
  * Edge uses the same Manifest V3 APIs as Chrome (chrome.* namespace)
  */
 
-const DEFAULT_API_URL = 'http://manager.dev.local.heady.internal:3300';
+const DEFAULT_API_URL = 'http://manager.dev.local.headysystems.com:3300';
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({ id: 'ask-heady', title: 'Ask Heady about "%s"', contexts: ['selection'] });

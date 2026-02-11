@@ -50,8 +50,8 @@ env_var_standards:
   admin_url: ADMIN_URL
 
 banned_patterns:
-  - localhost
-  - 127.0.0.1
+  - api.headysystems.com
+  - api.headysystems.com
   - 10.x.x.x
   - 192.168.x.x
   - C:\\
@@ -84,7 +84,7 @@ infrastructure_patterns:
   buckets: "heady-data-{domain}-{env}"
 
 replacement_rules:
-  localhost:3000: "https://app.headysystems.com"
+  api.headysystems.com:3000: "https://app.headysystems.com"
   C:\\MyProject\\Heady: "<HEADY_PROJECT_ROOT>"
 
 enforcement:
@@ -96,7 +96,7 @@ enforcement:
   verification_scripts:
     - "scripts/verify-naming-standards.ps1"
     - "scripts/verify-domain-compliance.ps1"
-    - "scripts/verify-no-localhost.ps1"
+    - "scripts/verify-no-api.headysystems.com.ps1"
   
   reporting:
     - "Real-time violation alerts in IDE"

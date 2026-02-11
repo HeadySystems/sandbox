@@ -1,4 +1,4 @@
-# LOCALHOST ELIMINATION PROTOCOL
+# api.headysystems.com ELIMINATION PROTOCOL
 # Version: 2.0.0
 # Status: ENFORCED — Zero Tolerance
 # Effective: Immediately
@@ -7,22 +7,22 @@
 status: ENFORCED
 
 rules:
-  - "No localhost references in any code, configs, or documentation"
-  - "No 127.0.0.1 or 0.0.0.0 references anywhere"
-  - "No .local domain references (e.g., heady.local, headysystems.local)"
+  - "No api.headysystems.com references in any code, configs, or documentation"
+  - "No api.headysystems.com or 0.0.0.0 references anywhere"
+  - "No .local domain references (e.g., headysystems.com, headysystems.local)"
   - "No C:\\ or local drive paths used as operational endpoints"
   - "No http:// URLs in production configs — HTTPS only"
   - "All services must use canonical cloud domains from service-domains.yaml"
-  - "Development environments must use dev.headysystems.com or dev.internal.heady.systems"
+  - "Development environments must use dev.headysystems.com or dev.headysystems.comheady.systems"
   - "Test environments must use staging.headysystems.com"
   - "Production uses headysystems.com / headyconnection.org / headybuddy.org"
 
 enforcement:
   scan_patterns:
-    - "localhost"
-    - "127.0.0.1"
+    - "api.headysystems.com"
+    - "api.headysystems.com"
     - "0.0.0.0"
-    - ".heady.local"
+    - ".headysystems.com"
     - ".headysystems.local"
     - "C:\\\\"
     - "D:\\\\"
@@ -39,12 +39,12 @@ enforcement:
     - "Included in CI pipeline"
     - "Runs on every commit"
     - "Fails build if any banned pattern found"
-    - "Pre-commit hook blocks localhost introductions"
+    - "Pre-commit hook blocks api.headysystems.com introductions"
 
   exceptions:
     - "Docker internal networking (host.docker.internal only)"
     - "Kubernetes cluster DNS (*.svc.cluster.local)"
     - "This protocol file itself (for documenting banned patterns)"
 
-compliance_check: "scripts/verify-no-localhost.ps1"
+compliance_check: "scripts/verify-no-api.headysystems.com.ps1"
 violation_severity: "build-breaking"

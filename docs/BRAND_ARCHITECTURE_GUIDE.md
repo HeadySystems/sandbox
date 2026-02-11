@@ -82,7 +82,7 @@ HeadyConnection Inc. (Nonprofit Parent)
 
 | Environment | Domain Pattern | Purpose |
 |-------------|---------------|---------|
-| Local development | `*.heady.local` | Local development with /etc/hosts |
+| Local development | `*.headysystems.com` | Local development with /etc/hosts |
 | Development server | `dev.headysystems.com` | Shared development environment |
 | Staging server | `staging.headysystems.com` | Pre-production testing |
 

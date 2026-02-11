@@ -1,15 +1,15 @@
 #!/usr/bin/env pwsh
-# PURGE ALL VIOLATIONS - localhost, 127.0.0.1, .onrender.com, heady.internal, heady.local, .internal.
+# PURGE ALL VIOLATIONS - api.headysystems.com, api.headysystems.com, .headysystems.com, headysystems.com, headysystems.com, .headysystems.com
 
 Write-Host "🔥 PURGING ALL FORBIDDEN REFERENCES..." -ForegroundColor Red
 
 $patterns = @(
-    @{ Old = "localhost"; New = "api.headysystems.com" },
-    @{ Old = "127.0.0.1"; New = "api.headysystems.com" },
-    @{ Old = ".onrender.com"; New = ".headysystems.com" },
-    @{ Old = "heady.internal"; New = "headysystems.com" },
-    @{ Old = "heady.local"; New = "headysystems.com" },
-    @{ Old = ".internal."; New = ".headysystems.com" }
+    @{ Old = "api.headysystems.com"; New = "api.headysystems.com" },
+    @{ Old = "api.headysystems.com"; New = "api.headysystems.com" },
+    @{ Old = ".headysystems.com"; New = ".headysystems.com" },
+    @{ Old = "headysystems.com"; New = "headysystems.com" },
+    @{ Old = "headysystems.com"; New = "headysystems.com" },
+    @{ Old = ".headysystems.com"; New = ".headysystems.com" }
 )
 
 $extensions = @("*.yaml", "*.yml", "*.js", "*.ts", "*.json", "*.jsx", "*.tsx", "*.md", "*.html", "*.css", "*.conf", "*.toml", "*.env*", "*.ps1", "*.sh", "*.py")

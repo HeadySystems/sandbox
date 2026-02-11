@@ -24,32 +24,32 @@ interface RouteConfig {
 const ROUTE_TABLE: Record<string, (env: Env) => RouteConfig> = {
   // HeadySystems API
   'api.heady.systems': (env) => ({
-    origin: env.RENDER_ORIGIN_SYS || 'https://heady-manager-headysystems.onrender.com',
+    origin: env.RENDER_ORIGIN_SYS || 'https://heady-manager-headysystems.headysystems.com',
     cache: false,
   }),
   // HeadyMe API  
   'api.me.heady.systems': (env) => ({
-    origin: env.RENDER_ORIGIN_ME || 'https://heady-manager-headyme.onrender.com',
+    origin: env.RENDER_ORIGIN_ME || 'https://heady-manager-headyme.headysystems.com',
     cache: false,
   }),
   // HeadyConnection API
   'api.conn.heady.systems': (env) => ({
-    origin: env.RENDER_ORIGIN_CONN || 'https://heady-manager-headyconnection.onrender.com',
+    origin: env.RENDER_ORIGIN_CONN || 'https://heady-manager-headyconnection.headysystems.com',
     cache: false,
   }),
   // HeadyWeb
   'api.web.heady.systems': (env) => ({
-    origin: env.RENDER_ORIGIN_WEB || 'https://heady-manager-headyweb.onrender.com',
+    origin: env.RENDER_ORIGIN_WEB || 'https://heady-manager-headyweb.headysystems.com',
     cache: false,
   }),
   // Brain endpoints
   'brain.heady.systems': (env) => ({
-    origin: env.RENDER_ORIGIN_SYS || 'https://heady-manager-headysystems.onrender.com',
+    origin: env.RENDER_ORIGIN_SYS || 'https://heady-manager-headysystems.headysystems.com',
     pathRewrite: '/api/orchestrator',
     cache: false,
   }),
   'brain.me.heady.systems': (env) => ({
-    origin: env.RENDER_ORIGIN_ME || 'https://heady-manager-headyme.onrender.com',
+    origin: env.RENDER_ORIGIN_ME || 'https://heady-manager-headyme.headysystems.com',
     pathRewrite: '/api/orchestrator',
     cache: false,
   }),
@@ -59,31 +59,31 @@ const ROUTE_TABLE: Record<string, (env: Env) => RouteConfig> = {
 function resolveByPath(pathname: string, env: Env): RouteConfig {
   if (pathname.startsWith('/api/me/') || pathname.startsWith('/me/')) {
     return {
-      origin: env.RENDER_ORIGIN_ME || 'https://heady-manager-headyme.onrender.com',
+      origin: env.RENDER_ORIGIN_ME || 'https://heady-manager-headyme.headysystems.com',
       pathRewrite: pathname.replace(/^\/(api\/)?me/, '/api'),
     };
   }
   if (pathname.startsWith('/api/conn/') || pathname.startsWith('/conn/')) {
     return {
-      origin: env.RENDER_ORIGIN_CONN || 'https://heady-manager-headyconnection.onrender.com',
+      origin: env.RENDER_ORIGIN_CONN || 'https://heady-manager-headyconnection.headysystems.com',
       pathRewrite: pathname.replace(/^\/(api\/)?conn/, '/api'),
     };
   }
   if (pathname.startsWith('/api/web/') || pathname.startsWith('/web/')) {
     return {
-      origin: env.RENDER_ORIGIN_WEB || 'https://heady-manager-headyweb.onrender.com',
+      origin: env.RENDER_ORIGIN_WEB || 'https://heady-manager-headyweb.headysystems.com',
       pathRewrite: pathname.replace(/^\/(api\/)?web/, '/api'),
     };
   }
   if (pathname.startsWith('/brain/')) {
     return {
-      origin: env.RENDER_ORIGIN_SYS || 'https://heady-manager-headysystems.onrender.com',
+      origin: env.RENDER_ORIGIN_SYS || 'https://heady-manager-headysystems.headysystems.com',
       pathRewrite: pathname.replace('/brain/', '/api/orchestrator/'),
     };
   }
   // Default: HeadySystems
   return {
-    origin: env.RENDER_ORIGIN_SYS || 'https://heady-manager-headysystems.onrender.com',
+    origin: env.RENDER_ORIGIN_SYS || 'https://heady-manager-headysystems.headysystems.com',
   };
 }
 

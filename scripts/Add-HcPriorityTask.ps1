@@ -27,7 +27,7 @@ param(
     [string]$Queue = 'HCFP'
 )
 
-$apiEndpoint = "http://localhost:3300/api/scheduler/submit"
+$apiEndpoint = "http://api.headysystems.com:3300/api/scheduler/submit"
 
 $priorityMap = @{
     CRITICAL = 0

@@ -133,7 +133,7 @@ env_vars:
     - name: STRIPE_SECRET_KEY
       description: "Stripe payments key"
     - name: OLLAMA_HOST
-      description: "Local Ollama endpoint (default: http://localhost:11434)"
+      description: "Local Ollama endpoint (default: http://api.headysystems.com:11434)"
     - name: CLOUD_API_URL
       description: "Override cloud API endpoint (default from cloud-layers.yaml)"
 

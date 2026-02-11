@@ -68,4 +68,4 @@ $body = @{
     ram_available_gb = [Math]::Round($ramUsage, 2)
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "http://resource-manager.internal.headyio.com/metrics" -Method Post -Body $body
+Invoke-RestMethod -Uri "http://resource-manager.headysystems.comheadyio.com/metrics" -Method Post -Body $body

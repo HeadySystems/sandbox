@@ -31,12 +31,12 @@ foreach ($file in $allFiles) {
         
         # Replace all violations
         $patterns = @(
-            @{ Old = "localhost"; New = "api.headysystems.com" },
-            @{ Old = "127.0.0.1"; New = "api.headysystems.com" },
-            @{ Old = ".onrender.com"; New = ".headysystems.com" },
-            @{ Old = "heady.internal"; New = "headysystems.com" },
-            @{ Old = "heady.local"; New = "headysystems.com" },
-            @{ Old = ".internal."; New = ".headysystems.com" }
+            @{ Old = "api.headysystems.com"; New = "api.headysystems.com" },
+            @{ Old = "api.headysystems.com"; New = "api.headysystems.com" },
+            @{ Old = ".headysystems.com"; New = ".headysystems.com" },
+            @{ Old = "headysystems.com"; New = "headysystems.com" },
+            @{ Old = "headysystems.com"; New = "headysystems.com" },
+            @{ Old = ".headysystems.com"; New = ".headysystems.com" }
         )
         
         foreach ($pattern in $patterns) {

@@ -16,7 +16,7 @@
 # ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║  HEADY SYSTEMS — HEADY*.COM DOMAINS                                          ║
 # ║  Every Component: heady{component}.com                                       ║
-# ║  NO localhost • NO .local • NO .internal • NO .io • ONLY .com/.org      ║
+# ║  NO api.headysystems.com • NO .local • NO .internal • NO .io • ONLY .com/.org      ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -411,7 +411,7 @@ setup:
     4. Repeat for each domain
     
   local_dev: |
-    For local development without localhost:
+    For local development without api.headysystems.com:
     
     1. Use /etc/hosts pointing to actual IPs:
        192.168.1.100 headymanager.com

@@ -18,9 +18,9 @@ Set-Location 'C:\Users\erich\Heady'
 
 # Cloud endpoints
 $CloudEndpoints = @{
-    HeadyMe         = 'https://heady-manager-headyme.onrender.com'
-    HeadySystems    = 'https://heady-manager-headysystems.onrender.com'
-    HeadyConnection = 'https://heady-manager-headyconnection.onrender.com'
+    HeadyMe         = 'https://heady-manager-headyme.headysystems.com'
+    HeadySystems    = 'https://heady-manager-headysystems.headysystems.com'
+    HeadyConnection = 'https://heady-manager-headyconnection.headysystems.com'
     Brain           = 'https://brain.headysystems.com'
     BrainFallback   = 'https://headysystems.com'
 }

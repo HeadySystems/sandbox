@@ -98,7 +98,7 @@
 │                          ▼                     ▼                        │
 │                  ┌───────────────────────────────────┐                  │
 │                  │       HEADY MANAGER (Backend)     │                  │
-│                  │       localhost:3300 / cloud       │                  │
+│                  │       api.headysystems.com:3300 / cloud       │                  │
 │                  │                                   │                  │
 │                  │  /api/buddy/chat     — AI chat    │                  │
 │                  │  /api/buddy/health   — Health     │                  │
@@ -534,7 +534,7 @@ Create a VS Code extension or use Continue.dev to wire into heady-manager:
   "continue.models": [{
     "title": "HeadyBuddy",
     "provider": "openai-compatible",
-    "apiBase": "http://localhost:3300/api/buddy",
+    "apiBase": "http://api.headysystems.com:3300/api/buddy",
     "model": "heady-buddy"
   }]
 }
@@ -675,23 +675,23 @@ Host heady-phone-tunnel
     Port 8022
     User u0_a###
     IdentityFile ~/.ssh/id_ed25519
-    LocalForward 3301 localhost:3300
-    LocalForward 8023 localhost:8443
+    LocalForward 3301 api.headysystems.com:3300
+    LocalForward 8023 api.headysystems.com:8443
 ```
 
 ### 5.3 Useful Tunnels
 
 ```bash
 # Access phone's heady-manager from desktop browser
-ssh -L 3301:localhost:3300 heady-phone
-# Then open http://localhost:3301 on desktop
+ssh -L 3301:api.headysystems.com:3300 heady-phone
+# Then open http://api.headysystems.com:3301 on desktop
 
 # Access desktop IDE from phone browser via reverse tunnel
-ssh -R 8443:localhost:8443 heady-phone
-# Then on phone open http://localhost:8443
+ssh -R 8443:api.headysystems.com:8443 heady-phone
+# Then on phone open http://api.headysystems.com:8443
 
 # Full tunnel: phone heady-manager + desktop IDE bidirectional
-ssh -L 3301:localhost:3300 -R 8443:localhost:8443 heady-phone
+ssh -L 3301:api.headysystems.com:3300 -R 8443:api.headysystems.com:8443 heady-phone
 ```
 
 ### 5.4 Security Hardening
@@ -790,14 +790,14 @@ Device A (phone)                    Heady Manager                    Device B (d
    npm install -g code-server
    code-server --bind-addr 0.0.0.0:8443 --auth password
    ```
-   → Access at `http://localhost:8443` from any browser
+   → Access at `http://api.headysystems.com:8443` from any browser
 
 3. **Start heady-manager**:
    ```powershell
    cd C:\Users\erich\Heady
    npm start
    ```
-   → API at `http://localhost:3300`
+   → API at `http://api.headysystems.com:3300`
 
 4. **SSH to phone** (test connection):
    ```powershell
@@ -807,7 +807,7 @@ Device A (phone)                    Heady Manager                    Device B (d
 5. **Install interim AI browser extension**:
    - Install in Chrome/Edge/Firefox: search for "Ollama" sidebar extensions
    - Or use "Sider" / "Monica" as interim AI sidebar
-   - Point to `http://localhost:3300/api/buddy/chat` if configurable
+   - Point to `http://api.headysystems.com:3300/api/buddy/chat` if configurable
 
 ### 7.3 Linux Desktop Setup (30 minutes)
 
@@ -987,7 +987,7 @@ npm install
 ### 11.3 Network Security
 
 - All API calls over HTTPS in production
-- Local development uses HTTP on localhost only
+- Local development uses HTTP on api.headysystems.com only
 - WebSocket connections use WSS in production
 - API keys stored in secure enclaves per platform
 
@@ -1180,7 +1180,7 @@ docker-compose -f docker-compose.ide.yml up -d
 
 | Problem | Solution |
 |---------|---------|
-| Sync not working | Check heady-manager health: `curl http://localhost:3300/api/health` |
+| Sync not working | Check heady-manager health: `curl http://api.headysystems.com:3300/api/health` |
 | AI responses slow | Check LLM backend; try local Ollama vs cloud |
 | Buddy not connecting | Verify API URL in client config; check CORS |
 

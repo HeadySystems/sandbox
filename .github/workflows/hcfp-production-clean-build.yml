@@ -22,16 +22,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Validate no localhost in production configs
+      - name: Validate no api.headysystems.com in production configs
         id: validate
         run: |
-          echo "Checking for localhost references in production configs..."
-          if grep -r "localhost" configs/*.yaml | grep -v "local.heady.internal" | grep -v "#"; then
-            echo "❌ Found localhost references in production configs"
+          echo "Checking for api.headysystems.com references in production configs..."
+          if grep -r "api.headysystems.com" configs/*.yaml | grep -v "local.headysystems.com" | grep -v "#"; then
+            echo "❌ Found api.headysystems.com references in production configs"
             echo "proceed=false" >> $GITHUB_OUTPUT
             exit 1
           fi
-          echo "✅ No localhost references found"
+          echo "✅ No api.headysystems.com references found"
           echo "proceed=true" >> $GITHUB_OUTPUT
       
       - name: Check service-discovery.yaml exists
@@ -212,8 +212,8 @@ jobs:
       
       - name: Run integration tests
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
-          REDIS_URL: redis://localhost:6379
+          DATABASE_URL: postgresql://postgres:postgres@api.headysystems.com:5432/test
+          REDIS_URL: redis://api.headysystems.com:6379
         run: |
           npm run test:integration || echo "Integration tests not configured"
 

@@ -19,7 +19,7 @@
 .SYNOPSIS
     Heady Complete Infrastructure Setup (HCIS) - Domain migration and device provisioning
 .DESCRIPTION
-    Systematically replaces localhost with service domains and provisions all devices
+    Systematically replaces api.headysystems.com with service domains and provisions all devices
     with consistent configuration. Clean build on every change with error alerting.
 .PARAMETER Mode
     Operation mode: inventory, migrate, provision, full-setup
@@ -95,13 +95,13 @@ try {
     Write-Host ""
 
     # ============================================================================
-    # MODE 1: INVENTORY - Find all localhost references
+    # MODE 1: INVENTORY - Find all api.headysystems.com references
     # ============================================================================
     if ($Mode -eq "inventory") {
-        Write-Host "📋 INVENTORY MODE: Scanning for localhost references..." -ForegroundColor Yellow
+        Write-Host "📋 INVENTORY MODE: Scanning for api.headysystems.com references..." -ForegroundColor Yellow
         
         $patterns = @(
-            "localhost",
+            "api.headysystems.com",
             "127\.0\.0\.1",
             "0\.0\.0\.0",
             "::1"
@@ -145,29 +145,29 @@ try {
         }
         
         # Display inventory
-        Write-Host "`nFound $($inventory.Count) localhost references:`" -ForegroundColor Green
+        Write-Host "`nFound $($inventory.Count) api.headysystems.com references:`" -ForegroundColor Green
         $inventory | Format-Table File, Pattern, Matches -AutoSize
         
         # Export to CSV
-        $csvPath = "localhost-inventory-$(Get-Date -Format 'yyyyMMdd-HHmmss').csv"
+        $csvPath = "api.headysystems.com-inventory-$(Get-Date -Format 'yyyyMMdd-HHmmss').csv"
         $inventory | Export-Csv $csvPath -NoTypeInformation
         Write-Host "`n📁 Inventory exported to: $csvPath" -ForegroundColor Green
         
         # Suggest replacements
         Write-Host "`n🔄 Suggested domain replacements:" -ForegroundColor Cyan
-        Write-Host "  localhost:3300  →  manager.heady.local" -ForegroundColor Gray
-        Write-Host "  localhost:5000  →  worker.heady.local" -ForegroundColor Gray
-        Write-Host "  localhost:3000  →  dashboard.heady.local" -ForegroundColor Gray
-        Write-Host "  localhost:8080  →  www.heady.local" -ForegroundColor Gray
-        Write-Host "  localhost:6379  →  cache.heady.local" -ForegroundColor Gray
-        Write-Host "  localhost:5432  →  db.heady.local" -ForegroundColor Gray
+        Write-Host "  api.headysystems.com:3300  →  manager.headysystems.com" -ForegroundColor Gray
+        Write-Host "  api.headysystems.com:5000  →  worker.headysystems.com" -ForegroundColor Gray
+        Write-Host "  api.headysystems.com:3000  →  dashboard.headysystems.com" -ForegroundColor Gray
+        Write-Host "  api.headysystems.com:8080  →  www.headysystems.com" -ForegroundColor Gray
+        Write-Host "  api.headysystems.com:6379  →  cache.headysystems.com" -ForegroundColor Gray
+        Write-Host "  api.headysystems.com:5432  →  db.headysystems.com" -ForegroundColor Gray
     }
 
     # ============================================================================
-    # MODE 2: MIGRATE - Replace localhost with domains
+    # MODE 2: MIGRATE - Replace api.headysystems.com with domains
     # ============================================================================
     elseif ($Mode -eq "migrate") {
-        Write-Host "🔄 MIGRATE MODE: Replacing localhost with service domains..." -ForegroundColor Yellow
+        Write-Host "🔄 MIGRATE MODE: Replacing api.headysystems.com with service domains..." -ForegroundColor Yellow
         
         if (-not $Force) {
             $confirm = Read-Host "This will modify files. Are you sure? (yes/no)"
@@ -176,22 +176,22 @@ try {
         
         # Load domain mappings from config
         $mappings = @{
-            "http://localhost:3300" = "http://manager.heady.local:3300"
-            "https://localhost:3300" = "https://manager.heady.local:3300"
-            "http://127.0.0.1:3300" = "http://manager.heady.local:3300"
-            "http://localhost:5000" = "http://worker.heady.local:5000"
-            "http://localhost:3000" = "http://dashboard.heady.local:3000"
-            "http://localhost:8080" = "http://www.heady.local:8080"
-            "redis://localhost:6379" = "redis://cache.heady.local:6379"
-            "postgresql://localhost:5432" = "postgresql://db.heady.local:5432"
-            "ws://localhost:3300" = "ws://manager.heady.local:3300"
-            "wss://localhost:3300" = "wss://manager.heady.local:3300"
-            "localhost:3300" = "manager.heady.local:3300"
-            "localhost:5000" = "worker.heady.local:5000"
-            "localhost:3000" = "dashboard.heady.local:3000"
-            "localhost:8080" = "www.heady.local:8080"
-            "localhost:6379" = "cache.heady.local:6379"
-            "localhost:5432" = "db.heady.local:5432"
+            "http://api.headysystems.com:3300" = "http://manager.headysystems.com:3300"
+            "https://api.headysystems.com:3300" = "https://manager.headysystems.com:3300"
+            "http://api.headysystems.com:3300" = "http://manager.headysystems.com:3300"
+            "http://api.headysystems.com:5000" = "http://worker.headysystems.com:5000"
+            "http://api.headysystems.com:3000" = "http://dashboard.headysystems.com:3000"
+            "http://api.headysystems.com:8080" = "http://www.headysystems.com:8080"
+            "redis://api.headysystems.com:6379" = "redis://cache.headysystems.com:6379"
+            "postgresql://api.headysystems.com:5432" = "postgresql://db.headysystems.com:5432"
+            "ws://api.headysystems.com:3300" = "ws://manager.headysystems.com:3300"
+            "wss://api.headysystems.com:3300" = "wss://manager.headysystems.com:3300"
+            "api.headysystems.com:3300" = "manager.headysystems.com:3300"
+            "api.headysystems.com:5000" = "worker.headysystems.com:5000"
+            "api.headysystems.com:3000" = "dashboard.headysystems.com:3000"
+            "api.headysystems.com:8080" = "www.headysystems.com:8080"
+            "api.headysystems.com:6379" = "cache.headysystems.com:6379"
+            "api.headysystems.com:5432" = "db.headysystems.com:5432"
         }
         
         $modified = 0
@@ -227,20 +227,20 @@ try {
         Write-Host "`n📝 Updating hosts file..." -ForegroundColor Yellow
         $hostsEntries = @"
 # Heady Service Domains - Auto-generated
-127.0.0.1 manager.heady.local
-127.0.0.1 worker.heady.local
-127.0.0.1 dashboard.heady.local
-127.0.0.1 www.heady.local
-127.0.0.1 api.heady.local
-127.0.0.1 cache.heady.local
-127.0.0.1 db.heady.local
-127.0.0.1 metrics.heady.local
-127.0.0.1 grafana.heady.local
-127.0.0.1 imagination.heady.local
-127.0.0.1 traces.heady.local
-127.0.0.1 alerts.heady.local
-::1 manager.heady.local
-::1 worker.heady.local
+api.headysystems.com manager.headysystems.com
+api.headysystems.com worker.headysystems.com
+api.headysystems.com dashboard.headysystems.com
+api.headysystems.com www.headysystems.com
+api.headysystems.com api.headysystems.com
+api.headysystems.com cache.headysystems.com
+api.headysystems.com db.headysystems.com
+api.headysystems.com metrics.headysystems.com
+api.headysystems.com grafana.headysystems.com
+api.headysystems.com imagination.headysystems.com
+api.headysystems.com traces.headysystems.com
+api.headysystems.com alerts.headysystems.com
+::1 manager.headysystems.com
+::1 worker.headysystems.com
 "@
         
         if ($IsWindows) {
@@ -413,14 +413,14 @@ try {
         Write-Host "║     ✅ FULL SETUP COMPLETE                                  ║" -ForegroundColor Green
         Write-Host "╚══════════════════════════════════════════════════════════════╝" -ForegroundColor Green
         Write-Host "`nYour device is now configured with:" -ForegroundColor White
-        Write-Host "  • Service domains (manager.heady.local, etc.)" -ForegroundColor Gray
+        Write-Host "  • Service domains (manager.headysystems.com, etc.)" -ForegroundColor Gray
         Write-Host "  • All required applications" -ForegroundColor Gray
         Write-Host "  • VS Code + extensions" -ForegroundColor Gray
         Write-Host "  • Clean build verified" -ForegroundColor Gray
         Write-Host "`nServices accessible at:" -ForegroundColor Yellow
-        Write-Host "  • Manager: http://manager.heady.local:3300" -ForegroundColor Cyan
-        Write-Host "  • Dashboard: http://dashboard.heady.local:3000" -ForegroundColor Cyan
-        Write-Host "  • API: http://api.heady.local" -ForegroundColor Cyan
+        Write-Host "  • Manager: http://manager.headysystems.com:3300" -ForegroundColor Cyan
+        Write-Host "  • Dashboard: http://dashboard.headysystems.com:3000" -ForegroundColor Cyan
+        Write-Host "  • API: http://api.headysystems.com" -ForegroundColor Cyan
     }
 
     # ============================================================================

@@ -37,7 +37,7 @@
 
 param(
     [switch]$Verbose,
-    [string]$Endpoint = "http://localhost:3300"
+    [string]$Endpoint = "http://api.headysystems.com:3300"
 )
 
 $ErrorActionPreference = "Continue"

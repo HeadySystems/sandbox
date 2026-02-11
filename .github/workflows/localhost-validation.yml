@@ -9,11 +9,11 @@
 # ║                                                                  ║
 # ║  ∞ SACRED GEOMETRY ∞  Organic Systems · Breathing Interfaces    ║
 # ║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ║
-# ║  FILE: .github/workflows/localhost-validation.yml                                                    ║
+# ║  FILE: .github/workflows/api.headysystems.com-validation.yml                                                    ║
 # ║  LAYER: root                                                  ║
 # ╚══════════════════════════════════════════════════════════════════╝
 # HEADY_BRAND:END
-name: Localhost/Internal IP Validation
+name: api.headysystems.com/Internal IP Validation
 
 on:
   push:
@@ -22,7 +22,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  validate-no-localhost:
+  validate-no-api.headysystems.com:
     runs-on: ubuntu-latest
     
     steps:
@@ -36,13 +36,13 @@ jobs:
         
     - name: Validate documentation
       run: |
-        echo "Checking documentation for localhost/internal IP references..."
+        echo "Checking documentation for api.headysystems.com/internal IP references..."
         
-        # Check for localhost in documentation
+        # Check for api.headysystems.com in documentation
         if grep -r --include="*.md" --include="*.rst" --include="*.txt" \
-          -E "(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.1[6-9]\.\d+\.\d+|172\.2[0-9]\.\d+\.\d+|172\.3[0-1]\.\d+\.\d+)" \
+          -E "(api.headysystems.com|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.1[6-9]\.\d+\.\d+|172\.2[0-9]\.\d+\.\d+|172\.3[0-1]\.\d+\.\d+)" \
           docs/ README.md *.md; then
-          echo "❌ ERROR: Found localhost or internal IP references in documentation"
+          echo "❌ ERROR: Found api.headysystems.com or internal IP references in documentation"
           echo "Please use proper Heady domains as per the URL style guide"
           exit 1
         fi
@@ -51,13 +51,13 @@ jobs:
         
     - name: Validate configuration files
       run: |
-        echo "Checking configuration files for localhost/internal IP references..."
+        echo "Checking configuration files for api.headysystems.com/internal IP references..."
         
         # Check production configs (exclude local dev configs)
         if grep -r --include="*.yaml" --include="*.yml" --include="*.json" --include="*.conf" \
-          -E "(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.1[6-9]\.\d+\.\d+|172\.2[0-9]\.\d+\.\d+|172\.3[0-1]\.\d+\.\d+)" \
+          -E "(api.headysystems.com|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.1[6-9]\.\d+\.\d+|172\.2[0-9]\.\d+\.\d+|172\.3[0-1]\.\d+\.\d+)" \
           configs/ --exclude="*local*" --exclude="*dev*" --exclude="hosts-file"; then
-          echo "❌ ERROR: Found localhost or internal IP references in production configs"
+          echo "❌ ERROR: Found api.headysystems.com or internal IP references in production configs"
           echo "Please use environment variables or proper domain references"
           exit 1
         fi
@@ -66,13 +66,13 @@ jobs:
         
     - name: Validate code examples
       run: |
-        echo "Checking code files for localhost URLs in comments and examples..."
+        echo "Checking code files for api.headysystems.com URLs in comments and examples..."
         
-        # Check for localhost in Python files (excluding test files and local configs)
+        # Check for api.headysystems.com in Python files (excluding test files and local configs)
         if grep -r --include="*.py" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" \
-          -E "(http://localhost|http://127\.0\.0\.1)" \
+          -E "(http://api.headysystems.com|http://127\.0\.0\.1)" \
           src/ --exclude-dir="test*" --exclude="*test*" --exclude="*local*"; then
-          echo "❌ ERROR: Found localhost URLs in code examples"
+          echo "❌ ERROR: Found api.headysystems.com URLs in code examples"
           echo "Please use proper Heady domains or environment variables"
           exit 1
         fi
@@ -100,9 +100,9 @@ jobs:
         
         # Look for OAuth callback configurations
         if grep -r --include="*.yaml" --include="*.yml" --include="*.json" --include="*.py" --include="*.js" \
-          -E "(localhost|127\.0\.0\.1).*oauth.*callback" \
+          -E "(api.headysystems.com|127\.0\.0\.1).*oauth.*callback" \
           .; then
-          echo "❌ ERROR: Found localhost in OAuth callback URLs"
+          echo "❌ ERROR: Found api.headysystems.com in OAuth callback URLs"
           echo "Please use proper domains like https://app.headysystems.com/oauth/callback"
           exit 1
         fi
@@ -113,26 +113,26 @@ jobs:
       run: |
         echo "Checking Docker and deployment files..."
         
-        # Check Docker files for localhost exposure
+        # Check Docker files for api.headysystems.com exposure
         if grep -r --include="Dockerfile*" --include="docker-compose*" \
-          -E "(localhost|127\.0\.0\.1)" \
+          -E "(api.headysystems.com|127\.0\.0\.1)" \
           . --exclude="*local*" --exclude="*dev*"; then
-          echo "❌ ERROR: Found localhost references in Docker/deployment files"
+          echo "❌ ERROR: Found api.headysystems.com references in Docker/deployment files"
           echo "Please use service names or proper domains"
           exit 1
         fi
         
         echo "✅ Docker/deployment validation passed"
         
-    - name: Check for hardcoded ports with localhost
+    - name: Check for hardcoded ports with api.headysystems.com
       run: |
-        echo "Checking for hardcoded localhost ports..."
+        echo "Checking for hardcoded api.headysystems.com ports..."
         
-        # Look for patterns like localhost:3000, 127.0.0.1:8000
-        if grep -r -E "(localhost|127\.0\.0\.1):\d+" \
+        # Look for patterns like api.headysystems.com:3000, api.headysystems.com:8000
+        if grep -r -E "(api.headysystems.com|127\.0\.0\.1):\d+" \
           --include="*.md" --include="*.py" --include="*.js" --include="*.yaml" --include="*.yml" \
           . --exclude-dir=".git" --exclude="*local*" --exclude="*dev*"; then
-          echo "❌ ERROR: Found localhost with hardcoded ports"
+          echo "❌ ERROR: Found api.headysystems.com with hardcoded ports"
           echo "Please use proper domains or environment variables"
           exit 1
         fi
@@ -144,8 +144,8 @@ jobs:
         echo "Checking environment variable examples..."
         
         # Ensure .env.example files use proper domains
-        if find . -name "*.env.example" -exec grep -l "localhost\|127\.0\.0\.1" {} \;; then
-          echo "❌ ERROR: Found localhost references in .env.example files"
+        if find . -name "*.env.example" -exec grep -l "api.headysystems.com\|127\.0\.0\.1" {} \;; then
+          echo "❌ ERROR: Found api.headysystems.com references in .env.example files"
           echo "Please use proper domains like:"
           echo "  API_BASE_URL=https://api.headysystems.com"
           echo "  WEB_APP_URL=https://app.headysystems.com"
@@ -157,7 +157,7 @@ jobs:
     - name: Generate validation report
       if: always()
       run: |
-        echo "## Localhost/Internal IP Validation Report" >> $GITHUB_STEP_SUMMARY
+        echo "## api.headysystems.com/Internal IP Validation Report" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "✅ All validations passed!" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -173,7 +173,7 @@ jobs:
         echo "- Test files" >> $GITHUB_STEP_SUMMARY
         echo "- Hosts file mappings" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "This ensures no localhost or internal IPs leak into production documentation or code." >> $GITHUB_STEP_SUMMARY
+        echo "This ensures no api.headysystems.com or internal IPs leak into production documentation or code." >> $GITHUB_STEP_SUMMARY
 
   validate-domain-consistency:
     runs-on: ubuntu-latest

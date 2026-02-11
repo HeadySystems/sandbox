@@ -35,8 +35,8 @@ Show-Header "HEADY PRE-DEPLOYMENT CHECKS"
 # 1. Verify all services are healthy
 Show-Step "Checking service health..."
 $services = @(
-    "http://localhost:3300/api/health",
-    "http://localhost:3301/api/health"  # Add other services as needed
+    "http://api.headysystems.com:3300/api/health",
+    "http://api.headysystems.com:3301/api/health"  # Add other services as needed
 )
 
 foreach ($service in $services) {

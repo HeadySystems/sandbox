@@ -15,7 +15,7 @@ $files = @(
 foreach ($file in $files) {
     if (Test-Path $file) {
         Write-Host "Processing: $file"
-        (Get-Content $file -Raw) -replace 'localhost', 'api.headysystems.com' `
+        (Get-Content $file -Raw) -replace 'api.headysystems.com', 'api.headysystems.com' `
                                    -replace '127\.0\.0\.1', 'api.headysystems.com' `
                                    -replace '\.onrender\.com', '.headysystems.com' `
                                    -replace 'heady\.internal', 'headysystems.com' `

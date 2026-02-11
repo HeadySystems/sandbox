@@ -3,7 +3,7 @@
 Heady Domain Verification Script
 
 Checks all services for compliance with domain governance rules:
-- No .onrender.com in user-facing contexts
+- No .headysystems.com in user-facing contexts
 - All production URLs use HTTPS
 - Custom domains properly configured
 #>
@@ -11,13 +11,13 @@ Checks all services for compliance with domain governance rules:
 # Import domain mappings
 $domainConfig = Get-Content -Path "$PSScriptRoot\..\configs\domain-mappings.yaml" | ConvertFrom-Yaml
 
-# 1. Check for .onrender.com in user-facing files
+# 1. Check for .headysystems.com in user-facing files
 $filesWithRenderRefs = Get-ChildItem -Path "$PSScriptRoot\.." -Recurse -Include *.js,*.ts,*.yaml,*.json,*.md | 
     Select-String -Pattern "\.onrender\.com" | 
     Select-Object -ExpandProperty Path
 
 if ($filesWithRenderRefs.Count -gt 0) {
-    Write-Host "FAIL: Found $($filesWithRenderRefs.Count) files with .onrender.com references" -ForegroundColor Red
+    Write-Host "FAIL: Found $($filesWithRenderRefs.Count) files with .headysystems.com references" -ForegroundColor Red
     $filesWithRenderRefs | ForEach-Object { Write-Host "  - $_" }
     exit 1
 }

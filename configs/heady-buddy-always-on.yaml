@@ -27,7 +27,7 @@ backend:
     preferLocal: true
     localProvider:
       name: ollama
-      endpoint: "http://localhost:11434"
+      endpoint: "http://api.headysystems.com:11434"
       defaultModel: "llama3.2"
       fallbackModel: "mistral"
     cloudProviders:

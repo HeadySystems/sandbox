@@ -66,7 +66,7 @@ while ($true) {
     }
     
     # Select optimal service - always prefer remote
-    $service = $serviceConfig.services | Where-Object { $_.endpoint -notlike "*localhost*" } | Sort-Object weight -Descending | Select-Object -First 1
+    $service = $serviceConfig.services | Where-Object { $_.endpoint -notlike "*api.headysystems.com*" } | Sort-Object weight -Descending | Select-Object -First 1
 
     # If no remote available, log warning but use local
     if (-not $service) {

@@ -283,7 +283,7 @@ agents:
 
 | Provider | Type | Integration |
 |---|---|---|
-| **Ollama** | Local | OpenAI-compatible API on localhost:11434 |
+| **Ollama** | Local | OpenAI-compatible API on api.headysystems.com:11434 |
 | **Docker Model Runner** | Local | Docker-native GPU inference |
 | **vLLM** | Local/Cloud | High-throughput serving |
 | **OpenAI** | Cloud | GPT-4o, GPT-4o-mini |

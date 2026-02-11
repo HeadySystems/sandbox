@@ -25,7 +25,7 @@
 # 🚀 High-Performance: Fast DNS, CDN, SSL
 # ✨ Complete: All services covered
 # 🎯 Full-Stack: Frontend to backend
-# 💎 Production-Ready: No localhost, no internal
+# 💎 Production-Ready: No api.headysystems.com, no internal
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CLOUDFLARE DOMAINS (User's Actual Zones)
@@ -354,6 +354,6 @@ deployment:
 # ✅ High-Performance: Cloudflare CDN + SSL
 # ✅ Complete: 50+ domains covering all components
 # ✅ Full-Stack: Frontend to backend to data
-# ✅ Production-Ready: No localhost, no internal, no .local
+# ✅ Production-Ready: No api.headysystems.com, no internal, no .local
 #
 # Replace yourdomain.com and anotherdomain.org with your actual Cloudflare zones

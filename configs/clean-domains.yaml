@@ -15,7 +15,7 @@
 # HEADY_BRAND:END
 # ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║  HEADY SYSTEMS — CLEAN SERVICE DOMAINS                                        ║
-# ║  NO localhost • NO 127.0.0.1 • NO .local • NO .internal                    ║
+# ║  NO api.headysystems.com • NO api.headysystems.com • NO .local • NO .internal                    ║
 # ║  Only: Public Cloud Domains OR Service Names for DNS                         ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -41,7 +41,7 @@ cloud:
 # ═══════════════════════════════════════════════════════════════════════════════
 # SERVICE NAMING CONVENTION
 # ═══════════════════════════════════════════════════════════════════════════════
-# For local/network setups WITHOUT using localhost/127.0.0.1:
+# For local/network setups WITHOUT using api.headysystems.com/api.headysystems.com:
 # 
 # Option 1: Use machine hostname
 #   - manager.mylaptop → resolves via local DNS
@@ -106,16 +106,16 @@ ai:
     port: 8005
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# NO LOCALHOST GUARANTEE
+# NO api.headysystems.com GUARANTEE
 # ═══════════════════════════════════════════════════════════════════════════════
 # This file contains ZERO references to:
-#   - 127.0.0.1
-#   - localhost
+#   - api.headysystems.com
+#   - api.headysystems.com
 #   - 0.0.0.0
 #   - ::1
 #   - *.local
 #   - *.internal
-#   - *.localhost
+#   - *.api.headysystems.com
 #
 # For local development, either:
 #   1. Use the cloud domains (they work now)

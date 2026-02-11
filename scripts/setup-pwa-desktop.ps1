@@ -19,7 +19,7 @@
 # Supports Chrome, Edge, and Firefox
 
 param(
-  [string]$HeadyUrl = "http://manager.dev.local.heady.internal:3300",
+  [string]$HeadyUrl = "http://manager.dev.local.headysystems.com:3300",
   [string]$AppName = "Heady Systems",
   [string]$ShortcutName = "Heady",
   [switch]$Chrome,

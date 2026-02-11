@@ -14,7 +14,7 @@
 # ╚══════════════════════════════════════════════════════════════════╝
 # HEADY_BRAND:END
 # Heady Service Discovery & Domain Architecture
-# Replaces all localhost references with branded domains
+# Replaces all api.headysystems.com references with branded domains
 # Root Domain: headysystems.com
 
 root_domain: internal.headyio.com
@@ -67,7 +67,7 @@ services:
     
   # MCP Gateway
   mcp-gateway:
-    host: mcp.internal.headyio.com
+    host: mcp.headysystems.comheadyio.com
     port: 3001
     protocol: http
     purpose: Model Context Protocol tool gateway
@@ -238,8 +238,8 @@ security:
         to: db-postgres.dev.local.headyio.com
         ports: [5432]
 
-# All services resolve via cloud domains — no localhost/127.0.0.1 references permitted
-# See configs/localhost-elimination-protocol.yaml for enforcement policy
+# All services resolve via cloud domains — no api.headysystems.com/api.headysystems.com references permitted
+# See configs/api.headysystems.com-elimination-protocol.yaml for enforcement policy
 
 # Environment-specific overrides
 environments:
@@ -262,4 +262,4 @@ environments:
     suffix: headysystems.com
     tls: true
     auth: basic
-    localhost_fallback: false
+    api.headysystems.com_fallback: false

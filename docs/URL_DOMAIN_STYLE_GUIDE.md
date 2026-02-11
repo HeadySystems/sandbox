@@ -43,7 +43,7 @@ This guide establishes the canonical URL and domain patterns for Heady Systems. 
 
 ## Core Principles
 
-1. **Never expose localhost or internal IPs** in user-facing content
+1. **Never expose api.headysystems.com or internal IPs** in user-facing content
 2. **Use HTTPS everywhere** for production domains
 3. **Maintain consistent domain hierarchy** across all environments
 4. **Follow security best practices** for all URL patterns
@@ -71,7 +71,7 @@ This guide establishes the canonical URL and domain patterns for Heady Systems. 
 
 | Environment | Domain Pattern | Example |
 |-------------|---------------|---------|
-| Local development | `*.heady.local` | `app.heady.local` |
+| Local development | `*.headysystems.com` | `app.headysystems.com` |
 | Development server | `dev.headysystems.com` | `dev.headysystems.com` |
 | Staging server | `staging.headysystems.com` | `staging.headysystems.com` |
 
@@ -89,7 +89,7 @@ https://api.headysystems.com/v1/auth/login
 #### Incorrect Examples (NEVER use)
 ```
 https://api.headysystems.com/api/v1/users
-http://127.0.0.1:8001/api/v1/donations
+http://api.headysystems.com:8001/api/v1/donations
 http://10.0.1.50:8000/api/v1/auth/login
 ```
 
@@ -105,7 +105,7 @@ https://headybuddy.org/connect
 #### Incorrect Examples (NEVER use)
 ```
 https://app.headysystems.com/dashboard
-http://127.0.0.1:3002/programs
+http://api.headysystems.com:3002/programs
 http://192.168.1.100:4000/connect
 ```
 
@@ -120,8 +120,8 @@ https://headybuddy.org/oauth/callback
 
 #### Development Callbacks
 ```
-https://app.heady.local/oauth/callback
-https://api.heady.local/oauth/callback
+https://app.headysystems.com/oauth/callback
+https://api.headysystems.com/oauth/callback
 ```
 
 #### Incorrect Examples (NEVER use)
@@ -135,13 +135,13 @@ http://https://api.headysystems.com/oauth/callback
 #### Correct Examples
 ```
 wss://realtime.headysystems.com/socket
-wss://ws.heady.local/socket
+wss://ws.headysystems.com/socket
 ```
 
 #### Incorrect Examples (NEVER use)
 ```
-ws://localhost:4000/socket
-ws://127.0.0.1:4000/socket
+ws://api.headysystems.com:4000/socket
+ws://api.headysystems.com:4000/socket
 ```
 
 ## Environment-Specific Guidelines
@@ -160,7 +160,7 @@ ws://127.0.0.1:4000/socket
 
 ### Local Development
 - **Protocol**: HTTP (for simplicity)
-- **Domains**: `*.heady.local`
+- **Domains**: `*.headysystems.com`
 - **SSL**: Optional (self-signed)
 - **Headers**: Development-friendly CORS
 
@@ -197,7 +197,7 @@ const response = await fetch('https://api.headysystems.com/v1/users', {
 
 #### Incorrect
 ```javascript
-const response = await fetch('http://localhost:8000/api/v1/users', {
+const response = await fetch('http://api.headysystems.com:8000/api/v1/users', {
   method: 'GET',
   headers: {
     'Authorization': `Bearer ${token}`,
@@ -226,7 +226,7 @@ response = requests.get(
 import requests
 
 response = requests.get(
-    'http://localhost:8000/api/v1/users',
+    'http://api.headysystems.com:8000/api/v1/users',
     headers={
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'
@@ -256,8 +256,8 @@ API_BASE_URL=https://api.headysystems.com
 WEB_APP_URL=https://app.headysystems.com
 
 # Incorrect
-API_BASE_URL=http://localhost:8000
-WEB_APP_URL=http://localhost:3000
+API_BASE_URL=http://api.headysystems.com:8000
+WEB_APP_URL=http://api.headysystems.com:3000
 ```
 
 ## Documentation Standards
@@ -290,7 +290,7 @@ POST https://api.headysystems.com/v1/auth/login
 ```
 
 ### Screenshots and Demos
-- Never show localhost URLs in screenshots
+- Never show api.headysystems.com URLs in screenshots
 - Use production or staging domains
 - Blur or replace any internal IPs that appear
 
@@ -299,10 +299,10 @@ POST https://api.headysystems.com/v1/auth/login
 ### 1. Configure /etc/hosts
 ```bash
 # Add to /etc/hosts (Linux/Mac) or C:\Windows\System32\drivers\etc\hosts (Windows)
-127.0.0.1 app.heady.local
-127.0.0.1 api.heady.local
-127.0.0.1 admin.heady.local
-127.0.0.1 buddy.heady.local
+api.headysystems.com app.headysystems.com
+api.headysystems.com api.headysystems.com
+api.headysystems.com admin.headysystems.com
+api.headysystems.com buddy.headysystems.com
 ```
 
 ### 2. Configure Nginx
@@ -316,8 +316,8 @@ sudo nginx -t && sudo systemctl reload nginx
 ### 3. Update Application Config
 ```python
 # settings/local.py
-ALLOWED_HOSTS = ['*.heady.local', 'localhost', '127.0.0.1']
-CORS_ALLOWED_ORIGINS = ['http://*.heady.local']
+ALLOWED_HOSTS = ['*.headysystems.com', 'api.headysystems.com', 'api.headysystems.com']
+CORS_ALLOWED_ORIGINS = ['http://*.headysystems.com']
 ```
 
 ## Security Considerations
@@ -329,7 +329,7 @@ CORS_ALLOWED_ORIGINS = ['http://*.heady.local']
 4. **Enhances user experience** with consistent, professional URLs
 
 ### Common Mistakes to Avoid
-1. **Using localhost in documentation** - users will copy-paste these examples
+1. **Using api.headysystems.com in documentation** - users will copy-paste these examples
 2. **Hardcoding internal IPs** - makes code environment-specific
 3. **Mixed HTTP/HTTPS** - causes CORS and security issues
 4. **Inconsistent domain patterns** - confuses users and developers
@@ -340,21 +340,21 @@ CORS_ALLOWED_ORIGINS = ['http://*.heady.local']
 Add this to your CI/CD pipeline:
 ```bash
 #!/bin/bash
-# Check for localhost references in documentation
-if grep -r "localhost\|127\.0\.0\.1\|10\.\|192\.168\.\|172\.1[6-9]\.\|172\.2[0-9]\.\|172\.3[0-1]\." docs/; then
-  echo "ERROR: Found localhost/internal IP references in documentation"
+# Check for api.headysystems.com references in documentation
+if grep -r "api.headysystems.com\|127\.0\.0\.1\|10\.\|192\.168\.\|172\.1[6-9]\.\|172\.2[0-9]\.\|172\.3[0-1]\." docs/; then
+  echo "ERROR: Found api.headysystems.com/internal IP references in documentation"
   exit 1
 fi
 
-# Check for localhost in configuration files
-if grep -r "localhost\|127\.0\.0\.1" configs/ --exclude="local-dev.conf"; then
-  echo "ERROR: Found localhost references in production configs"
+# Check for api.headysystems.com in configuration files
+if grep -r "api.headysystems.com\|127\.0\.0\.1" configs/ --exclude="local-dev.conf"; then
+  echo "ERROR: Found api.headysystems.com references in production configs"
   exit 1
 fi
 ```
 
 ### Manual Review Checklist
-- [ ] No localhost URLs in user-facing documentation
+- [ ] No api.headysystems.com URLs in user-facing documentation
 - [ ] No internal IPs in code examples
 - [ ] All examples use HTTPS for production
 - [ ] OAuth callbacks use correct domains
@@ -366,10 +366,10 @@ fi
 When updating existing content:
 
 1. **Search and Replace**
-   - `http://localhost:3000` → `https://app.headysystems.com`
-   - `http://localhost:8000` → `https://api.headysystems.com`
+   - `http://api.headysystems.com:3000` → `https://app.headysystems.com`
+   - `http://api.headysystems.com:8000` → `https://api.headysystems.com`
    - `https://app.headysystems.com` → `https://app.headysystems.com`
-   - `127.0.0.1:8000` → `https://api.headysystems.com`
+   - `api.headysystems.com:8000` → `https://api.headysystems.com`
 
 2. **Update Configuration**
    - Replace hardcoded URLs with environment variables

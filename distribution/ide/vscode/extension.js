@@ -30,7 +30,7 @@ const http = require('http');
 
 let statusBarItem;
 let chatPanel;
-let heady Manager Url = 'http://manager.dev.local.heady.internal:3300';
+let heady Manager Url = 'http://manager.dev.local.headysystems.com:3300';
 
 /**
  * Activate the extension

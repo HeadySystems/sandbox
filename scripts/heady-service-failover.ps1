@@ -78,14 +78,14 @@ $script:FailoverConfig = @{
     }
     "heady-manager" = @{
         Primary = @{
-            Endpoint = "http://localhost:3300"
+            Endpoint = "http://api.headysystems.com:3300"
             Priority = 1
             Weight = 100
             HealthCheck = "/api/health"
             Timeout = 3000
         }
         Secondary = @{
-            Endpoint = "http://manager.heady.internal:3300"
+            Endpoint = "http://manager.headysystems.com:3300"
             Priority = 2
             Weight = 95
             HealthCheck = "/api/health"
@@ -101,14 +101,14 @@ $script:FailoverConfig = @{
     }
     "heady-conductor" = @{
         Primary = @{
-            Endpoint = "http://localhost:8080"
+            Endpoint = "http://api.headysystems.com:8080"
             Priority = 1
             Weight = 100
             HealthCheck = "/health"
             Timeout = 5000
         }
         Secondary = @{
-            Endpoint = "http://conductor.heady.internal:8080"
+            Endpoint = "http://conductor.headysystems.com:8080"
             Priority = 2
             Weight = 95
             HealthCheck = "/health"

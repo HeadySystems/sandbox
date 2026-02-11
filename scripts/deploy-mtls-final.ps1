@@ -19,7 +19,7 @@ if (-not $nginx -or -not $cloudflared) { throw "Failed to start services" }
 # Verify
 Start-Sleep -Seconds 5
 
-$testResult = Test-NetConnection -ComputerName 127.0.0.1 -Port 8443 -WarningAction SilentlyContinue
+$testResult = Test-NetConnection -ComputerName api.headysystems.com -Port 8443 -WarningAction SilentlyContinue
 
 if ($testResult.TcpTestSucceeded) {
     Write-Host "Deployment successful!" -ForegroundColor Green

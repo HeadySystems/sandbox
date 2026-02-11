@@ -14,7 +14,7 @@
 <!-- ╚══════════════════════════════════════════════════════════════════╝
 <!-- HEADY_BRAND:END
 -->
-# Critical Repeated Error and Localhost/Onrender Ban Policy
+# Critical Repeated Error and api.headysystems.com/Onrender Ban Policy
 
 ## 1. Repeated errors are never "noise"
 - If any error with the same message, error code, or root cause occurs more than once:
@@ -24,16 +24,16 @@
 
 ## 2. Mandatory error logging and identification
 - Every error MUST be logged with:
-  - Stable error ID (e.g., ERR-LOCALHOST-RECUR)
+  - Stable error ID (e.g., ERR-api.headysystems.com-RECUR)
   - Timestamp (UTC)
   - Component/service name
   - Full error message and stack trace
   - Current environment
 
-## 3. Onrender.com and localhost usage are banned
+## 3. Onrender.com and api.headysystems.com usage are banned
 - Banned targets:
-  - localhost, 127.0.0.1, 0.0.0.0
-  - *.onrender.com
+  - api.headysystems.com, api.headysystems.com, 0.0.0.0
+  - *.headysystems.com
   - Any local-only port binding
 - First occurrence: Fail task with clear message
 - Second occurrence: Escalate to critical blocking state

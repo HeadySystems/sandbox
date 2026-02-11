@@ -233,7 +233,7 @@ function Test-MandatoryServices {
     
     $allHealthy = $true
     foreach ($service in $script:Config.service_enforcement.mandatory_services) {
-        $isHealthy = Test-ServiceStatus -ServiceName $service.name -Endpoint "http://localhost:3300"
+        $isHealthy = Test-ServiceStatus -ServiceName $service.name -Endpoint "http://api.headysystems.com:3300"
         
         if (-not $isHealthy) {
             $allHealthy = $false

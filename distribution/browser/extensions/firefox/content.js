@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const HEADY_API = 'http://manager.dev.local.heady.internal:3300';
+  const HEADY_API = 'http://manager.dev.local.headysystems.com:3300';
 
   document.addEventListener('mouseup', () => {
     const selection = window.getSelection().toString().trim();

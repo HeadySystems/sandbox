@@ -36,15 +36,15 @@ jobs:
         with:
           fetch-depth: 0  # Full history for proper builds
       
-      - name: 🔍 Check for localhost references
+      - name: 🔍 Check for api.headysystems.com references
         id: check
         run: |
-          echo "🔍 Scanning for localhost references..."
-          python scripts/localhost-inventory.py --root . --output localhost-check.json || true
+          echo "🔍 Scanning for api.headysystems.com references..."
+          python scripts/api.headysystems.com-inventory.py --root . --output api.headysystems.com-check.json || true
           
-          # Check if critical localhost refs exist
-          if grep -r "localhost:3300\|127.0.0.1:3300" --include="*.js" --include="*.ts" --include="*.py" --include="*.yaml" src/ 2>/dev/null | head -5; then
-            echo "⚠️  Found hardcoded localhost references in source code"
+          # Check if critical api.headysystems.com refs exist
+          if grep -r "api.headysystems.com:3300\|api.headysystems.com:3300" --include="*.js" --include="*.ts" --include="*.py" --include="*.yaml" src/ 2>/dev/null | head -5; then
+            echo "⚠️  Found hardcoded api.headysystems.com references in source code"
             echo "should_build=warning" >> $GITHUB_OUTPUT
           else
             echo "should_build=true" >> $GITHUB_OUTPUT
@@ -431,27 +431,27 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         continue-on-error: true
 
-# Prevent localhost in production code
-  localhost-lint:
-    name: 🚫 Localhost Lint
+# Prevent api.headysystems.com in production code
+  api.headysystems.com-lint:
+    name: 🚫 api.headysystems.com Lint
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
       
-      - name: 🔍 Check for Localhost in Production Code
+      - name: 🔍 Check for api.headysystems.com in Production Code
         run: |
           # Only check production-bound code
           EXCLUDE_DIRS="test|spec|example|docs|.github|scripts"
           
-          if grep -rE "localhost|127\.0\.0\.1|0\.0\.0\.0" \
+          if grep -rE "api.headysystems.com|127\.0\.0\.1|0\.0\.0\.0" \
             --include="*.js" --include="*.ts" --include="*.py" \
             src/ 2>/dev/null | grep -vE "$EXCLUDE_DIRS"; then
-            echo "::error::Found localhost references in production code!"
+            echo "::error::Found api.headysystems.com references in production code!"
             echo "These must be replaced with service domain names."
             exit 1
           else
-            echo "✅ No localhost references found in production code"
+            echo "✅ No api.headysystems.com references found in production code"
           fi
 
 

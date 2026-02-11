@@ -153,11 +153,11 @@ $brainConnectorFile = 'src/brain_connector.js'
 if (Test-Path $brainConnectorFile) {
     $content = Get-Content $brainConnectorFile -Raw
     
-    if ($content -match 'localhost:3400') {
+    if ($content -match 'api.headysystems.com:3400') {
         $compliant = $false
-        Write-Host "✗ BrainConnector still references localhost" -ForegroundColor Red
+        Write-Host "✗ BrainConnector still references api.headysystems.com" -ForegroundColor Red
         $issues += @{
-            type = 'localhost_reference'
+            type = 'api.headysystems.com_reference'
             file = $brainConnectorFile
         }
     }
@@ -218,8 +218,8 @@ if ($compliant) {
             'missing_heady_service' {
                 Write-Host "  - Create missing service: $($issue.service)" -ForegroundColor Yellow
             }
-            'localhost_reference' {
-                Write-Host "  - Remove localhost reference in $($issue.file)" -ForegroundColor Yellow
+            'api.headysystems.com_reference' {
+                Write-Host "  - Remove api.headysystems.com reference in $($issue.file)" -ForegroundColor Yellow
             }
         }
     }

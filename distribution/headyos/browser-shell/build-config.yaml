@@ -29,8 +29,8 @@ variants:
     name: "Heady Browser (Local)"
     description: "Offline-first browser with on-device AI"
     mode: local
-    api_endpoint: "http://manager.dev.local.heady.internal:3300"
-    model_endpoint: "http://ai-ollama.dev.local.heady.internal:11434"
+    api_endpoint: "http://manager.dev.local.headysystems.com:3300"
+    model_endpoint: "http://ai-ollama.dev.local.headysystems.com:11434"
     features:
       - ollama_integration
       - local_rag
@@ -42,7 +42,7 @@ variants:
     name: "Heady Browser (Hybrid)"
     description: "Local AI with cloud fallback"
     mode: hybrid
-    api_endpoint: "http://manager.dev.local.heady.internal:3300"
+    api_endpoint: "http://manager.dev.local.headysystems.com:3300"
     fallback_endpoint: "https://app.headysystems.com"
     features:
       - local_priority

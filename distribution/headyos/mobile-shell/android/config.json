@@ -6,7 +6,7 @@
   "apk": "headyos-mobile.apk",
   "tech": "react-native",
   "api": {
-    "local": "http://manager.dev.local.heady.internal:3300",
+    "local": "http://manager.dev.local.headysystems.com:3300",
     "cloud": "https://api.heady.systems"
   },
   "features": {

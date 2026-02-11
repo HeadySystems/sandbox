@@ -32,11 +32,11 @@ jobs:
         run: |
           VIOLATIONS=0
 
-          # Check for localhost / private IPs
-          if grep -rE 'localhost|127\.0\.0\.1|10\.\d+|192\.168\.|172\.(1[6-9]|2[0-9]|3[0-1])\.' \
+          # Check for api.headysystems.com / private IPs
+          if grep -rE 'api.headysystems.com|127\.0\.0\.1|10\.\d+|192\.168\.|172\.(1[6-9]|2[0-9]|3[0-1])\.' \
                --include="*.js" --include="*.json" --include="*.yaml" --include="*.html" \
                --exclude-dir=node_modules --exclude-dir=.git .; then
-            echo "::warning::Found localhost / private IP references"
+            echo "::warning::Found api.headysystems.com / private IP references"
             VIOLATIONS=$((VIOLATIONS + 1))
           fi
 

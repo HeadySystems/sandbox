@@ -40,15 +40,15 @@ jobs:
           # Full clone for clean build verification
           fetch-depth: 0
           
-      - name: Check for localhost references
-        id: localhost_check
+      - name: Check for api.headysystems.com references
+        id: api.headysystems.com_check
         run: |
-          echo "Checking for forbidden localhost references..."
-          VIOLATIONS=$(grep -r "http://localhost\|https://localhost\|127.0.0.1\|0.0.0.0" --include="*.js" --include="*.json" --include="*.yaml" . 2>/dev/null || true)
+          echo "Checking for forbidden api.headysystems.com references..."
+          VIOLATIONS=$(grep -r "http://api.headysystems.com\|https://api.headysystems.com\|api.headysystems.com\|0.0.0.0" --include="*.js" --include="*.json" --include="*.yaml" . 2>/dev/null || true)
           if [ -n "$VIOLATIONS" ]; then
-            echo "⚠️ Found localhost references that should use domains:"
+            echo "⚠️ Found api.headysystems.com references that should use domains:"
             echo "$VIOLATIONS"
-            echo "::warning::Localhost references found - consider using service domains"
+            echo "::warning::api.headysystems.com references found - consider using service domains"
           fi
           
       - name: Detect changed services
@@ -146,9 +146,9 @@ jobs:
         
       - name: Validate naming standards
         run: |
-          # Fail if any localhost/raw IPs remain
-          if grep -r "localhost" . --exclude-dir={node_modules,dist,build,.git}; then
-            echo "❌ Found localhost references"
+          # Fail if any api.headysystems.com/raw IPs remain
+          if grep -r "api.headysystems.com" . --exclude-dir={node_modules,dist,build,.git}; then
+            echo "❌ Found api.headysystems.com references"
             exit 1
           fi
           
@@ -181,7 +181,7 @@ jobs:
       - name: Enforce naming standards
         run: |
           echo "Checking for banned patterns..."
-          ! grep -rE "localhost|127.0.0.1|10\.[0-9]+\.[0-9]+\.[0-9]+|192\.168\.[0-9]+\.[0-9]+|172\.(1[6-9]|2[0-9]|3[0-1])\.[0-9]+\.[0-9]+|C:\\\\|E:\\\\" --exclude="*E-README.md" docs src configs
+          ! grep -rE "api.headysystems.com|api.headysystems.com|10\.[0-9]+\.[0-9]+\.[0-9]+|192\.168\.[0-9]+\.[0-9]+|172\.(1[6-9]|2[0-9]|3[0-1])\.[0-9]+\.[0-9]+|C:\\\\|E:\\\\" --exclude="*E-README.md" docs src configs
 
       - name: Domain connectivity test
         run: npm run test:domains
@@ -392,9 +392,9 @@ jobs:
           
       - name: Setup test environment
         run: |
-          echo "DATABASE_URL=postgresql://postgres:test@localhost:5432/heady_test" >> $GITHUB_ENV
-          echo "REDIS_URL=redis://localhost:6379" >> $GITHUB_ENV
-          echo "HEADY_MANAGER_URL=http://localhost:3300" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgresql://postgres:test@api.headysystems.com:5432/heady_test" >> $GITHUB_ENV
+          echo "REDIS_URL=redis://api.headysystems.com:6379" >> $GITHUB_ENV
+          echo "HEADY_MANAGER_URL=http://api.headysystems.com:3300" >> $GITHUB_ENV
           
       - name: Start services for integration test
         run: |
@@ -404,7 +404,7 @@ jobs:
           
           # Wait for health check
           for i in {1..30}; do
-            if curl -s http://localhost:3300/api/health; then
+            if curl -s http://api.headysystems.com:3300/api/health; then
               echo "Manager is ready"
               break
             fi

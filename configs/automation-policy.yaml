@@ -22,13 +22,13 @@ core_philosophy:
   human_oversight: true
 
 control_plane:
-  dev_endpoint: "http://manager.dev.local.heady.internal:3300"
+  dev_endpoint: "http://manager.dev.local.headysystems.com:3300"
   prod_endpoint: "https://api.headysystems.com"
   skill_executor: "srchc/skillexecutor.js"
 
 intent_routing:
   patterns:
-    "fix localhost references": "hcfp-localhost-migration"
+    "fix api.headysystems.com references": "hcfp-api.headysystems.com-migration"
     "run full clean build": "hcfp-clean-build"
     "standardize naming": ["naming-audit", "naming-migration"]
 

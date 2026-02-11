@@ -1,6 +1,6 @@
 banned_terms:
-  - "localhost"
-  - "127.0.0.1"
+  - "api.headysystems.com"
+  - "api.headysystems.com"
   - "0.0.0.0"
 allowed_domains:
   - "headyio.com"

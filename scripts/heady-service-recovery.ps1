@@ -53,7 +53,7 @@ $script:RecoveryConfig = @{
         Priority = "supreme"
     }
     "heady-manager" = @{
-        Endpoints = @("http://localhost:3300", "http://manager.heady.internal:3300")
+        Endpoints = @("http://api.headysystems.com:3300", "http://manager.headysystems.com:3300")
         HealthCheck = "/api/health"
         MaxRetries = 5
         RestartDelay = 10
@@ -61,7 +61,7 @@ $script:RecoveryConfig = @{
         DockerService = "heady-manager"
     }
     "heady-conductor" = @{
-        Endpoints = @("http://localhost:8080", "http://conductor.heady.internal:8080")
+        Endpoints = @("http://api.headysystems.com:8080", "http://conductor.headysystems.com:8080")
         HealthCheck = "/health"
         MaxRetries = 5
         RestartDelay = 10
@@ -70,7 +70,7 @@ $script:RecoveryConfig = @{
         WorkingDirectory = "c:\Users\erich\Heady"
     }
     "heady-supervisor" = @{
-        Endpoints = @("http://localhost:8082", "http://supervisor.heady.internal:8082")
+        Endpoints = @("http://api.headysystems.com:8082", "http://supervisor.headysystems.com:8082")
         HealthCheck = "/module-loaded"
         MaxRetries = 3
         RestartDelay = 15

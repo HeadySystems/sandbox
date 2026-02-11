@@ -69,7 +69,7 @@ extensions:
         models:
           - title: "HeadyBuddy"
             provider: "openai-compatible"
-            apiBase: "http://localhost:3300/api/buddy"
+            apiBase: "http://api.headysystems.com:3300/api/buddy"
             model: "heady-buddy"
 
     - id: "bradlc.vscode-tailwindcss"
@@ -124,7 +124,7 @@ theme:
 # ── Integration with Heady Ecosystem ────────────────────────
 integration:
   heady_manager:
-    url: "http://localhost:3300"
+    url: "http://api.headysystems.com:3300"
     health_endpoint: "/api/health"
     buddy_endpoint: "/api/buddy/chat"
 

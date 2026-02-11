@@ -15,7 +15,7 @@
 // HEADY_BRAND:END
 // Heady AI — Firefox Popup Script
 
-const HEADY_API = 'http://manager.dev.local.heady.internal:3300';
+const HEADY_API = 'http://manager.dev.local.headysystems.com:3300';
 
 document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('input');

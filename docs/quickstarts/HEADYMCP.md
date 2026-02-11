@@ -25,23 +25,23 @@ Edit `configs/mcp-core.yaml`:
 ```yaml
 port: 3300
 databases:
-  main: postgres://user:pass@localhost:5432/heady
+  main: postgres://user:pass@api.headysystems.com:5432/heady
 ```
 
 ## API Access
 ```bash
 # Health check
-curl http://localhost:3300/api/health
+curl http://api.headysystems.com:3300/api/health
 
 # Get active patterns
-curl http://localhost:3300/api/patterns
+curl http://api.headysystems.com:3300/api/patterns
 ```
 
 ## Integration
 Set `MCP_URL` in environment variables of dependent services:
 ```ini
-MCP_URL=http://localhost:3300
+MCP_URL=http://api.headysystems.com:3300
 ```
 
 ## Monitoring
-Access dashboard at: `http://localhost:3300/dashboard`
+Access dashboard at: `http://api.headysystems.com:3300/dashboard`

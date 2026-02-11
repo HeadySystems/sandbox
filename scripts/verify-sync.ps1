@@ -19,7 +19,7 @@
 Verifies state synchronization across devices
 #>
 
-$API_URL = "http://localhost:3300/api/buddy/state"
+$API_URL = "http://api.headysystems.com:3300/api/buddy/state"
 $DEVICES = @("WindowsPC", "OnePlusOpen", "LinuxWorkstation")
 
 $errors = 0

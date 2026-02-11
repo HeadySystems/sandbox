@@ -98,11 +98,11 @@ alerts:
       severity: info
       summary: "Deployment successful"
       
-    - name: LocalhostReferenceFound
-      condition: heady_localhost_ref_count > 0
+    - name: api.headysystems.comReferenceFound
+      condition: heady_api.headysystems.com_ref_count > 0
       severity: info
-      summary: "Localhost references detected in code"
-      description: "Found {{ $value }} localhost references - migration needed"
+      summary: "api.headysystems.com references detected in code"
+      description: "Found {{ $value }} api.headysystems.com references - migration needed"
 
 # Notification Channels
 notifications:
@@ -215,9 +215,9 @@ build_monitoring:
       type: gauge
       range: 0-1
       
-    - name: localhost_refs_found
+    - name: api.headysystems.com_refs_found
       type: gauge
-      help: "Number of localhost references in codebase"
+      help: "Number of api.headysystems.com references in codebase"
       
   alerts:
     - name: BuildDurationHigh
@@ -230,11 +230,11 @@ build_monitoring:
       severity: critical
       action: "Fix failing tests before deploying"
       
-    - name: LocalhostRefsIncreasing
+    - name: api.headysystems.comRefsIncreasing
       condition: |
-        increase(heady_localhost_ref_count[1h]) > 0
+        increase(heady_api.headysystems.com_ref_count[1h]) > 0
       severity: warning
-      action: "Remove new localhost references - use service domains"
+      action: "Remove new api.headysystems.com references - use service domains"
 
 # Service Discovery Health
 discovery_monitoring:

@@ -533,6 +533,8 @@ headyVMSwitch:
     VM environment that replaces local development as the primary compute.
     All services must be remote-first and deterministic before the switch.
   status: preparing
+  autoDeployTrigger: true
+  windsurfIntegration: true
   readiness_checklist:
     - item: "Foundation services bootable on remote VM"
       status: in_progress

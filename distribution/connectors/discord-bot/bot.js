@@ -20,7 +20,7 @@
  * Install: npm install discord.js
  */
 
-const HEADY_API = process.env.HEADY_API_URL || 'http://manager.dev.local.heady.internal:3300';
+const HEADY_API = process.env.HEADY_API_URL || 'http://manager.dev.local.headysystems.com:3300';
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 
 if (!DISCORD_TOKEN) {

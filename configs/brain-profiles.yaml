@@ -234,7 +234,7 @@ routing:
     headyconnection.org: community-impact
     headysystems.com: sys-ops
     headyweb.com: web-platform
-    buddy.heady.local: companion
+    buddy.headysystems.com: companion
 
   workspace_type_to_brain:
     personal: personal-wellbeing

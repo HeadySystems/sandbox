@@ -18,7 +18,7 @@
  * Handles side panel, context menus, and API communication
  */
 
-const DEFAULT_API_URL = 'http://manager.dev.local.heady.internal:3300';
+const DEFAULT_API_URL = 'http://manager.dev.local.headysystems.com:3300';
 
 // ── Installation ────────────────────────────────────────────
 chrome.runtime.onInstalled.addListener(() => {

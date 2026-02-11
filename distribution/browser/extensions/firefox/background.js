@@ -18,7 +18,7 @@
  * Uses browser.* APIs (WebExtension standard for Firefox)
  */
 
-const DEFAULT_API_URL = 'http://manager.dev.local.heady.internal:3300';
+const DEFAULT_API_URL = 'http://manager.dev.local.headysystems.com:3300';
 
 // ── Installation ────────────────────────────────────────────
 browser.runtime.onInstalled.addListener(() => {

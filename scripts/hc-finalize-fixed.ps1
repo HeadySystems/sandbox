@@ -59,7 +59,7 @@ function Test-SystemHealth {
     
     # Check Heady Manager health
     try {
-        $health = Invoke-RestMethod -Uri "http://localhost:3300/api/health" -TimeoutSec 5
+        $health = Invoke-RestMethod -Uri "http://api.headysystems.com:3300/api/health" -TimeoutSec 5
         Write-Host "✅ Heady Manager: $($health.version) - Uptime: $([math]::Round($health.uptime/60,1))min" -ForegroundColor Green
     } catch {
         Write-Host "❌ Heady Manager: Not responding" -ForegroundColor Red
@@ -67,7 +67,7 @@ function Test-SystemHealth {
     
     # Check Ollama
     try {
-        $models = Invoke-RestMethod -Uri "http://localhost:11434/api/tags" -TimeoutSec 5
+        $models = Invoke-RestMethod -Uri "http://api.headysystems.com:11434/api/tags" -TimeoutSec 5
         Write-Host "✅ Ollama: $($models.models.Count) models available" -ForegroundColor Green
     } catch {
         Write-Host "❌ Ollama: Not responding" -ForegroundColor Red
@@ -94,8 +94,8 @@ function Invoke-ProductionTests {
     Write-Host "------------------------------------" -ForegroundColor Yellow
     
     $tests = @(
-        @{name="Heady Manager API"; url="http://localhost:3300/api/health"; expected=200},
-        @{name="Ollama API"; url="http://localhost:11434/api/tags"; expected=200},
+        @{name="Heady Manager API"; url="http://api.headysystems.com:3300/api/health"; expected=200},
+        @{name="Ollama API"; url="http://api.headysystems.com:11434/api/tags"; expected=200},
         @{name="PostgreSQL"; command="docker exec heady-postgres pg_isready -U heady"},
         @{name="Redis"; command="docker exec heady-redis redis-cli ping"}
     )
@@ -270,7 +270,7 @@ function New-FinalReport {
     Write-Host "------------------------------" -ForegroundColor Yellow
     
     $containerCount = (docker ps --filter "name=heady" --format "{{.Names}}" | Measure-Object).Count
-    $modelCount = try { (Invoke-RestMethod -Uri "http://localhost:11434/api/tags" -ErrorAction SilentlyContinue).models.Count } catch { 0 }
+    $modelCount = try { (Invoke-RestMethod -Uri "http://api.headysystems.com:11434/api/tags" -ErrorAction SilentlyContinue).models.Count } catch { 0 }
     
     $report = @"
 # Heady Systems Finalization Report
@@ -286,12 +286,12 @@ Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
 $(docker ps --filter "name=heady" --format "table {{.Names}}`t{{.Ports}}" | Out-String)
 
 ## Access URLs
-- Heady Manager: http://localhost:3300
-- Ollama API: http://localhost:11434  
-- PgAdmin: http://localhost:8080
-- Redis Commander: http://localhost:8081
-- Grafana: http://localhost:3002
-- Prometheus: http://localhost:9090
+- Heady Manager: http://api.headysystems.com:3300
+- Ollama API: http://api.headysystems.com:11434  
+- PgAdmin: http://api.headysystems.com:8080
+- Redis Commander: http://api.headysystems.com:8081
+- Grafana: http://api.headysystems.com:3002
+- Prometheus: http://api.headysystems.com:9090
 
 ## Next Steps
 1. Open PyCharm: launch-pycharm.bat

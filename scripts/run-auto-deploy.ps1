@@ -292,3 +292,55 @@ Write-Host "Production Ready: $ProductionReady" -ForegroundColor White
 Write-Host "Elapsed: $([math]::Round($elapsed.TotalSeconds))s" -ForegroundColor White
 Write-Host ''
 Write-Host 'Cloud-First Deploy Pipeline completed!' -ForegroundColor Magenta
+
+# -------------------------------------------------------
+# HeadyVM Migration Check
+# -------------------------------------------------------
+Write-Host ''
+Write-Host '[HeadyVM] Checking migration readiness...' -ForegroundColor Cyan
+Write-Host '----------------------------------------' -ForegroundColor Cyan
+
+$headyvmMarker = '.headyvm-ready'
+$shouldCheckHeadyVM = $false
+
+# Check if we should run HeadyVM readiness check
+if (Test-Path $headyvmMarker) {
+    try {
+        $marker = Get-Content $headyvmMarker | ConvertFrom-Json
+        $markerTime = [DateTime]::Parse($marker.timestamp)
+        $timeSinceMarker = (Get-Date) - $markerTime
+        
+        # If marker is older than 1 hour, recheck
+        if ($timeSinceMarker.TotalHours -gt 1) {
+            $shouldCheckHeadyVM = $true
+            Write-Host '  Readiness marker expired, rechecking...' -ForegroundColor Yellow
+        } else {
+            Write-Host "  Readiness confirmed at $($marker.timestamp)" -ForegroundColor Green
+            Write-Host "  Score: $($marker.score)/$($marker.maxScore)" -ForegroundColor Green
+        }
+    } catch {
+        $shouldCheckHeadyVM = $true
+        Write-Host '  Invalid readiness marker, rechecking...' -ForegroundColor Yellow
+    }
+} else {
+    $shouldCheckHeadyVM = $true
+    Write-Host '  No readiness marker found, checking...' -ForegroundColor Yellow
+}
+
+if ($shouldCheckHeadyVM) {
+    Write-Host ''
+    Write-Host '  Running HeadyVM readiness check...' -ForegroundColor Blue
+    try {
+        & '.\scripts\headyvm-readiness-checker.ps1' -AutoDeployIfReady:$($ProductionReady -and $GateScore -eq 100)
+    } catch {
+        Write-Host "  [WARN] HeadyVM readiness check failed: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+} else {
+    # If ready and production is ready, suggest migration
+    if ($ProductionReady -and $GateScore -eq 100) {
+        Write-Host ''
+        Write-Host '[HeadyVM] System ready for migration!' -ForegroundColor Green
+        Write-Host 'To initiate migration now, run:' -ForegroundColor White
+        Write-Host '  .\scripts\headyvm-migrate.ps1' -ForegroundColor Cyan
+    }
+}

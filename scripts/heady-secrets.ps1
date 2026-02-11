@@ -334,7 +334,7 @@ HEADY_VERSION=3.0.0
 # ===========================================
 # Optional Services
 # ===========================================
-# REDIS_URL=redis://localhost:6379
+# REDIS_URL=redis://api.headysystems.com:6379
 # SMTP_HOST=smtp.example.com
 # SMTP_PORT=587
 # SMTP_USER=your_smtp_user

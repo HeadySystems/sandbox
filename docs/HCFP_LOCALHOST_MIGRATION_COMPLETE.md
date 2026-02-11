@@ -9,13 +9,13 @@
 <!-- ║                                                                  ║
 <!-- ║  ∞ SACRED GEOMETRY ∞  Organic Systems · Breathing Interfaces    ║
 <!-- ║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ║
-<!-- ║  FILE: docs/HCFP_LOCALHOST_MIGRATION_COMPLETE.md                                                    ║
+<!-- ║  FILE: docs/HCFP_api.headysystems.com_MIGRATION_COMPLETE.md                                                    ║
 <!-- ║  LAYER: docs                                                  ║
 <!-- ╚══════════════════════════════════════════════════════════════════╝
 <!-- HEADY_BRAND:END
 -->
 # ╔══════════════════════════════════════════════════════════════════╗
-# ║  HEADY SYSTEMS - HCFP LOCALHOST MIGRATION COMPLETE              ║
+# ║  HEADY SYSTEMS - HCFP api.headysystems.com MIGRATION COMPLETE              ║
 # ║  Sacred Geometry Architecture • Domain-Based Service Discovery   ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
@@ -24,37 +24,37 @@
 **Status**: ✅ **COMPLETE**  
 **Date**: 2026-02-07  
 **Version**: 3.2.0  
-**Migration Type**: Localhost → Internal Domain Architecture
+**Migration Type**: api.headysystems.com → Internal Domain Architecture
 
-This document certifies completion of the comprehensive localhost-to-domain migration, clean build CI/CD implementation, and multi-channel extension deployment for Heady Systems.
+This document certifies completion of the comprehensive api.headysystems.com-to-domain migration, clean build CI/CD implementation, and multi-channel extension deployment for Heady Systems.
 
 ---
 
 ## Migration Objectives Achieved
 
 ### 1. ✅ Service Discovery Architecture
-- **Domain Scheme**: `{service-role}.{service}.{env}.heady.internal`
-- **Root Domain**: `heady.internal`
+- **Domain Scheme**: `{service-role}.{service}.{env}.headysystems.com`
+- **Root Domain**: `headysystems.com`
 - **Service Count**: 17 core services mapped
 - **Configuration**: `configs/domains/service-discovery.yaml`
 
 **Examples**:
-- Manager: `manager.dev.local.heady.internal:3300`
-- PostgreSQL: `db-postgres.dev.local.heady.internal:5432`
-- Redis: `db-redis.dev.local.heady.internal:6379`
+- Manager: `manager.dev.local.headysystems.com:3300`
+- PostgreSQL: `db-postgres.dev.local.headysystems.com:5432`
+- Redis: `db-redis.dev.local.headysystems.com:6379`
 
-### 2. ✅ Localhost Inventory & Migration
-- **Initial Scan**: 470 localhost references across 72 files
-- **127.0.0.1 References**: 233 across 16 files
+### 2. ✅ api.headysystems.com Inventory & Migration
+- **Initial Scan**: 470 api.headysystems.com references across 72 files
+- **api.headysystems.com References**: 233 across 16 files
 - **0.0.0.0 References**: 17 across 14 files
-- **Migration Tool**: `scripts/localhost-to-domain.js`
+- **Migration Tool**: `scripts/api.headysystems.com-to-domain.js`
 - **YAML Integration**: Dynamic loading from service-discovery.yaml
 
 ### 3. ✅ Clean Build CI/CD
 - **Workflow**: `.github/workflows/hcfp-production-clean-build.yml`
 - **Error Classification**: RECOVERABLE vs NON-RECOVERABLE
 - **Retry Logic**: Intelligent retry for network issues
-- **Security Scans**: No localhost in production configs
+- **Security Scans**: No api.headysystems.com in production configs
 - **Integration Tests**: PostgreSQL + Redis services
 
 ### 4. ✅ Progressive Web App (PWA)
@@ -104,7 +104,7 @@ This document certifies completion of the comprehensive localhost-to-domain migr
   - DNS resolution verification
   - Port conflict detection
   - Security classification validation
-  - Localhost migration completeness
+  - api.headysystems.com migration completeness
 
 ---
 
@@ -114,20 +114,20 @@ This document certifies completion of the comprehensive localhost-to-domain migr
 
 | Service | Old Address | New Address | Port | Security Level |
 |---------|-------------|-------------|------|----------------|
-| Manager | localhost:3300 | manager.dev.local.heady.internal | 3300 | internal |
-| PostgreSQL | localhost:5432 | db-postgres.dev.local.heady.internal | 5432 | database |
-| Redis | localhost:6379 | db-redis.dev.local.heady.internal | 6379 | database |
-| Web Frontend | localhost:3000 | app-web.dev.local.heady.internal | 3000 | external |
-| MCP Gateway | localhost:3001 | tools-mcp.dev.local.heady.internal | 3001 | internal |
-| HeadyBuddy | localhost:3301 | app-buddy.dev.local.heady.internal | 3301 | internal |
-| Voice I/O | localhost:3303 | io-voice.dev.local.heady.internal | 3303 | internal |
-| Ollama AI | localhost:11434 | ai-ollama.dev.local.heady.internal | 11434 | internal |
+| Manager | api.headysystems.com:3300 | manager.dev.local.headysystems.com | 3300 | internal |
+| PostgreSQL | api.headysystems.com:5432 | db-postgres.dev.local.headysystems.com | 5432 | database |
+| Redis | api.headysystems.com:6379 | db-redis.dev.local.headysystems.com | 6379 | database |
+| Web Frontend | api.headysystems.com:3000 | app-web.dev.local.headysystems.com | 3000 | external |
+| MCP Gateway | api.headysystems.com:3001 | tools-mcp.dev.local.headysystems.com | 3001 | internal |
+| HeadyBuddy | api.headysystems.com:3301 | app-buddy.dev.local.headysystems.com | 3301 | internal |
+| Voice I/O | api.headysystems.com:3303 | io-voice.dev.local.headysystems.com | 3303 | internal |
+| Ollama AI | api.headysystems.com:11434 | ai-ollama.dev.local.headysystems.com | 11434 | internal |
 
 ### Multi-Channel Extension Endpoints
 
 | Channel | Endpoint | Purpose |
 |---------|----------|---------|
-| Local Dev | manager.dev.local.heady.internal:3300 | Development |
+| Local Dev | manager.dev.local.headysystems.com:3300 | Development |
 | Cloud Me | cloud-me.heady.io | Personal cloud deployment |
 | Cloud Sys | cloud-sys.heady.io | Systems cloud deployment |
 | Cloud Conn | cloud-conn.heady.io | Connection bridge deployment |
@@ -151,11 +151,11 @@ This document certifies completion of the comprehensive localhost-to-domain migr
 12. `extensions/vscode/tsconfig.json` - TypeScript config
 13. `scripts/hcfp-error-recovery.ps1` - Error recovery workflow
 14. `tests/integration/domain-connectivity.test.js` - Integration tests
-15. `.windsurf/workflows/hcfp-localhost-migration.md` - Migration workflow
-16. `docs/HCFP_LOCALHOST_MIGRATION_COMPLETE.md` - This document
+15. `.windsurf/workflows/hcfp-api.headysystems.com-migration.md` - Migration workflow
+16. `docs/HCFP_api.headysystems.com_MIGRATION_COMPLETE.md` - This document
 
 ### Files Enhanced
-1. `scripts/localhost-to-domain.js` - Service discovery integration
+1. `scripts/api.headysystems.com-to-domain.js` - Service discovery integration
 2. `heady-registry.json` - Added all new components
 
 ---
@@ -165,7 +165,7 @@ This document certifies completion of the comprehensive localhost-to-domain migr
 ### 1. Hosts File Setup (Windows)
 ```powershell
 # Generate hosts file entries
-node scripts/localhost-to-domain.js hosts > heady-hosts.txt
+node scripts/api.headysystems.com-to-domain.js hosts > heady-hosts.txt
 
 # Open Notepad as Administrator
 # Edit: C:\Windows\System32\drivers\etc\hosts
@@ -191,7 +191,7 @@ code --install-extension heady-dev-companion-3.0.0.vsix
 ```
 
 ### 4. PWA Installation
-1. Navigate to: `http://manager.dev.local.heady.internal:3300`
+1. Navigate to: `http://manager.dev.local.headysystems.com:3300`
 2. Click install icon in address bar
 3. Confirm installation
 
@@ -218,16 +218,16 @@ npm test -- tests/integration/domain-connectivity.test.js
 
 ### Verify Migration
 ```powershell
-# Inventory remaining localhost references
-node scripts/localhost-to-domain.js inventory ./
+# Inventory remaining api.headysystems.com references
+node scripts/api.headysystems.com-to-domain.js inventory ./
 
-# Expected: 0 bare localhost references in production code
+# Expected: 0 bare api.headysystems.com references in production code
 ```
 
 ### Health Check
 ```powershell
 # All endpoints
-curl http://manager.dev.local.heady.internal:3300/api/health
+curl http://manager.dev.local.headysystems.com:3300/api/health
 
 # Layer switcher
 hl health
@@ -240,12 +240,12 @@ hl health
 **Registry Version**: 3.1.0 → 3.2.0
 
 ### New Registry Entries
-- **Tools**: `localhost-to-domain`, `hcfp-error-recovery`
+- **Tools**: `api.headysystems.com-to-domain`, `hcfp-error-recovery`
 - **Extensions**: `chrome-extension`, `vscode-extension`
 - **PWA**: `heady-pwa`
 - **CI/CD**: `hcfp-production-clean-build`
 - **Tests**: `domain-connectivity-tests`
-- **Workflows**: `hcfp-localhost-migration`
+- **Workflows**: `hcfp-api.headysystems.com-migration`
 
 ---
 
@@ -255,7 +255,7 @@ hl health
 - Default deny with explicit allow rules
 - mTLS enabled for internal services
 - Admin services restricted to management subnet
-- No production localhost exposure
+- No production api.headysystems.com exposure
 
 ### Authentication
 - Token-based auth for browser extension
@@ -321,7 +321,7 @@ If issues arise:
 - Evidence: `.heady_cache/error-evidence-*/`
 
 **Documentation**:
-- Workflow: `.windsurf/workflows/hcfp-localhost-migration.md`
+- Workflow: `.windsurf/workflows/hcfp-api.headysystems.com-migration.md`
 - Registry: `heady-registry.json` (v3.2.0)
 
 **Contact**: Heady Systems Engineering Team

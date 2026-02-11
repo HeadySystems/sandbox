@@ -21,11 +21,11 @@ param(
 )
 
 $LAYERS = @{
-    "local" = @{ Name = "Local Dev"; Color = "Green"; Endpoint = "http://localhost:3300/api" }
-    "cloud-me" = @{ Name = "Cloud HeadyMe"; Color = "Cyan"; Endpoint = "https://heady-manager-headyme.onrender.com/api" }
-    "cloud-sys" = @{ Name = "Cloud HeadySystems"; Color = "Magenta"; Endpoint = "https://heady-manager-headysystems.onrender.com/api" }
-    "cloud-conn" = @{ Name = "Cloud HeadyConnection"; Color = "Yellow"; Endpoint = "https://heady-manager-headyconnection.onrender.com/api" }
-    "hybrid" = @{ Name = "Hybrid Local+Cloud"; Color = "White"; Endpoint = "http://localhost:3300/api" }
+    "local" = @{ Name = "Local Dev"; Color = "Green"; Endpoint = "http://api.headysystems.com:3300/api" }
+    "cloud-me" = @{ Name = "Cloud HeadyMe"; Color = "Cyan"; Endpoint = "https://heady-manager-headyme.headysystems.com/api" }
+    "cloud-sys" = @{ Name = "Cloud HeadySystems"; Color = "Magenta"; Endpoint = "https://heady-manager-headysystems.headysystems.com/api" }
+    "cloud-conn" = @{ Name = "Cloud HeadyConnection"; Color = "Yellow"; Endpoint = "https://heady-manager-headyconnection.headysystems.com/api" }
+    "hybrid" = @{ Name = "Hybrid Local+Cloud"; Color = "White"; Endpoint = "http://api.headysystems.com:3300/api" }
 }
 
 function Show-Status {

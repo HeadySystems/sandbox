@@ -25,7 +25,7 @@
 
 1. **Cloudflared**:
    - Installed as system service
-   - Creates outbound-only tunnel to `*.vm.heady.internal`
+   - Creates outbound-only tunnel to `*.vm.headysystems.com`
 
 2. **WARP Client**:
    - Enforces gateway policies

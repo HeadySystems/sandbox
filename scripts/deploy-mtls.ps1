@@ -27,7 +27,7 @@ if (-not $nginxRunning -or -not $cloudflaredRunning) {
 }
 
 # 3. Test
-$testResult = Test-NetConnection -ComputerName 127.0.0.1 -Port 8443 -WarningAction SilentlyContinue
+$testResult = Test-NetConnection -ComputerName api.headysystems.com -Port 8443 -WarningAction SilentlyContinue
 
 if ($testResult.TcpTestSucceeded) {
     Write-Host "Deployment successful!" -ForegroundColor Green

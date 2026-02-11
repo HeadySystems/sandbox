@@ -171,7 +171,7 @@ function Test-HeadyServicesOnlyCompliance {
     $operationEndpoint = $Operation.Endpoint ?? "unknown"
     
     # Check if endpoint is Heady service
-    if ($operationEndpoint -like "*heady*" -or $operationEndpoint -like "*localhost*" -or $operationEndpoint -like "*127.0.0.1*") {
+    if ($operationEndpoint -like "*heady*" -or $operationEndpoint -like "*api.headysystems.com*" -or $operationEndpoint -like "*api.headysystems.com*") {
         Write-EnforcementLog "Operation uses Heady service: $($Operation.Type)" -Level debug
         return @{
             Compliant = $true
@@ -220,9 +220,9 @@ function Test-BrainIntegrationCompliance {
     
     # Test integration endpoint
     $integrationEndpoints = @(
-        "http://localhost:3300/api/brain-integration",  # heady-manager
-        "http://localhost:8080/brain-integration",       # heady-conductor
-        "http://localhost:8082/brain-integration"        # heady-supervisor
+        "http://api.headysystems.com:3300/api/brain-integration",  # heady-manager
+        "http://api.headysystems.com:8080/brain-integration",       # heady-conductor
+        "http://api.headysystems.com:8082/brain-integration"        # heady-supervisor
     )
     
     foreach ($endpoint in $integrationEndpoints) {

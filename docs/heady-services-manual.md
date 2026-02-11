@@ -88,12 +88,12 @@ improvement_backlog: []
 cd C:\Users\erich\Heady
 npm install
 cp .env.example .env        # Edit with your secrets
-npm start                    # → http://localhost:3300
+npm start                    # → http://api.headysystems.com:3300
 ```
 
 **Verify:**
 ```bash
-curl http://localhost:3300/api/health
+curl http://api.headysystems.com:3300/api/health
 # → {"ok":true,"service":"heady-manager","version":"3.0.0",...}
 ```
 
@@ -102,18 +102,18 @@ curl http://localhost:3300/api/health
 ```bash
 cd C:\Users\erich\Heady
 docker compose up --build
-# heady-manager → http://localhost:3300
-# Postgres      → localhost:5432
-# Redis         → localhost:6379
+# heady-manager → http://api.headysystems.com:3300
+# Postgres      → api.headysystems.com:5432
+# Redis         → api.headysystems.com:6379
 ```
 
 ### Option C: HeadyBuddy Desktop (Docker Desktop in Browser)
 
 ```bash
 docker compose -f docker-compose.desktop.yml up --build
-# Full Linux desktop → http://localhost:6080 (VNC password: heady)
-# heady-manager API  → http://localhost:3300
-# HeadyBuddy widget  → http://localhost:3400
+# Full Linux desktop → http://api.headysystems.com:6080 (VNC password: heady)
+# heady-manager API  → http://api.headysystems.com:3300
+# HeadyBuddy widget  → http://api.headysystems.com:3400
 ```
 
 ### Option D: HeadyBuddy Widget Only (Dev)
@@ -124,7 +124,7 @@ cd C:\Users\erich\Heady && npm start
 
 # Terminal 2 — Widget dev server
 cd C:\Users\erich\Heady\headybuddy && npm install && npm run dev
-# → http://localhost:3400
+# → http://api.headysystems.com:3400
 ```
 
 ### Option E: Electron Desktop Overlay
@@ -150,7 +150,7 @@ No local install needed — all API endpoints are available at the cloud URLs li
 cd C:\Users\erich\Heady\frontend
 npm install
 npm run dev
-# → http://localhost:5173 (proxies API to localhost:3300)
+# → http://api.headysystems.com:5173 (proxies API to api.headysystems.com:3300)
 ```
 
 ---
@@ -163,7 +163,7 @@ npm run dev
 | **heady-frontend** | React (Vite) | 5173 (dev) / served by manager (prod) | `GET /` | Active |
 | **HeadyBuddy Widget** | React (Vite) | 3400 | `GET /api/buddy/health` | Active |
 | **HeadyBuddy Electron** | Electron overlay | N/A (desktop) | N/A | Active |
-| **HeadyBuddy Docker Desktop** | noVNC + Chromium | 6080 | `curl localhost:6080` | Active |
+| **HeadyBuddy Docker Desktop** | noVNC + Chromium | 6080 | `curl api.headysystems.com:6080` | Active |
 | **python-worker** | Python background worker | 5000 | N/A | Available |
 | **MCP Server (stdio)** | Model Context Protocol | stdio | N/A | Active |
 | **Render MCP Server** | MCP over stdio | stdio | N/A | Active |
@@ -181,7 +181,7 @@ The primary way to interact with Heady. All endpoints are served by `heady-manag
 
 **Local:**
 ```
-http://localhost:3300/api/{endpoint}
+http://api.headysystems.com:3300/api/{endpoint}
 ```
 
 **Cloud (pick your layer):**
@@ -248,17 +248,17 @@ cd desktop-overlay && npm install && npm run dev
 
 - **Hotkey**: `Ctrl+Shift+H` toggles the overlay
 - **Preload bridge**: `preload.js` provides secure IPC between renderer and main process
-- Loads HeadyBuddy widget from `http://localhost:3400` (dev) or bundled build (prod)
+- Loads HeadyBuddy widget from `http://api.headysystems.com:3400` (dev) or bundled build (prod)
 
 ### 3.5 Browser (Direct)
 
 | URL | What You See |
 |-----|-------------|
-| `http://localhost:3300` | Sacred Geometry dashboard (React frontend) |
-| `http://localhost:3300/admin` | Admin IDE with Monaco editor |
-| `http://localhost:3400` | HeadyBuddy widget (dev server) |
-| `http://localhost:6080` | Full Linux desktop via noVNC (Docker Desktop) |
-| `http://localhost:5173` | Vite dev server for frontend |
+| `http://api.headysystems.com:3300` | Sacred Geometry dashboard (React frontend) |
+| `http://api.headysystems.com:3300/admin` | Admin IDE with Monaco editor |
+| `http://api.headysystems.com:3400` | HeadyBuddy widget (dev server) |
+| `http://api.headysystems.com:6080` | Full Linux desktop via noVNC (Docker Desktop) |
+| `http://api.headysystems.com:5173` | Vite dev server for frontend |
 
 ### 3.6 PowerShell CLI
 
@@ -380,11 +380,11 @@ Heady supports **5 deployment layers**, switchable at runtime:
 
 | Layer ID | Name | Endpoint | Color | Git Remote |
 |----------|------|----------|-------|------------|
-| `local` | Local Dev | `http://localhost:3300` | Green | — |
+| `local` | Local Dev | `http://api.headysystems.com:3300` | Green | — |
 | `cloud-me` | Cloud HeadyMe | `https://app.headysystems.com` | Cyan | `heady-me` |
 | `cloud-sys` | Cloud HeadySystems | `https://app.headysystems.com` | Magenta | `origin` |
 | `cloud-conn` | Cloud HeadyConnection | `https://app.headysystems.com` | Yellow | `connection` |
-| `hybrid` | Hybrid Local+Cloud | `http://localhost:3300` (with cloud sync) | White | — |
+| `hybrid` | Hybrid Local+Cloud | `http://api.headysystems.com:3300` (with cloud sync) | White | — |
 
 ### CLI Usage
 
@@ -413,10 +413,10 @@ hl health                    # Health check all layers
 
 ```bash
 # Get current layer
-curl http://localhost:3300/api/layer
+curl http://api.headysystems.com:3300/api/layer
 
 # Switch via API
-curl -X POST http://localhost:3300/api/layer/switch \
+curl -X POST http://api.headysystems.com:3300/api/layer/switch \
   -H "Content-Type: application/json" \
   -d '{"layer": "cloud-me"}'
 ```
@@ -459,7 +459,7 @@ Includes:
 
 ```bash
 docker compose -f docker-compose.desktop.yml up --build
-# Open browser → http://localhost:6080
+# Open browser → http://api.headysystems.com:6080
 ```
 
 ### 6.3 Standalone Manager (`Dockerfile`)
@@ -595,19 +595,19 @@ User's Desktop
 
 ```bash
 # List all nodes
-curl http://localhost:3300/api/nodes
+curl http://api.headysystems.com:3300/api/nodes
 
 # Get specific node
-curl http://localhost:3300/api/nodes/PYTHIA
+curl http://api.headysystems.com:3300/api/nodes/PYTHIA
 
 # Activate a node
-curl -X POST http://localhost:3300/api/nodes/PYTHIA/activate
+curl -X POST http://api.headysystems.com:3300/api/nodes/PYTHIA/activate
 
 # Deactivate a node
-curl -X POST http://localhost:3300/api/nodes/JULES/deactivate
+curl -X POST http://api.headysystems.com:3300/api/nodes/JULES/deactivate
 
 # Activate ALL nodes (production mode)
-curl -X POST http://localhost:3300/api/system/production
+curl -X POST http://api.headysystems.com:3300/api/system/production
 ```
 
 ---
@@ -643,9 +643,9 @@ npm run pipeline              # Run pipeline
 npm run pipeline:config       # Show config summary
 
 # API
-curl -X POST http://localhost:3300/api/pipeline/run
-curl http://localhost:3300/api/pipeline/state
-curl http://localhost:3300/api/pipeline/config
+curl -X POST http://api.headysystems.com:3300/api/pipeline/run
+curl http://api.headysystems.com:3300/api/pipeline/state
+curl http://api.headysystems.com:3300/api/pipeline/config
 
 # Programmatic
 const { pipeline } = require('./src/hc_pipeline');
@@ -803,15 +803,15 @@ git push heady-me main  # Triggers HeadyMe deploy
 
 | Probe | Type | URL | Criticality | Interval |
 |-------|------|-----|-------------|----------|
-| heady-manager-api | HTTP | `localhost:3300/api/health` | Critical | 60s |
-| heady-manager-pulse | HTTP | `localhost:3300/api/pulse` | High | 60s |
-| heady-frontend | HTTP | `localhost:3300/` | High | 300s |
-| heady-admin | HTTP | `localhost:3300/api/registry` | Medium | 300s |
+| heady-manager-api | HTTP | `api.headysystems.com:3300/api/health` | Critical | 60s |
+| heady-manager-pulse | HTTP | `api.headysystems.com:3300/api/pulse` | High | 60s |
+| heady-frontend | HTTP | `api.headysystems.com:3300/` | High | 300s |
+| heady-admin | HTTP | `api.headysystems.com:3300/api/registry` | Medium | 300s |
 | postgres-connection | TCP | `$DATABASE_URL` | Low | 120s |
 | render-deployment | HTTP | `app.headysystems.com/api/health` | High | 300s |
-| headybuddy-api | HTTP | `localhost:3300/api/buddy/health` | High | 60s |
-| headybuddy-widget | HTTP | `localhost:3400` | Medium | 300s |
-| headybuddy-suggestions | HTTP | `localhost:3300/api/buddy/suggestions` | Low | 120s |
+| headybuddy-api | HTTP | `api.headysystems.com:3300/api/buddy/health` | High | 60s |
+| headybuddy-widget | HTTP | `api.headysystems.com:3400` | Medium | 300s |
+| headybuddy-suggestions | HTTP | `api.headysystems.com:3300/api/buddy/suggestions` | Low | 120s |
 
 ### Operational Readiness Score (ORS)
 
@@ -1048,7 +1048,7 @@ node -e "const {pipeline}=require('./src/hc_pipeline');console.log(pipeline.getS
 
 ```bash
 # Activate all nodes
-curl -X POST http://localhost:3300/api/system/production
+curl -X POST http://api.headysystems.com:3300/api/system/production
 ```
 
 ---
@@ -1111,28 +1111,28 @@ System Events (Pipeline, Builds, Arena, Resources, Registry, Buddy)
 
 ```bash
 # List stories
-curl http://localhost:3300/api/stories
+curl http://api.headysystems.com:3300/api/stories
 
 # System narrative summary
-curl http://localhost:3300/api/stories/summary
+curl http://api.headysystems.com:3300/api/stories/summary
 
 # Create a story
-curl -X POST http://localhost:3300/api/stories \
+curl -X POST http://api.headysystems.com:3300/api/stories \
   -H "Content-Type: application/json" \
   -d '{"scope":"feature","title":"Landing Page Rebuild"}'
 
 # Add event
-curl -X POST http://localhost:3300/api/stories/{id}/events \
+curl -X POST http://api.headysystems.com:3300/api/stories/{id}/events \
   -H "Content-Type: application/json" \
   -d '{"type":"BUILD_SUCCESS","refs":{"buildId":"142"}}'
 
 # Annotate
-curl -X POST http://localhost:3300/api/stories/{id}/annotate \
+curl -X POST http://api.headysystems.com:3300/api/stories/{id}/annotate \
   -H "Content-Type: application/json" \
   -d '{"text":"Decided to pivot to new layout approach"}'
 
 # Ask HeadyBuddy
-curl -X POST http://localhost:3300/api/buddy/chat \
+curl -X POST http://api.headysystems.com:3300/api/buddy/chat \
   -H "Content-Type: application/json" \
   -d '{"message":"What changed recently?"}'
 ```
@@ -1166,7 +1166,7 @@ curl -X POST http://localhost:3300/api/buddy/chat \
 ```yaml
 # Node.js services
 healthcheck:
-  test: ["CMD", "wget", "-qO-", "http://localhost:PORT/api/health"]
+  test: ["CMD", "wget", "-qO-", "http://api.headysystems.com:PORT/api/health"]
   interval: 30s
   timeout: 10s
   retries: 3

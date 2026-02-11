@@ -16,15 +16,15 @@
 -->
 # Heady Complete Infrastructure Setup (HCIS)
 
-> **Systematic replacement of localhost with service domains + clean-build CI/CD + device provisioning**
+> **Systematic replacement of api.headysystems.com with service domains + clean-build CI/CD + device provisioning**
 >
 > *Domain-driven architecture | Clean builds on every change | Alert-driven (not auto-rebuild) | Human-in-the-loop*
 
 ## Overview
 
-This system transforms Heady from a localhost-centric development setup to a production-grade, domain-driven architecture with:
+This system transforms Heady from a api.headysystems.com-centric development setup to a production-grade, domain-driven architecture with:
 
-1. **Service Domain Migration** - Every service has a proper hostname (manager.heady.local, worker.heady.local, etc.)
+1. **Service Domain Migration** - Every service has a proper hostname (manager.headysystems.com, worker.headysystems.com, etc.)
 2. **Clean-Build CI/CD** - Full rebuild on every change with error classification and alerting
 3. **Cross-Platform Device Management** - Automated provisioning of all devices with consistent extensions
 4. **Observability & Alerting** - Monitors everything, alerts when human intervention needed
@@ -36,7 +36,7 @@ This system transforms Heady from a localhost-centric development setup to a pro
 .\scripts\hc-infrastructure-setup.ps1 -Mode full-setup
 
 # Or step by step
-.\scripts\hc-infrastructure-setup.ps1 -Mode inventory    # Find localhost refs
+.\scripts\hc-infrastructure-setup.ps1 -Mode inventory    # Find api.headysystems.com refs
 .\scripts\hc-infrastructure-setup.ps1 -Mode migrate      # Replace with domains
 .\scripts\hc-infrastructure-setup.ps1 -Mode provision   # Install everything
 .\scripts\hc-infrastructure-setup.ps1 -Mode clean-build # Build from scratch
@@ -50,7 +50,7 @@ This system transforms Heady from a localhost-centric development setup to a pro
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐           │
-│  │   Localhost  │────▶│   Service    │────▶│   Clean      │           │
+│  │   api.headysystems.com  │────▶│   Service    │────▶│   Clean      │           │
 │  │   Inventory  │     │   Domains    │     │   Build      │           │
 │  └──────────────┘     └──────────────┘     └──────────────┘           │
 │         │                    │                    │                   │
@@ -72,20 +72,20 @@ This system transforms Heady from a localhost-centric development setup to a pro
 
 ## Service Domains
 
-| Service | Old (localhost) | New (Domain) | Port |
+| Service | Old (api.headysystems.com) | New (Domain) | Port |
 |---------|-----------------|--------------|------|
-| Heady Manager | localhost:3300 | manager.heady.local | 3300 |
-| Python Worker | localhost:5000 | worker.heady.local | 5000 |
-| Web Dashboard | localhost:3000 | dashboard.heady.local | 3000 |
-| Public Site | localhost:8080 | www.heady.local | 8080 |
-| API Gateway | localhost:8081 | api.heady.local | 8081 |
-| Redis Cache | localhost:6379 | cache.heady.local | 6379 |
-| PostgreSQL | localhost:5432 | db.heady.local | 5432 |
-| Prometheus | localhost:9090 | metrics.heady.local | 9090 |
-| Grafana | localhost:3001 | grafana.heady.local | 3001 |
-| Imagination | localhost:3400 | imagination.heady.local | 3400 |
-| Jaeger Tracing | localhost:16686 | traces.heady.local | 16686 |
-| AlertManager | localhost:9093 | alerts.heady.local | 9093 |
+| Heady Manager | api.headysystems.com:3300 | manager.headysystems.com | 3300 |
+| Python Worker | api.headysystems.com:5000 | worker.headysystems.com | 5000 |
+| Web Dashboard | api.headysystems.com:3000 | dashboard.headysystems.com | 3000 |
+| Public Site | api.headysystems.com:8080 | www.headysystems.com | 8080 |
+| API Gateway | api.headysystems.com:8081 | api.headysystems.com | 8081 |
+| Redis Cache | api.headysystems.com:6379 | cache.headysystems.com | 6379 |
+| PostgreSQL | api.headysystems.com:5432 | db.headysystems.com | 5432 |
+| Prometheus | api.headysystems.com:9090 | metrics.headysystems.com | 9090 |
+| Grafana | api.headysystems.com:3001 | grafana.headysystems.com | 3001 |
+| Imagination | api.headysystems.com:3400 | imagination.headysystems.com | 3400 |
+| Jaeger Tracing | api.headysystems.com:16686 | traces.headysystems.com | 16686 |
+| AlertManager | api.headysystems.com:9093 | alerts.headysystems.com | 9093 |
 
 ## Clean-Build CI/CD
 
@@ -113,7 +113,7 @@ on:
 ```
 
 **Jobs:**
-1. **Pre-flight** - Check for localhost references
+1. **Pre-flight** - Check for api.headysystems.com references
 2. **Build Manager** - Clean Node.js build (npm ci, no cache)
 3. **Build Frontend** - React build
 4. **Build Worker** - Python + Docker
@@ -216,10 +216,10 @@ Use separate browser profile for banking/sensitive sites with NO extensions exce
 
 | Component | Domain | Purpose |
 |-----------|--------|---------|
-| Prometheus | metrics.heady.local | Metrics collection |
-| Grafana | grafana.heady.local | Dashboards |
-| Jaeger | traces.heady.local | Distributed tracing |
-| AlertManager | alerts.heady.local | Alert routing |
+| Prometheus | metrics.headysystems.com | Metrics collection |
+| Grafana | grafana.headysystems.com | Dashboards |
+| Jaeger | traces.headysystems.com | Distributed tracing |
+| AlertManager | alerts.headysystems.com | Alert routing |
 
 ### Alert Severity Levels
 
@@ -259,17 +259,17 @@ Use separate browser profile for banking/sensitive sites with NO extensions exce
 
 ### Local Development
 
-All services run on localhost but accessed via domains through hosts file.
+All services run on api.headysystems.com but accessed via domains through hosts file.
 
 ```powershell
 # Verify domains work
-curl http://manager.heady.local:3300/api/health
-curl http://dashboard.heady.local:3000
+curl http://manager.headysystems.com:3300/api/health
+curl http://dashboard.headysystems.com:3000
 ```
 
 ### Staging
 
-- Subdomain: `*.staging.internal.heady.systems`
+- Subdomain: `*.staging.headysystems.comheady.systems`
 - Auto-deploy from `develop` branch
 - Reduced resources, test data
 
@@ -297,7 +297,7 @@ sudo systemd-resolve --flush-caches
 ### Build Fails
 
 ```powershell
-# Check for localhost references
+# Check for api.headysystems.com references
 .\scripts\hc-infrastructure-setup.ps1 -Mode inventory
 
 # Clean everything and retry
@@ -365,8 +365,8 @@ $env:HEADY_ALERT_WEBHOOK = "https://hooks.slack.com/services/YOUR/WEBHOOK"
 ### Domain-Based Security
 
 - **Public zone:** `*.heady.systems` - Internet-facing, full security
-- **Internal zone:** `*.internal.heady.systems` - VPN/mesh required
-- **Local zone:** `*.heady.local` - Development only, hosts file
+- **Internal zone:** `*.headysystems.comheady.systems` - VPN/mesh required
+- **Local zone:** `*.headysystems.com` - Development only, hosts file
 
 ### Network Policies
 
@@ -417,10 +417,10 @@ Root CA (20 year validity)
 2. **Issue Certificates**
 ```powershell
 # Server certificate
-./configs/pki/scripts/issue-cert.sh server api.heady.internal
+./configs/pki/scripts/issue-cert.sh server api.headysystems.com
 
 # Client certificate
-./configs/pki/scripts/issue-cert.sh client nginx.heady.internal
+./configs/pki/scripts/issue-cert.sh client nginx.headysystems.com
 ```
 
 3. **Configure Services**
@@ -439,23 +439,23 @@ Root CA (20 year validity)
 openssl x509 -in /etc/nginx/ssl/pki/intermediate/certs/server.pem -text -noout
 
 # Verify TLS connection
-openssl s_client -connect api.heady.internal:8443 -showcerts
+openssl s_client -connect api.headysystems.com:8443 -showcerts
 ```
 
-## Migration from Localhost
+## Migration from api.headysystems.com
 
 ### Step 1: Inventory
 
 ```powershell
 .\scripts\hc-infrastructure-setup.ps1 -Mode inventory
-# Generates CSV with all localhost references
+# Generates CSV with all api.headysystems.com references
 ```
 
 ### Step 2: Migrate
 
 ```powershell
 .\scripts\hc-infrastructure-setup.ps1 -Mode migrate
-# Replaces localhost with domains
+# Replaces api.headysystems.com with domains
 # Updates hosts file
 # Backs up original hosts
 ```
@@ -464,9 +464,9 @@ openssl s_client -connect api.heady.internal:8443 -showcerts
 
 ```powershell
 # Test each service
-curl http://manager.heady.local:3300/api/health
-curl http://worker.heady.local:5000/health
-curl http://dashboard.heady.local:3000
+curl http://manager.headysystems.com:3300/api/health
+curl http://worker.headysystems.com:5000/health
+curl http://dashboard.headysystems.com:3000
 ```
 
 ## Support

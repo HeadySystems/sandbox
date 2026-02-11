@@ -106,11 +106,11 @@ environments:
   staging:
     cloud_layer: internal
     brain_profile: team
-    api_endpoint: https://api.staging.internal.heady.systems
-    manager_endpoint: https://manager.staging.internal.heady.systems
-    registry_endpoint: https://api.staging.internal.heady.systems/registry
-    brain_endpoint: https://brain.staging.internal.heady.systems
-    orchestrator_endpoint: https://api.staging.internal.heady.systems/orchestrator
+    api_endpoint: https://api.staging.headysystems.comheady.systems
+    manager_endpoint: https://manager.staging.headysystems.comheady.systems
+    registry_endpoint: https://api.staging.headysystems.comheady.systems/registry
+    brain_endpoint: https://brain.staging.headysystems.comheady.systems
+    orchestrator_endpoint: https://api.staging.headysystems.comheady.systems/orchestrator
     edge_proxy: null
     deployment_strategy: thorough
     resource_profile: standard

@@ -19,12 +19,12 @@
  *
  * Usage:
  *   import { HeadyClient } from '@headysystems/heady-sdk';
- *   const heady = new HeadyClient({ apiUrl: 'http://manager.dev.local.heady.internal:3300' });
+ *   const heady = new HeadyClient({ apiUrl: 'http://manager.dev.local.headysystems.com:3300' });
  *   const reply = await heady.chat('Hello');
  */
 
 export class HeadyClient {
-  constructor({ apiUrl = 'http://manager.dev.local.heady.internal:3300', apiKey = '', timeout = 30000 } = {}) {
+  constructor({ apiUrl = 'http://manager.dev.local.headysystems.com:3300', apiKey = '', timeout = 30000 } = {}) {
     this.apiUrl = apiUrl.replace(/\/$/, '');
     this.apiKey = apiKey;
     this.timeout = timeout;

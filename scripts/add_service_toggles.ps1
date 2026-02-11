@@ -229,28 +229,28 @@ function Add-ServiceHealthCheck {
             start_period = '10s'
         }
         'heady-manager' = @{
-            test = "['CMD-SHELL', 'curl -f http://localhost:3300/health || exit 1']"
+            test = "['CMD-SHELL', 'curl -f http://api.headysystems.com:3300/health || exit 1']"
             interval = '30s'
             timeout = '10s'
             retries = 3
             start_period = '60s'
         }
         'heady-ollama' = @{
-            test = "['CMD-SHELL', 'curl -f http://localhost:11434/api/tags || exit 1']"
+            test = "['CMD-SHELL', 'curl -f http://api.headysystems.com:11434/api/tags || exit 1']"
             interval = '60s'
             timeout = '15s'
             retries = 3
             start_period = '120s'
         }
         'heady-grafana' = @{
-            test = "['CMD-SHELL', 'curl -f http://localhost:3000/api/health || exit 1']"
+            test = "['CMD-SHELL', 'curl -f http://api.headysystems.com:3000/api/health || exit 1']"
             interval = '30s'
             timeout = '10s'
             retries = 3
             start_period = '30s'
         }
         'heady-prometheus' = @{
-            test = "['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:9090/-/healthy || exit 1']"
+            test = "['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://api.headysystems.com:9090/-/healthy || exit 1']"
             interval = '30s'
             timeout = '10s'
             retries = 3
@@ -264,14 +264,14 @@ function Add-ServiceHealthCheck {
             start_period = '20s'
         }
         'heady-rag' = @{
-            test = "['CMD-SHELL', 'curl -f http://localhost:8080/health || exit 1']"
+            test = "['CMD-SHELL', 'curl -f http://api.headysystems.com:8080/health || exit 1']"
             interval = '30s'
             timeout = '10s'
             retries = 3
             start_period = '60s'
         }
         'heady-mcp' = @{
-            test = "['CMD-SHELL', 'curl -f http://localhost:3001/health || exit 1']"
+            test = "['CMD-SHELL', 'curl -f http://api.headysystems.com:3001/health || exit 1']"
             interval = '30s'
             timeout = '10s'
             retries = 3

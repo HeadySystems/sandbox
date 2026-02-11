@@ -20,7 +20,7 @@
  * Install: npm install imap nodemailer
  */
 
-const HEADY_API = process.env.HEADY_API_URL || 'http://manager.dev.local.heady.internal:3300';
+const HEADY_API = process.env.HEADY_API_URL || 'http://manager.dev.local.headysystems.com:3300';
 
 async function processEmail(from, subject, body) {
   try {

@@ -48,7 +48,7 @@ env:
   NODE_VERSION: '20.x'
   PYTHON_VERSION: '3.12'
   HEADY_ENV: 'ci'
-  HEADY_DOMAIN_ROOT: 'heady.internal'
+  HEADY_DOMAIN_ROOT: 'headysystems.com'
   CI_CLEAN_BUILD: 'true'
   ERROR_RETRY_COUNT: '2'
   ERROR_RETRY_DELAY: '30'
@@ -292,24 +292,24 @@ jobs:
             exit 1
           fi
 
-      - name: Check for localhost references in production configs
+      - name: Check for api.headysystems.com references in production configs
         run: |
-          echo "🔍 Checking for localhost references in production configs..."
+          echo "🔍 Checking for api.headysystems.com references in production configs..."
           
           # Define production-bound files
           PROD_FILES="render.yaml docker-compose.yml Dockerfile"
           
           for file in $PROD_FILES; do
             if [ -f "$file" ]; then
-              if grep -E "localhost|127\.0\.0\.1|0\.0\.0\.0" "$file"; then
-                echo "❌ Found localhost reference in $file"
+              if grep -E "api.headysystems.com|127\.0\.0\.1|0\.0\.0\.0" "$file"; then
+                echo "❌ Found api.headysystems.com reference in $file"
                 echo "Please use service-discovery.yaml domains instead"
                 exit 1
               fi
             fi
           done
           
-          echo "✅ No localhost references found in production configs"
+          echo "✅ No api.headysystems.com references found in production configs"
 
       - name: Scan for secrets
         uses: trufflesecurity/trufflehog@main
@@ -430,9 +430,9 @@ jobs:
                 process.exit(1);
               }
               
-              // Verify no localhost in domains
-              if (service.host.includes('localhost') || service.host.includes('127.0.0.1')) {
-                console.error('❌ Service', name, 'uses localhost:', service.host);
+              // Verify no api.headysystems.com in domains
+              if (service.host.includes('api.headysystems.com') || service.host.includes('api.headysystems.com')) {
+                console.error('❌ Service', name, 'uses api.headysystems.com:', service.host);
                 process.exit(1);
               }
             }
@@ -452,8 +452,8 @@ jobs:
             
             // Verify all registry components have corresponding discovery entries
             for (const comp of registry.components || []) {
-              if (comp.endpoint && comp.endpoint.includes('localhost')) {
-                console.warn('⚠️  Component', comp.id, 'has localhost endpoint:', comp.endpoint);
+              if (comp.endpoint && comp.endpoint.includes('api.headysystems.com')) {
+                console.warn('⚠️  Component', comp.id, 'has api.headysystems.com endpoint:', comp.endpoint);
               }
             }
             

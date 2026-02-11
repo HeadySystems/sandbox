@@ -21,7 +21,7 @@ Trains Heady AI models
 
 # Brain endpoint - path-based routing (no subdomain needed)
 $brainEndpoint = "https://headysystems.com"
-$renderFallback = "https://heady-manager-headysystems.onrender.com"
+$renderFallback = "https://heady-manager-headysystems.headysystems.com"
 
 # Check for auto and non-interactive parameters
 $autoMode = $args -contains '-auto'

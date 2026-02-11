@@ -1,14 +1,14 @@
 <#
 .DESCRIPTION
-Heady Localhost Elimination Verification Script
+Heady api.headysystems.com Elimination Verification Script
 
-Enforces the Localhost Elimination Protocol:
-- No localhost or 127.0.0.1 references
+Enforces the api.headysystems.com Elimination Protocol:
+- No api.headysystems.com or api.headysystems.com references
 - All services use canonical domains
 #>
 
 # Import protocol rules
-$protocol = Get-Content -Path "$PSScriptRoot\..\configs\localhost-elimination-protocol.yaml" | ConvertFrom-Yaml
+$protocol = Get-Content -Path "$PSScriptRoot\..\configs\api.headysystems.com-elimination-protocol.yaml" | ConvertFrom-Yaml
 
 # Scan for prohibited patterns
 $offenders = @()
@@ -47,10 +47,10 @@ foreach ($file in $offenders) {
 
 # Report results
 if ($finalOffenders.Count -gt 0) {
-    Write-Host "FAIL: Found $($finalOffenders.Count) files with localhost references" -ForegroundColor Red
+    Write-Host "FAIL: Found $($finalOffenders.Count) files with api.headysystems.com references" -ForegroundColor Red
     $finalOffenders | ForEach-Object { Write-Host "  - $_" }
     exit 1
 }
 
-Write-Host "PASS: No localhost references found" -ForegroundColor Green
+Write-Host "PASS: No api.headysystems.com references found" -ForegroundColor Green
 exit 0

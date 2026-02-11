@@ -332,7 +332,7 @@ heady-browser-desktop/
   "plugins": {
     "shell": { "open": true },
     "fs": { "scope": ["$APPDATA/**", "$HOME/.heady/**"] },
-    "http": { "scope": ["http://localhost:*", "https://*"] }
+    "http": { "scope": ["http://api.headysystems.com:*", "https://*"] }
   }
 }
 ```
@@ -400,7 +400,7 @@ fn main() {
 | **Rendering** | System WebView2 (Windows) / WebKitGTK (Linux) via Tauri |
 | **Tabs** | React tab component + Tauri multi-webview (Tauri 2.0) |
 | **Ad blocking** | Rust-based filter list engine (adblock-rust crate) + DNS-level blocking |
-| **Buddy sidebar** | React panel calling Buddy API over localhost |
+| **Buddy sidebar** | React panel calling Buddy API over api.headysystems.com |
 | **System tray** | Tauri SystemTray — hide-to-tray on close, global hotkey |
 | **Extensions** | WebExtension bridge (limited) or Heady plugin system |
 | **Workspaces** | Named tab groups (Research, Coding, Personal) persisted to SQLite |
@@ -505,7 +505,7 @@ async function routeToLLM(messages, options = {}) {
   // Try local first (Ollama)
   if (preferLocal) {
     try {
-      const localResponse = await fetch('http://localhost:11434/api/chat', {
+      const localResponse = await fetch('http://api.headysystems.com:11434/api/chat', {
         method: 'POST',
         body: JSON.stringify({ model: model || 'llama3.2', messages, stream: false })
       });
@@ -749,7 +749,7 @@ ExecStart=/opt/heady/buddy-backend serve --port 3301
 Restart=always
 RestartSec=5
 Environment=HEADY_API_KEY=your_key
-Environment=OLLAMA_HOST=http://localhost:11434
+Environment=OLLAMA_HOST=http://api.headysystems.com:11434
 WorkingDirectory=/opt/heady
 
 [Install]
@@ -877,7 +877,7 @@ echo "IP: $(ifconfig wlan0 2>/dev/null | grep 'inet ' | awk '{print $2}')"
 echo "SSH Port: 8022"
 echo "Uptime: $(uptime)"
 echo "Storage: $(df -h /data | tail -1 | awk '{print $3 "/" $2 " (" $5 " used)"}')"
-echo "Buddy API: $(curl -s http://localhost:3301/buddy/status 2>/dev/null || echo 'not running')"
+echo "Buddy API: $(curl -s http://api.headysystems.com:3301/buddy/status 2>/dev/null || echo 'not running')"
 echo "=========================="
 STATUS
 chmod +x $PREFIX/bin/heady-status
@@ -1060,9 +1060,9 @@ volumes:
 
 ### 13.2 Access
 
-- **Local:** `http://localhost:3400`
+- **Local:** `http://api.headysystems.com:3400`
 - **From phone (same network):** `http://COMPUTER_IP:3400`
-- **From phone (via SSH tunnel):** `ssh -L 3400:localhost:3400 user@COMPUTER_IP`
+- **From phone (via SSH tunnel):** `ssh -L 3400:api.headysystems.com:3400 user@COMPUTER_IP`
 
 ---
 
@@ -1071,7 +1071,7 @@ volumes:
 From your Android phone:
 
 1. Open **Heady Browser** → navigate to `http://COMPUTER_IP:3400`
-2. Or use SSH tunnel: `ssh -L 3400:localhost:3400 user@COMPUTER -p 22`
+2. Or use SSH tunnel: `ssh -L 3400:api.headysystems.com:3400 user@COMPUTER -p 22`
 3. The IDE runs in the browser — responsive enough for quick edits on mobile
 
 For deeper mobile coding:
@@ -1101,13 +1101,13 @@ Port    Service                 Description
 # heady-health-all.sh
 echo "=== Heady System Health ==="
 echo -n "HeadyManager (3300): "
-curl -sf http://localhost:3300/api/health | jq -r '.ok // "DOWN"' 2>/dev/null || echo "DOWN"
+curl -sf http://api.headysystems.com:3300/api/health | jq -r '.ok // "DOWN"' 2>/dev/null || echo "DOWN"
 echo -n "Buddy Backend (3301): "
-curl -sf http://localhost:3301/buddy/status | jq -r '.ok // "DOWN"' 2>/dev/null || echo "DOWN"
+curl -sf http://api.headysystems.com:3301/buddy/status | jq -r '.ok // "DOWN"' 2>/dev/null || echo "DOWN"
 echo -n "Heady IDE (3400):     "
-curl -sf http://localhost:3400 >/dev/null 2>&1 && echo "UP" || echo "DOWN"
+curl -sf http://api.headysystems.com:3400 >/dev/null 2>&1 && echo "UP" || echo "DOWN"
 echo -n "Ollama (11434):       "
-curl -sf http://localhost:11434/api/tags >/dev/null 2>&1 && echo "UP" || echo "DOWN"
+curl -sf http://api.headysystems.com:11434/api/tags >/dev/null 2>&1 && echo "UP" || echo "DOWN"
 echo "=========================="
 ```
 
@@ -1120,7 +1120,7 @@ echo "=========================="
 | Threat | Mitigation |
 |---|---|
 | SSH brute force on phone | Key-only auth, non-standard port, local network only |
-| Buddy API exposed to network | Bind to localhost by default; use SSH tunnels for remote access |
+| Buddy API exposed to network | Bind to api.headysystems.com by default; use SSH tunnels for remote access |
 | LLM data leakage (cloud) | Prefer local models (Ollama); if cloud, use API keys with minimal scope |
 | Extension malware | Only install from trusted sources (Mozilla AMO, verified publishers) |
 | Stolen device | Encrypted storage (SQLCipher), Android screen lock, remote wipe |
@@ -1270,19 +1270,19 @@ done
 
 ```bash
 # Health check
-curl -sf http://localhost:3301/buddy/status
+curl -sf http://api.headysystems.com:3301/buddy/status
 
 # Chat test
-curl -X POST http://localhost:3301/buddy/chat \
+curl -X POST http://api.headysystems.com:3301/buddy/chat \
   -H "Content-Type: application/json" \
   -d '{"messages":[{"role":"user","content":"Hello, Buddy!"}]}'
 
 # Memory test
-curl -X POST http://localhost:3301/memory/store \
+curl -X POST http://api.headysystems.com:3301/memory/store \
   -H "Content-Type: application/json" \
   -d '{"key":"test","value":"Heady Buddy works"}'
 
-curl http://localhost:3301/memory/recall?query=buddy
+curl http://api.headysystems.com:3301/memory/recall?query=buddy
 ```
 
 ### 23.3 SSH Testing

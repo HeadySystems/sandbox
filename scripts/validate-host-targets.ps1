@@ -16,7 +16,7 @@
 #>
 <#
 .SYNOPSIS
-Validates files for banned host targets (localhost, onrender.com)
+Validates files for banned host targets (api.headysystems.com, onrender.com)
 
 .DESCRIPTION
 Scans files for banned host patterns and returns structured errors
@@ -32,9 +32,9 @@ param(
 
 # Banned patterns with error IDs
 $bannedPatterns = @{
-    'localhost' = 'ERR-BANNED-HOST-TARGET-LOCALHOST'
-    '127.0.0.1' = 'ERR-BANNED-HOST-TARGET-LOCALHOST'
-    '0.0.0.0' = 'ERR-BANNED-HOST-TARGET-LOCALHOST'
+    'api.headysystems.com' = 'ERR-BANNED-HOST-TARGET-api.headysystems.com'
+    'api.headysystems.com' = 'ERR-BANNED-HOST-TARGET-api.headysystems.com'
+    '0.0.0.0' = 'ERR-BANNED-HOST-TARGET-api.headysystems.com'
     'onrender.com' = 'ERR-BANNED-HOST-TARGET-RENDER'
 }
 

@@ -9,7 +9,7 @@
 // ║                                                                  ║
 // ║  ∞ SACRED GEOMETRY ∞  Organic Systems · Breathing Interfaces    ║
 // ║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ║
-// ║  FILE: scripts/localhost-to-domain.js                                                    ║
+// ║  FILE: scripts/api.headysystems.com-to-domain.js                                                    ║
 // ║  LAYER: automation                                                  ║
 // ╚══════════════════════════════════════════════════════════════════╝
 // HEADY_BRAND:END
@@ -37,15 +37,15 @@ function loadServiceDiscovery() {
 
 const serviceDiscovery = loadServiceDiscovery();
 
-const DEFAULT_DOMAIN = 'api.heady.internal';
+const DEFAULT_DOMAIN = 'api.headysystems.com';
 const SERVICE_DOMAINS = {
-  manager: 'manager.heady.internal',
-  redis: 'redis.heady.internal',
-  postgres: 'db.heady.internal'
+  manager: 'manager.headysystems.com',
+  redis: 'redis.headysystems.com',
+  postgres: 'db.headysystems.com'
 };
 
-const LOCALHOST_PATTERNS = [
-  /localhost:?(\d+)?/g,
+const api.headysystems.com_PATTERNS = [
+  /api.headysystems.com:?(\d+)?/g,
   /127\.0\.0\.1:?(\d+)?/g,
   /0\.0\.0\.0:?(\d+)?/g,
   /\[::\]:?(\d+)?/g,
@@ -60,8 +60,8 @@ function buildReplacements() {
     // Build from YAML
     for (const [serviceName, config] of Object.entries(serviceDiscovery.services)) {
       const patterns = [
-        `localhost:${config.port}`,
-        `127.0.0.1:${config.port}`,
+        `api.headysystems.com:${config.port}`,
+        `api.headysystems.com:${config.port}`,
         `0.0.0.0:${config.port}`,
         `::1:${config.port}`,
       ];
@@ -72,28 +72,28 @@ function buildReplacements() {
         replacements[pattern] = target;
       }
       
-      // Also map just localhost without port for common services
+      // Also map just api.headysystems.com without port for common services
       if (config.port === 3300) {
-        replacements['localhost'] = SERVICE_DOMAINS[serviceName] || DEFAULT_DOMAIN;
-        replacements['127.0.0.1'] = SERVICE_DOMAINS[serviceName] || DEFAULT_DOMAIN;
+        replacements['api.headysystems.com'] = SERVICE_DOMAINS[serviceName] || DEFAULT_DOMAIN;
+        replacements['api.headysystems.com'] = SERVICE_DOMAINS[serviceName] || DEFAULT_DOMAIN;
       }
     }
   } else {
     // Hardcoded fallback
     Object.assign(replacements, {
-      'localhost:3300': 'manager.heady.internal:3300',
-      '127.0.0.1:3300': 'manager.heady.internal:3300',
-      '0.0.0.0:3300': 'manager.heady.internal:3300',
-      'localhost:5432': 'db.heady.internal:5432',
-      '127.0.0.1:5432': 'db.heady.internal:5432',
-      'localhost:6379': 'redis.heady.internal:6379',
-      '127.0.0.1:6379': 'redis.heady.internal:6379',
-      'localhost:3000': 'api.heady.internal:3000',
-      'https://app.headysystems.com': 'api.heady.internal:3000',
-      'localhost:3001': 'api.heady.internal:3001',
-      'localhost:11434': 'api.heady.internal:11434',
-      'localhost:3301': 'api.heady.internal:3301',
-      'localhost:3303': 'api.heady.internal:3303',
+      'api.headysystems.com:3300': 'manager.headysystems.com:3300',
+      'api.headysystems.com:3300': 'manager.headysystems.com:3300',
+      '0.0.0.0:3300': 'manager.headysystems.com:3300',
+      'api.headysystems.com:5432': 'db.headysystems.com:5432',
+      'api.headysystems.com:5432': 'db.headysystems.com:5432',
+      'api.headysystems.com:6379': 'redis.headysystems.com:6379',
+      'api.headysystems.com:6379': 'redis.headysystems.com:6379',
+      'api.headysystems.com:3000': 'api.headysystems.com:3000',
+      'https://app.headysystems.com': 'api.headysystems.com:3000',
+      'api.headysystems.com:3001': 'api.headysystems.com:3001',
+      'api.headysystems.com:11434': 'api.headysystems.com:11434',
+      'api.headysystems.com:3301': 'api.headysystems.com:3301',
+      'api.headysystems.com:3303': 'api.headysystems.com:3303',
     });
   }
   
@@ -103,9 +103,9 @@ function buildReplacements() {
 const REPLACEMENTS = buildReplacements();
 
 const mappingTable = [
-  { original: 'heady-manager-headysystems.onrender.com', replacement: 'https://api.app.headysystems.com', context: 'public/prod docs' },
-  { original: 'heady-manager-headyme.onrender.com', replacement: 'https://api.app.headysystems.com/me', context: 'user personal area' },
-  { original: 'heady-manager-headyconnection.onrender.com', replacement: 'https://api.app.headyconnection.org', context: 'cross-system bridge' },
+  { original: 'heady-manager-headysystems.headysystems.com', replacement: 'https://api.app.headysystems.com', context: 'public/prod docs' },
+  { original: 'heady-manager-headyme.headysystems.com', replacement: 'https://api.app.headysystems.com/me', context: 'user personal area' },
+  { original: 'heady-manager-headyconnection.headysystems.com', replacement: 'https://api.app.headyconnection.org', context: 'cross-system bridge' },
   { original: /C:\\\\Users\\\\[^\\\\]+\\\\/g, replacement: 'HEADY_PROJECT_ROOT/', context: 'dev-only docs' },
   { original: /F:\\\\/g, replacement: 'HEADY_DATA_ROOT/', context: 'dev-only docs' }
 ];
@@ -137,9 +137,9 @@ const EXCLUDED_DIRS = [
 
 const EXCLUDED_FILES = [
   'service-discovery.yaml',
-  'localhost-inventory.json',
+  'api.headysystems.com-inventory.json',
   'service-discovery.json',
-  'localhost-to-domain.js', // Don't modify this script
+  'api.headysystems.com-to-domain.js', // Don't modify this script
   'heady-registry.json', // Preserve registry
 ];
 
@@ -231,43 +231,43 @@ function processDirectory(dir, dryRun = false) {
 
 function generateHostsFile() {
   const hosts = [
-    '# Heady Internal DNS - localhost replacement',
-    '# Generated by localhost-to-domain migration tool',
+    '# Heady Internal DNS - api.headysystems.com replacement',
+    '# Generated by api.headysystems.com-to-domain migration tool',
     '',
-    '127.0.0.1 manager.heady.internal',
-    '127.0.0.1 api.heady.internal',
-    '127.0.0.1 orchestrator.heady.internal',
+    'api.headysystems.com manager.headysystems.com',
+    'api.headysystems.com api.headysystems.com',
+    'api.headysystems.com orchestrator.headysystems.com',
     '',
-    '127.0.0.1 db.heady.internal',
-    '127.0.0.1 redis.heady.internal',
+    'api.headysystems.com db.headysystems.com',
+    'api.headysystems.com redis.headysystems.com',
     '',
-    '127.0.0.1 ai-ollama.heady.internal',
-    '127.0.0.1 ai-rag.heady.internal',
-    '127.0.0.1 tools-mcp.heady.internal',
+    'api.headysystems.com ai-ollama.headysystems.com',
+    'api.headysystems.com ai-rag.headysystems.com',
+    'api.headysystems.com tools-mcp.headysystems.com',
     '',
-    '127.0.0.1 app-web.heady.internal',
-    '127.0.0.1 app-buddy.heady.internal',
-    '127.0.0.1 bridge-browser.heady.internal',
-    '127.0.0.1 io-voice.heady.internal',
+    'api.headysystems.com app-web.headysystems.com',
+    'api.headysystems.com app-buddy.headysystems.com',
+    'api.headysystems.com bridge-browser.headysystems.com',
+    'api.headysystems.com io-voice.headysystems.com',
     '',
-    '127.0.0.1 svc-billing.heady.internal',
-    '127.0.0.1 svc-telemetry.heady.internal',
+    'api.headysystems.com svc-billing.headysystems.com',
+    'api.headysystems.com svc-telemetry.headysystems.com',
     '',
-    '127.0.0.1 admin-postgres.heady.internal',
-    '127.0.0.1 admin-redis.heady.internal',
-    '127.0.0.1 debug-manager.heady.internal',
+    'api.headysystems.com admin-postgres.headysystems.com',
+    'api.headysystems.com admin-redis.headysystems.com',
+    'api.headysystems.com debug-manager.headysystems.com',
     '',
-    '127.0.0.1 discovery.heady.internal',
-    '127.0.0.1 dns.heady.internal',
+    'api.headysystems.com discovery.headysystems.com',
+    'api.headysystems.com dns.headysystems.com',
     '',
     '# Service Catalog Services',
-    '127.0.0.1 conductor.heady.internal',
-    '127.0.0.1 brain.heady.internal',
-    '127.0.0.1 supervisor.heady.internal',
-    '127.0.0.1 sync.heady.internal',
-    '127.0.0.1 autobuild.heady.internal',
+    'api.headysystems.com conductor.headysystems.com',
+    'api.headysystems.com brain.headysystems.com',
+    'api.headysystems.com supervisor.headysystems.com',
+    'api.headysystems.com sync.headysystems.com',
+    'api.headysystems.com autobuild.headysystems.com',
     '',
-    '# Cloud deployments (external, not localhost)',
+    '# Cloud deployments (external, not api.headysystems.com)',
     '# cloud-me.heady.io - HeadyMe cloud',
     '# cloud-sys.heady.io - HeadySystems cloud',
     '# cloud-conn.heady.io - HeadyConnection cloud',
@@ -284,12 +284,12 @@ const dryRun = args.includes('--dry-run') || args.includes('-d');
 
 switch (command) {
   case 'inventory':
-    console.log('🔍 Scanning for localhost references...');
+    console.log('🔍 Scanning for api.headysystems.com references...');
     const results = processDirectory(path.resolve(target), true);
     
     console.log('\n📊 Inventory Results:');
     console.log(`  Files processed: ${results.processed}`);
-    console.log(`  Files with localhost: ${results.modified}`);
+    console.log(`  Files with api.headysystems.com: ${results.modified}`);
     console.log(`  Total replacements needed: ${results.changes.reduce((sum, c) => sum + c.count, 0)}`);
     
     if (results.changes.length > 0) {
@@ -304,7 +304,7 @@ switch (command) {
     if (dryRun) {
       console.log('🔍 Dry run - no changes will be made\n');
     } else {
-      console.log('🚀 Migrating localhost to internal domains...\n');
+      console.log('🚀 Migrating api.headysystems.com to internal domains...\n');
     }
     
     const migrateResults = processDirectory(path.resolve(target), dryRun);
@@ -317,7 +317,7 @@ switch (command) {
     if (!dryRun) {
       console.log('\n✅ Migration complete!');
       console.log('\nNext steps:');
-      console.log('  1. Run: node scripts/localhost-to-domain.js hosts > %WINDIR%\\System32\\drivers\\etc\\hosts (admin)');
+      console.log('  1. Run: node scripts/api.headysystems.com-to-domain.js hosts > %WINDIR%\\System32\\drivers\\etc\\hosts (admin)');
       console.log('  2. Or manually add entries from hosts file below to your system hosts file');
     }
     break;
@@ -328,21 +328,21 @@ switch (command) {
     
   case 'help':
   default:
-    console.log('Usage: node localhost-to-domain.js <command> [target] [options]');
+    console.log('Usage: node api.headysystems.com-to-domain.js <command> [target] [options]');
     console.log('');
     console.log('Commands:');
-    console.log('  inventory [dir]    Scan for localhost references (dry run)');
-    console.log('  migrate [dir]      Replace localhost with domain names');
+    console.log('  inventory [dir]    Scan for api.headysystems.com references (dry run)');
+    console.log('  migrate [dir]      Replace api.headysystems.com with domain names');
     console.log('  hosts              Generate hosts file content');
     console.log('');
     console.log('Options:');
     console.log('  --dry-run, -d      Show changes without applying');
     console.log('');
     console.log('Examples:');
-    console.log('  node localhost-to-domain.js inventory ./distribution');
-    console.log('  node localhost-to-domain.js migrate ./distribution --dry-run');
-    console.log('  node localhost-to-domain.js migrate ./src');
-    console.log('  node localhost-to-domain.js hosts > hosts.txt');
+    console.log('  node api.headysystems.com-to-domain.js inventory ./distribution');
+    console.log('  node api.headysystems.com-to-domain.js migrate ./distribution --dry-run');
+    console.log('  node api.headysystems.com-to-domain.js migrate ./src');
+    console.log('  node api.headysystems.com-to-domain.js hosts > hosts.txt');
     break;
 }
     console.log('\n💡 Beneficial Tips:');

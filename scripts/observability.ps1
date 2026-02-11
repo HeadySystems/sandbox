@@ -46,10 +46,10 @@ New-Item -ItemType Directory -Force -Path $METRICS_DIR | Out-Null
 
 # Service endpoints (using new domain names)
 $SERVICES = @{
-    manager = "http://manager.dev.local.heady.internal:3300"
-    conductor = "http://conductor.dev.local.heady.internal:8080"
-    brain = "http://brain.dev.local.heady.internal:8081"
-    supervisor = "http://supervisor.dev.local.heady.internal:8082"
+    manager = "http://manager.dev.local.headysystems.com:3300"
+    conductor = "http://conductor.dev.local.headysystems.com:8080"
+    brain = "http://brain.dev.local.headysystems.com:8081"
+    supervisor = "http://supervisor.dev.local.headysystems.com:8082"
 }
 
 function Test-ServiceHealth {
@@ -234,9 +234,9 @@ function Start-Monitoring {
     
     # Check hosts file is configured
     $hostsContent = Get-Content "$env:SystemRoot\System32\drivers\etc\hosts" -ErrorAction SilentlyContinue
-    if (-not ($hostsContent -match "heady.internal")) {
+    if (-not ($hostsContent -match "headysystems.com")) {
         Write-Host "⚠️  Warning: Internal domains not found in hosts file" -ForegroundColor Yellow
-        Write-Host "   Run: node scripts/localhost-to-domain.js hosts" -ForegroundColor Yellow
+        Write-Host "   Run: node scripts/api.headysystems.com-to-domain.js hosts" -ForegroundColor Yellow
         Write-Host "   Then add output to C:\Windows\System32\drivers\etc\hosts" -ForegroundColor Yellow
     }
     

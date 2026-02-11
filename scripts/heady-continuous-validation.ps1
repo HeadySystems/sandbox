@@ -167,9 +167,9 @@ function Test-ServiceAvailability {
     
     $services = @(
         @{ Name = "heady-brain"; Endpoints = @("https://brain.headysystems.com", "https://52.32.178.8"); HealthCheck = "/api/brain/health" }
-        @{ Name = "heady-manager"; Endpoints = @("http://localhost:3300", "http://manager.heady.internal:3300"); HealthCheck = "/api/health" }
-        @{ Name = "heady-conductor"; Endpoints = @("http://localhost:8080", "http://conductor.heady.internal:8080"); HealthCheck = "/health" }
-        @{ Name = "heady-supervisor"; Endpoints = @("http://localhost:8082", "http://supervisor.heady.internal:8082"); HealthCheck = "/module-loaded" }
+        @{ Name = "heady-manager"; Endpoints = @("http://api.headysystems.com:3300", "http://manager.headysystems.com:3300"); HealthCheck = "/api/health" }
+        @{ Name = "heady-conductor"; Endpoints = @("http://api.headysystems.com:8080", "http://conductor.headysystems.com:8080"); HealthCheck = "/health" }
+        @{ Name = "heady-supervisor"; Endpoints = @("http://api.headysystems.com:8082", "http://supervisor.headysystems.com:8082"); HealthCheck = "/module-loaded" }
     )
     
     $totalServices = $services.Count
@@ -246,9 +246,9 @@ function Test-BrainIntegration {
     
     # Check that services are properly integrated with HeadyBrain
     $integrationChecks = @(
-        @{ Service = "heady-manager"; IntegrationEndpoint = "http://localhost:3300/api/brain-integration"; Expected = "integrated" }
-        @{ Service = "heady-conductor"; IntegrationEndpoint = "http://localhost:8080/brain-integration"; Expected = "integrated" }
-        @{ Service = "heady-supervisor"; IntegrationEndpoint = "http://localhost:8082/brain-integration"; Expected = "integrated" }
+        @{ Service = "heady-manager"; IntegrationEndpoint = "http://api.headysystems.com:3300/api/brain-integration"; Expected = "integrated" }
+        @{ Service = "heady-conductor"; IntegrationEndpoint = "http://api.headysystems.com:8080/brain-integration"; Expected = "integrated" }
+        @{ Service = "heady-supervisor"; IntegrationEndpoint = "http://api.headysystems.com:8082/brain-integration"; Expected = "integrated" }
     )
     
     $totalChecks = $integrationChecks.Count

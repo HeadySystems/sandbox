@@ -16,7 +16,7 @@
 # ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║  HEADY SYSTEMS — SUBDOMAIN ARCHITECTURE                                         ║
 # ║  Uses app.headysystems.com + subdomains for every component                  ║
-# ║  NO localhost • NO 127.0.0.1 • NO internal • NO .local                       ║
+# ║  NO api.headysystems.com • NO api.headysystems.com • NO internal • NO .local                       ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -180,4 +180,4 @@ routing:
 #   - vscode.app.headysystems.com → 💙 VS Code Soul
 #   - slack.app.headysystems.com → 💬 Slack Sage
 # 
-# NO localhost • NO 127.0.0.1 • NO .local • NO .internal
+# NO api.headysystems.com • NO api.headysystems.com • NO .local • NO .internal

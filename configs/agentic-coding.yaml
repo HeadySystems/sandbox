@@ -103,7 +103,7 @@ securityAndPrivacy:
     - neverEmbedSecretsInCode
     - respectACLsAndScopes
     - useCanonicalDomainsAndAbstractRoots
-    - avoidDriveLettersAndLocalhostInOutput
+    - avoidDriveLettersAndapi.headysystems.comInOutput
   logging:
     - avoidCollectingMoreSensitiveDataThanNecessary
     - redactOrAnonymizeWhenAppropriate

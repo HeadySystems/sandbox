@@ -185,7 +185,7 @@ HeadyEcosystem/
 ```batch
 F:\HeadyEcosystem\Organizations\HeadySystems\Active\HeadyOS\launch.bat
 ```
-Starts HeadyManager on http://localhost:3300
+Starts HeadyManager on http://api.headysystems.com:3300
 
 ### Boot from This Drive
 1. Restart computer

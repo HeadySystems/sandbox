@@ -46,7 +46,7 @@ New-Item -ItemType Directory -Force -Path $LOG_DIR | Out-Null
 
 # Device registry
 $DEVICES = @{
-    localhost = @{
+    api.headysystems.com = @{
         name = "Primary Workstation"
         path = $HEADY_ROOT
         type = "primary"
@@ -96,7 +96,7 @@ function Get-DeviceHealth {
             $health.disk_space_gb = [math]::Round($drive.Free / 1GB, 2)
             
             # Check if heady-manager is running (for primary)
-            if ($DeviceKey -eq "localhost") {
+            if ($DeviceKey -eq "api.headysystems.com") {
                 $process = Get-Process -Name "node" -ErrorAction SilentlyContinue | 
                     Where-Object { $_.CommandLine -match "heady-manager" }
                 $health.manager_running = $null -ne $process
@@ -142,11 +142,11 @@ function Sync-Device {
             }
         }
         
-        "localhost" {
+        "api.headysystems.com" {
             # Check local health
             $health = Get-DeviceHealth -DeviceKey $DeviceKey
             if ($health.manager_running) {
-                Write-Host "  ✓ HeadyManager running on localhost:3300" -ForegroundColor Green
+                Write-Host "  ✓ HeadyManager running on api.headysystems.com:3300" -ForegroundColor Green
             } else {
                 Write-Host "  ⚠ HeadyManager not running - starting..." -ForegroundColor Yellow
                 Start-HeadyManager
@@ -273,7 +273,7 @@ function Show-DeviceStatus {
                 Write-Host "  Last Sync: Never" -ForegroundColor Yellow
             }
             
-            if ($key -eq "localhost" -and $health.manager_running) {
+            if ($key -eq "api.headysystems.com" -and $health.manager_running) {
                 Write-Host "  HeadyManager: RUNNING" -ForegroundColor Green
             }
         }

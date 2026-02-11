@@ -43,7 +43,7 @@ Write-Host "`n🚀 STEP 1: Activating speed_priority mode ($Mode)..." -Foregroun
 
 try {
     $body = @{ mode = $Mode } | ConvertTo-Json -Compress
-    $response = Invoke-RestMethod -Uri "http://api.manager.local.heady.internal:3300/api/monte-carlo/speed-mode" `
+    $response = Invoke-RestMethod -Uri "http://api.manager.local.headysystems.com:3300/api/monte-carlo/speed-mode" `
         -Method POST -Body $body -ContentType "application/json" -TimeoutSec 5
     Write-Host "  ✅ Speed mode activated: $($response.mode)" -ForegroundColor Green
 } catch {
@@ -95,7 +95,7 @@ foreach ($hint in $hints) {
 Write-Host "`n📊 STEP 4: Current Speed Metrics" -ForegroundColor Yellow
 
 try {
-    $metrics = Invoke-RestMethod -Uri "http://api.manager.local.heady.internal:3300/api/monte-carlo/metrics" -TimeoutSec 3
+    $metrics = Invoke-RestMethod -Uri "http://api.manager.local.headysystems.com:3300/api/monte-carlo/metrics" -TimeoutSec 3
     Write-Host "  Speed Score: $($metrics.speedScore)%" -ForegroundColor $(if($metrics.speedScore -gt 60){"Green"}else{"Red"})
     Write-Host "  Active Plans: $($metrics.activePlans)" -ForegroundColor White
     Write-Host "  Samples Collected: $($metrics.totalSamples)" -ForegroundColor White

@@ -28,7 +28,7 @@ gateway:
     type: bearer
     token_env: "MCP_GATEWAY_TOKEN"
   cors:
-    origins: ["http://localhost:*", "https://*.headysystems.com"]
+    origins: ["http://api.headysystems.com:*", "https://*.headysystems.com"]
 
 # ── Available MCP Servers / Tools ──────────────────────────
 servers:

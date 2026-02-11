@@ -50,7 +50,7 @@
       "properties": {
         "heady.apiEndpoint": {
           "type": "string",
-          "default": "http://manager.dev.local.heady.internal:3300",
+          "default": "http://manager.dev.local.headysystems.com:3300",
           "description": "Heady API endpoint (local or cloud)"
         },
         "heady.mode": {

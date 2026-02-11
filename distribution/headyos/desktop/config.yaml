@@ -34,12 +34,12 @@ platforms:
 modes:
   local:
     description: "All processing on-device"
-    api_endpoint: "http://manager.dev.local.heady.internal:3300"
+    api_endpoint: "http://manager.dev.local.headysystems.com:3300"
     model_runner: "docker://model-runner:8000"
     requires_docker: true
   hybrid:
     description: "Local preferred, cloud fallback"
-    api_endpoint: "http://manager.dev.local.heady.internal:3300"
+    api_endpoint: "http://manager.dev.local.headysystems.com:3300"
     cloud_fallback: "https://api.heady.systems"
     model_router: true
   cloud:

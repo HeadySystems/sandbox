@@ -17,7 +17,7 @@
 # Developer Boot Sequence for Heady-Dev-VM
 
 # Start Cloudflared tunnel
-Start-Process -FilePath "cloudflared" -ArgumentList "tunnel --hostname *.vm.heady.internal" -NoNewWindow
+Start-Process -FilePath "cloudflared" -ArgumentList "tunnel --hostname *.vm.headysystems.com" -NoNewWindow
 
 # Read Soul-Token
 $soulToken = Get-Content -Path "C:\Heady\soul-token.txt" -ErrorAction Stop
@@ -37,4 +37,4 @@ $tokenResponse = Invoke-RestMethod -Uri "https://manager.heady.systems/api/vm/to
 git config --global url."https://x-access-token:$($tokenResponse.token)@github.com/".insteadOf "https://github.com/"
 
 # Open knowledge base
-Start-Process "https://docs.heady.internal"
+Start-Process "https://docs.headysystems.com"

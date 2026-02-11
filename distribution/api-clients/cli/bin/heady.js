@@ -38,7 +38,7 @@ program
   .action(async (message, opts) => {
     const spinner = ora('Thinking...').start();
     try {
-      const baseUrl = config.get('api_url') || 'http://manager.dev.local.heady.internal:3300';
+      const baseUrl = config.get('api_url') || 'http://manager.dev.local.headysystems.com:3300';
       const apiKey = config.get('api_key') || process.env.HEADY_API_KEY || '';
       const headers = { 'Content-Type': 'application/json' };
       if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
@@ -64,7 +64,7 @@ program
   .description('Check Heady API health')
   .action(async () => {
     try {
-      const baseUrl = config.get('api_url') || 'http://manager.dev.local.heady.internal:3300';
+      const baseUrl = config.get('api_url') || 'http://manager.dev.local.headysystems.com:3300';
       const resp = await fetch(`${baseUrl}/api/health`);
       const data = await resp.json();
       if (data.ok) {
@@ -102,7 +102,7 @@ program
   .description('List available agents')
   .action(async () => {
     try {
-      const baseUrl = config.get('api_url') || 'http://manager.dev.local.heady.internal:3300';
+      const baseUrl = config.get('api_url') || 'http://manager.dev.local.headysystems.com:3300';
       const resp = await fetch(`${baseUrl}/api/agents`);
       const data = await resp.json();
       console.log(chalk.bold('\nAvailable Agents:\n'));
@@ -119,7 +119,7 @@ program
   .description('Show system status (pulse)')
   .action(async () => {
     try {
-      const baseUrl = config.get('api_url') || 'http://manager.dev.local.heady.internal:3300';
+      const baseUrl = config.get('api_url') || 'http://manager.dev.local.headysystems.com:3300';
       const resp = await fetch(`${baseUrl}/api/pulse`);
       const data = await resp.json();
       console.log(chalk.bold('\nHeady System Status:\n'));

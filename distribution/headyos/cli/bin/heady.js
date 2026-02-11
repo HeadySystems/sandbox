@@ -25,7 +25,7 @@
 
 const readline = require('readline');
 
-const API = process.env.HEADY_API || 'http://manager.dev.local.heady.internal:3300';
+const API = process.env.HEADY_API || 'http://manager.dev.local.headysystems.com:3300';
 const TOKEN = process.env.HEADY_TOKEN || '';
 
 function headers() {

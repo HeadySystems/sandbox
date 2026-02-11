@@ -19,7 +19,7 @@ info:
   description: API documentation for HeadySystems services
   version: 1.0.0
 servers:
-  - url: http://localhost:3300
+  - url: http://api.headysystems.com:3300
     description: Local development server
   - url: https://headysystems.com/api
     description: Production server

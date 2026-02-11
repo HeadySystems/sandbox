@@ -13,7 +13,7 @@ if (-not $cloudflared) { Write-Warning "Cloudflared not running" }
 # 2. Check ports
 $ports = @(8443, 443)
 foreach ($port in $ports) {
-    $result = Test-NetConnection -ComputerName 127.0.0.1 -Port $port -WarningAction SilentlyContinue
+    $result = Test-NetConnection -ComputerName api.headysystems.com -Port $port -WarningAction SilentlyContinue
     Write-Host "Port $port : $($result.TcpTestSucceeded)"
 }
 

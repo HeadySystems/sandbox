@@ -16,13 +16,13 @@
 
 # Cloud-First Pipeline Configuration
 # HeadyMe/Sandbox as primary development cloud
-# Zero localhost — all connections route through cloud endpoints
+# Zero api.headysystems.com — all connections route through cloud endpoints
 
 pipeline:
   name: "HeadyMe Cloud-First Pipeline"
   version: "1.0.0"
   mode: cloud_only
-  localhost_allowed: false
+  api.headysystems.com_allowed: false
 
 # ============================================================================
 # CLOUD TOPOLOGY
@@ -204,7 +204,7 @@ endpoints:
 # POLICIES
 # ============================================================================
 policies:
-  localhost_ban:
+  api.headysystems.com_ban:
     enabled: true
     action: "block_and_redirect"
     redirect_to: "primary"

@@ -15,7 +15,7 @@
 // HEADY_BRAND:END
 // Heady Webhook Receiver
 // Standalone Express server that receives webhooks and forwards to Heady API
-// Usage: HEADY_API_URL=http://manager.dev.local.heady.internal:3300 node webhook-receiver.js
+// Usage: HEADY_API_URL=http://manager.dev.local.headysystems.com:3300 node webhook-receiver.js
 
 import express from 'express';
 import crypto from 'crypto';
@@ -23,7 +23,7 @@ import crypto from 'crypto';
 const app = express();
 app.use(express.json());
 
-const HEADY_API = process.env.HEADY_API_URL || 'http://manager.dev.local.heady.internal:3300';
+const HEADY_API = process.env.HEADY_API_URL || 'http://manager.dev.local.headysystems.com:3300';
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '';
 const PORT = process.env.WEBHOOK_PORT || 4100;
 
