@@ -67,6 +67,9 @@ notebooks/personal/*
 *.db
 .heady/.heady/
 
+# Files exceeding GitHub LFS 2GB per-file limit
+AndroidSDK/system-images/**/*.img
+
 # Deploy packages (temp build artifacts)
 deploy-package-*/
 offline-packages/

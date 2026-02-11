@@ -50,9 +50,9 @@ if ($Priority) {
             
             # Platform-specific deployment
             switch ($target) {
-                "Windows" { .\scripts\deploy-windows.ps1 }
-                "Android" { .\scripts\deploy-android.ps1 }
-                "Linux" { .\scripts\deploy-linux.ps1 }
+                "Windows" { & "$PSScriptRoot\deploy-windows.ps1" }
+                "Android" { & "$PSScriptRoot\deploy-android.ps1" }
+                "Linux" { & "$PSScriptRoot\deploy-linux.ps1" }
                 "Websites" {
                     if (-not $dockerAvailable) {
                         Write-Warning "Skipping Websites deployment because Docker engine is unavailable."
@@ -60,14 +60,16 @@ if ($Priority) {
                     }
                     # Run both website deployments simultaneously
                     $scriptPath = "$PSScriptRoot"
-                    Start-Job -ScriptBlock { & "$using:scriptPath\deploy-1me1.ps1" }
-                    Start-Job -ScriptBlock { & "$using:scriptPath\deploy-headymusic.ps1" }
-                    Get-Job | Wait-Job | Receive-Job
+                    $jobs = @()
+                    $jobs += Start-Job -ScriptBlock { & "$using:scriptPath\deploy-1me1.ps1" }
+                    $jobs += Start-Job -ScriptBlock { & "$using:scriptPath\deploy-headymusic.ps1" }
+                    $jobs | Wait-Job | Receive-Job
+                    $jobs | Remove-Job
                 }
             }
             
             # Post-deployment verification
-            .\scripts\verify-deployment.ps1 -Target $target
+            & "$PSScriptRoot\verify-deployment.ps1" -Target $target
         }
         catch {
             Write-Host "Deployment to $target failed: $_" -ForegroundColor Red
@@ -80,22 +82,22 @@ if ($Priority) {
     }
 
     # Final synchronization
-    .\scripts\sync-state.ps1 -env production
+    & "$PSScriptRoot\sync-state.ps1" -env production
 
     # Update deployment registry
-    .\scripts\update-deployment-registry.ps1 -Version $config.Version -Status "success"
+    & "$PSScriptRoot\update-deployment-registry.ps1" -Version $config.Version -Status "success"
 
     Write-Host "Deployment completed successfully" -ForegroundColor Green
 } else {
     # Safety Check 1: Verify system health
-    $systemHealth = .\scripts\check-system-health.ps1
+    $systemHealth = & "$PSScriptRoot\check-system-health.ps1"
     if (-not $systemHealth.AllSystemsGo) {
         Write-Host "Aborting deployment: System health check failed" -ForegroundColor Red
         exit 1
     }
 
     # Safety Check 2: Verify no active user sessions
-    $activeSessions = .\scripts\check-user-sessions.ps1
+    $activeSessions = & "$PSScriptRoot\check-user-sessions.ps1"
     if ($activeSessions.Count -gt 0) {
         Write-Host "Aborting deployment: Active user sessions detected" -ForegroundColor Yellow
         exit 2
@@ -111,9 +113,9 @@ if ($Priority) {
             
             # Platform-specific deployment
             switch ($target) {
-                "Windows" { .\scripts\deploy-windows.ps1 }
-                "Android" { .\scripts\deploy-android.ps1 }
-                "Linux" { .\scripts\deploy-linux.ps1 }
+                "Windows" { & "$PSScriptRoot\deploy-windows.ps1" }
+                "Android" { & "$PSScriptRoot\deploy-android.ps1" }
+                "Linux" { & "$PSScriptRoot\deploy-linux.ps1" }
                 "Websites" {
                     if (-not $dockerAvailable) {
                         Write-Warning "Skipping Websites deployment because Docker engine is unavailable."
@@ -121,14 +123,16 @@ if ($Priority) {
                     }
                     # Run both website deployments simultaneously
                     $scriptPath = "$PSScriptRoot"
-                    Start-Job -ScriptBlock { & "$using:scriptPath\deploy-1me1.ps1" }
-                    Start-Job -ScriptBlock { & "$using:scriptPath\deploy-headymusic.ps1" }
-                    Get-Job | Wait-Job | Receive-Job
+                    $jobs = @()
+                    $jobs += Start-Job -ScriptBlock { & "$using:scriptPath\deploy-1me1.ps1" }
+                    $jobs += Start-Job -ScriptBlock { & "$using:scriptPath\deploy-headymusic.ps1" }
+                    $jobs | Wait-Job | Receive-Job
+                    $jobs | Remove-Job
                 }
             }
             
             # Post-deployment verification
-            .\scripts\verify-deployment.ps1 -Target $target
+            & "$PSScriptRoot\verify-deployment.ps1" -Target $target
         }
         catch {
             Write-Host "Deployment to $target failed: $_" -ForegroundColor Red
@@ -141,10 +145,10 @@ if ($Priority) {
     }
 
     # Final synchronization
-    .\scripts\sync-state.ps1 -env production
+    & "$PSScriptRoot\sync-state.ps1" -env production
 
     # Update deployment registry
-    .\scripts\update-deployment-registry.ps1 -Version $config.Version -Status "success"
+    & "$PSScriptRoot\update-deployment-registry.ps1" -Version $config.Version -Status "success"
 
     Write-Host "Deployment completed successfully" -ForegroundColor Green
 }
