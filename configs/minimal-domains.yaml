@@ -25,13 +25,13 @@
 # CORE (2) — MUST HAVE
 core:
   heady-manager:
-    domain: manager.heady.internal
+    domain: manager.headysystems.com
     port: 3300
     status: running
     required: true
     
   heady-buddy:
-    domain: buddy.heady.internal
+    domain: buddy.headysystems.com
     port: 5174
     status: planned
     required: true
@@ -39,30 +39,30 @@ core:
 # DATA (3) — MUST HAVE
 data:
   postgres:
-    domain: db.heady.internal
+    domain: db.headysystems.com
     port: 5432
     required: true
     
   redis-cache:
-    domain: cache.heady.internal
+    domain: cache.headysystems.com
     port: 6379
     required: true
     
   redis-pubsub:
-    domain: pubsub.heady.internal
+    domain: pubsub.headysystems.com
     port: 6380
     required: false  # Optional
 
 # FRONTEND (1) — MUST HAVE
 frontend:
   web:
-    domain: app.heady.internal
+    domain: app.headysystems.com
     port: 5173
     required: true
 
 # OBSERVABILITY (1) — COMBINED
 observability:
-  domain: metrics.heady.internal
+  domain: metrics.headysystems.com
   port: 9090
   required: false  # Optional but recommended
 
@@ -71,74 +71,74 @@ observability:
 # ═══════════════════════════════════════════════════════════════════════════════
 #
 # ❌ AI NODES (CANCELLED — Not actually running as separate services)
-#    - jules.heady.internal
-#    - observer.heady.internal
-#    - builder.heady.internal
-#    - atlas.heady.internal
-#    - pythia.heady.internal
+#    - jules.headysystems.com
+#    - observer.headysystems.com
+#    - builder.headysystems.com
+#    - atlas.headysystems.com
+#    - pythia.headysystems.com
 #
 # ❌ INTELLIGENCE SUBSYSTEMS (CANCELLED — In code, not separate domains)
-#    - intelligence.heady.internal
-#    - mc.heady.internal
-#    - patterns.heady.internal
-#    - critique.heady.internal
-#    - imagine.heady.internal
-#    - stories.heady.internal
+#    - intelligence.headysystems.com
+#    - mc.headysystems.com
+#    - patterns.headysystems.com
+#    - critique.headysystems.com
+#    - imagine.headysystems.com
+#    - stories.headysystems.com
 #
 # ❌ BROWSERS (CANCELLED — Extensions, not domains)
-#    - chrome.heady.internal
-#    - firefox.heady.internal
-#    - edge.heady.internal
-#    - safari.heady.internal
-#    - browser.heady.internal
+#    - chrome.headysystems.com
+#    - firefox.headysystems.com
+#    - edge.headysystems.com
+#    - safari.headysystems.com
+#    - browser.headysystems.com
 #
 # ❌ IDES (CANCELLED — Extensions, not domains)
-#    - vscode.heady.internal
-#    - jetbrains.heady.internal
-#    - neovim.heady.internal
-#    - sublime.heady.internal
-#    - emacs.heady.internal
-#    - ide.heady.internal
+#    - vscode.headysystems.com
+#    - jetbrains.headysystems.com
+#    - neovim.headysystems.com
+#    - sublime.headysystems.com
+#    - emacs.headysystems.com
+#    - ide.headysystems.com
 #
 # ❌ INTEGRATIONS (CANCELLED — External APIs, not local domains)
-#    - slack.heady.internal
-#    - discord.heady.internal
-#    - teams.heady.internal
-#    - mail.heady.internal
-#    - calendar.heady.internal
-#    - github.heady.internal
-#    - notion.heady.internal
-#    - connect.heady.internal
+#    - slack.headysystems.com
+#    - discord.headysystems.com
+#    - teams.headysystems.com
+#    - mail.headysystems.com
+#    - calendar.headysystems.com
+#    - github.headysystems.com
+#    - notion.headysystems.com
+#    - connect.headysystems.com
 #
 # ❌ MCP SERVERS (CANCELLED — In code, not separate domains yet)
-#    - mcp.heady.internal
-#    - fs.heady.internal
-#    - shell.heady.internal
-#    - browser.mcp.heady.internal
-#    - search.heady.internal
-#    - tools.heady.internal
+#    - mcp.headysystems.com
+#    - fs.headysystems.com
+#    - shell.headysystems.com
+#    - browser.mcp.headysystems.com
+#    - search.headysystems.com
+#    - tools.headysystems.com
 #
 # ❌ BUSINESS (CANCELLED — Not running as service yet)
-#    - billing.heady.internal
-#    - telemetry.heady.internal
-#    - business.heady.internal
+#    - billing.headysystems.com
+#    - telemetry.headysystems.com
+#    - business.headysystems.com
 #
 # ❌ HEADYOS (CANCELLED — Build targets, not running services)
-#    - os-docker.heady.internal
-#    - os-metal.heady.internal
-#    - os-linux.heady.internal
-#    - os-android.heady.internal
-#    - os-embedded.heady.internal
+#    - os-docker.headysystems.com
+#    - os-metal.headysystems.com
+#    - os-linux.headysystems.com
+#    - os-android.headysystems.com
+#    - os-embedded.headysystems.com
 #
 # ❌ SECURITY (CANCELLED — In code, not separate service)
-#    - secrets.heady.internal
-#    - vault.heady.internal
-#    - cloudflare.heady.internal
+#    - secrets.headysystems.com
+#    - vault.headysystems.com
+#    - cloudflare.headysystems.com
 #
 # ❌ DISCOVERY (CANCELLED — Not running yet)
-#    - registry.heady.internal
-#    - dns.heady.internal
-#    - discovery.heady.internal
+#    - registry.headysystems.com
+#    - dns.headysystems.com
+#    - discovery.headysystems.com
 #
 # ═══════════════════════════════════════════════════════════════════════════════
 # TOTAL: 7 ESSENTIAL DOMAINS (Down from 50+)
@@ -147,16 +147,17 @@ observability:
 # Hosts file entries (minimal)
 hosts_entries: |
   # ═══ CORE ═══
-  manager.heady.internal
-  buddy.heady.internal
+  manager.headysystems.com
+  buddy.headysystems.com
   
   # ═══ DATA ═══
-  db.heady.internal
-  cache.heady.internal
-  pubsub.heady.internal
+  db.headysystems.com
+  cache.headysystems.com
+  pubsub.headysystems.com
   
   # ═══ FRONTEND ═══
-  app.heady.internal
+  app.headysystems.com
   
   # ═══ OBSERVABILITY (optional) ═══
-  metrics.heady.internal
+  metrics.headysystems.com
+

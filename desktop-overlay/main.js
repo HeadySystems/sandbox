@@ -31,7 +31,7 @@ const Store = require('electron-store');
 
 const store = new Store({
   defaults: {
-    apiBase: "http://localhost:3300",
+    apiBase: "http://api.headysystems.com:3300",
     position: { x: null, y: null },
     collapsed: true,
     opacity: 0.95,
@@ -81,7 +81,7 @@ function createWindow() {
   mainWindow.setOpacity(store.get("opacity"));
 
   if (IS_DEV) {
-    mainWindow.loadURL("http://localhost:3400");
+    mainWindow.loadURL("http://api.headysystems.com:3400");
     mainWindow.webContents.openDevTools({ mode: "detach" });
   } else {
     const widgetPath = path.join(process.resourcesPath, "widget", "index.html");
@@ -246,3 +246,4 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
   if (!mainWindow) createWindow();
 });
+

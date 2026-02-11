@@ -26,7 +26,7 @@ chrome.storage.sync.get('endpoint', ({ endpoint }) => {
   if (endpoint) {
     const option = Array.from(endpointSelect.options).find(opt => 
       opt.value === Object.keys({
-        'http://manager.dev.local.heady.internal:3300': 'local',
+        'http://manager.dev.local.headysystems.com:3300': 'local',
         'https://cloud-me.heady.io': 'cloud-me',
         'https://cloud-sys.heady.io': 'cloud-sys',
         'https://cloud-conn.heady.io': 'cloud-conn',
@@ -71,7 +71,7 @@ async function updateHealth() {
 // Quick actions
 document.getElementById('openDashboard').addEventListener('click', () => {
   const endpoints = {
-    'local': 'http://manager.dev.local.heady.internal:3300',
+    'local': 'http://manager.dev.local.headysystems.com:3300',
     'cloud-me': 'https://cloud-me.heady.io',
     'cloud-sys': 'https://cloud-sys.heady.io',
     'cloud-conn': 'https://cloud-conn.heady.io',
@@ -100,7 +100,7 @@ document.getElementById('captureTab').addEventListener('click', async () => {
 
 document.getElementById('viewTasks').addEventListener('click', () => {
   const endpoints = {
-    'local': 'http://manager.dev.local.heady.internal:3300/tasks',
+    'local': 'http://manager.dev.local.headysystems.com:3300/tasks',
     'cloud-me': 'https://cloud-me.heady.io/tasks',
     'cloud-sys': 'https://cloud-sys.heady.io/tasks',
     'cloud-conn': 'https://cloud-conn.heady.io/tasks',
@@ -113,3 +113,4 @@ document.getElementById('refreshHealth').addEventListener('click', updateHealth)
 
 // Initial health check
 updateHealth();
+

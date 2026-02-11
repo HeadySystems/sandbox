@@ -44,7 +44,7 @@ const config = {
     }))
   ],
   files: '**/*.{js,json,yaml,md,html}',
-  ignore: ['node_modules/**', 'dist/**', 'build/**']
+  ignore: ['node_modules/**', 'dist/**', 'build/**', 'offline-packages/**', '.venv/**', 'AndroidSDK/**', 'gradle/**', 'nginx/**', 'ventoy/**', '.git/**', '.wrangler/**', '__pycache__/**', 'platform-tools/**', 'tools/**']
 };
 
 async function migrate() {
@@ -66,4 +66,4 @@ async function migrate() {
   }
 }
 
-migrate();
+module.exports = { migrate, fixBrandingViolations: migrate };

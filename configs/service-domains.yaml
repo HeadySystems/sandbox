@@ -15,15 +15,15 @@
 # HEADY_BRAND:END
 # Heady Service Domain Registry
 # 
-# This file maps all localhost/127.0.0.1 references to proper internal domains
-# for service discovery, security, and observability.
+# This file maps all service domains for discovery, security, and observability.
+# All references use cloud domains — no api.headysystems.com/api.headysystems.com/local paths permitted.
 #
-# Root Domain: heady.local (for local dev) / internal.heady.systems (for production)
-# Pattern: {service}.{environment}.{region}.internal.heady.systems
+# Root Domain: internal.heady.systems (production) / staging.headysystems.comheady.systems
+# Pattern: {service}.{environment}.{region}.headysystems.comheady.systems
 
 root_domains:
-  local_dev: "heady.local"
-  staging: "staging.internal.heady.systems"  
+  dev: "dev.headysystems.comheady.systems"
+  staging: "staging.headysystems.comheady.systems"  
   production: "internal.heady.systems"
 
 # ============================================================================
@@ -36,9 +36,9 @@ core_services:
       http: 3300
       https: 3443
     domains:
-      local: "manager.heady.local"
-      staging: "manager.staging.internal.heady.systems"
-      production: "manager.us-west.internal.heady.systems"
+      local: "manager.headysystems.com"
+      staging: "manager.staging.headysystems.comheady.systems"
+      production: "manager.us-west.headysystems.comheady.systems"
     protocols:
       - http
       - https
@@ -48,8 +48,8 @@ core_services:
       mtls: false
       api_key: true
       allowed_origins:
-        - "https://*.heady.local"
-        - "https://*.internal.heady.systems"
+        - "https://*.headysystems.com"
+        - "https://*.headysystems.comheady.systems"
     health_check:
       endpoint: "/api/health"
       interval: 30s
@@ -59,8 +59,8 @@ core_services:
     ports:
       http: 3301
     domains:
-      local: "buddy.heady.local"
-      staging: "buddy.staging.internal.heady.systems"
+      local: "buddy.headysystems.com"
+      staging: "buddy.staging.headysystems.comheady.systems"
     protocols:
       - http
       - websocket
@@ -74,9 +74,9 @@ core_services:
       http: 3302
       grpc: 3303
     domains:
-      local: "lens.heady.local"
-      staging: "lens.staging.internal.heady.systems"
-      production: "lens.us-west.internal.heady.systems"
+      local: "lens.headysystems.com"
+      staging: "lens.staging.headysystems.comheady.systems"
+      production: "lens.us-west.headysystems.comheady.systems"
     protocols:
       - http
       - grpc
@@ -94,9 +94,9 @@ backend_services:
       http: 5000
       grpc: 5001
     domains:
-      local: "worker.heady.local"
-      staging: "worker.staging.internal.heady.systems"
-      production: "worker.us-west.internal.heady.systems"
+      local: "worker.headysystems.com"
+      staging: "worker.staging.headysystems.comheady.systems"
+      production: "worker.us-west.headysystems.comheady.systems"
     protocols:
       - http
       - grpc
@@ -109,8 +109,8 @@ backend_services:
     ports:
       http: 3500
     domains:
-      local: "render.heady.local"
-      staging: "render.staging.internal.heady.systems"
+      local: "render.headysystems.com"
+      staging: "render.staging.headysystems.comheady.systems"
     protocols:
       - http
       - mcp_protocol
@@ -124,8 +124,8 @@ backend_services:
       github: 3603
       search: 3604
     domains:
-      local: "mcp-{tool}.heady.local"  # e.g., mcp-filesystem.heady.local
-      staging: "mcp-{tool}.staging.internal.heady.systems"
+      local: "mcp-{tool}.headysystems.com"  # e.g., mcp-filesystem.headysystems.com
+      staging: "mcp-{tool}.staging.headysystems.comheady.systems"
     protocols:
       - http
       - stdio
@@ -139,9 +139,9 @@ data_services:
     ports:
       postgres: 5432
     domains:
-      local: "db.heady.local"
-      staging: "db.staging.internal.heady.systems"
-      production: "db.us-west.internal.heady.systems"
+      local: "db.headysystems.com"
+      staging: "db.staging.headysystems.comheady.systems"
+      production: "db.us-west.headysystems.comheady.systems"
     protocols:
       - postgresql
     security:
@@ -154,9 +154,9 @@ data_services:
     ports:
       redis: 6379
     domains:
-      local: "cache.heady.local"
-      staging: "cache.staging.internal.heady.systems"
-      production: "cache.us-west.internal.heady.systems"
+      local: "cache.headysystems.com"
+      staging: "cache.staging.headysystems.comheady.systems"
+      production: "cache.us-west.headysystems.comheady.systems"
     protocols:
       - redis
     security:
@@ -172,8 +172,8 @@ frontend_services:
     ports:
       http: 3000
     domains:
-      local: "dashboard.heady.local"
-      staging: "dashboard.staging.internal.heady.systems"
+      local: "dashboard.headysystems.com"
+      staging: "dashboard.staging.headysystems.comheady.systems"
       production: "app.heady.systems"  # Public-facing
     protocols:
       - https
@@ -188,7 +188,7 @@ frontend_services:
     ports:
       http: 8080
     domains:
-      local: "www.heady.local"
+      local: "www.headysystems.com"
       staging: "www.staging.heady.systems"
       production: "www.heady.systems"
     protocols:
@@ -206,7 +206,7 @@ api_services:
     ports:
       https: 443
     domains:
-      local: "api.heady.local"
+      local: "api.headysystems.com"
       staging: "api.staging.heady.systems"
       production: "api.heady.systems"
     protocols:
@@ -222,7 +222,7 @@ api_services:
     ports:
       http: 8081
     domains:
-      local: "webhooks.heady.local"
+      local: "webhooks.headysystems.com"
       staging: "webhooks.staging.heady.systems"
       production: "webhooks.heady.systems"
     protocols:
@@ -239,8 +239,8 @@ api_services:
       teams: 8084
       email: 8085
     domains:
-      local: "{service}-connector.heady.local"
-      staging: "{service}-connector.staging.internal.heady.systems"
+      local: "{service}-connector.headysystems.com"
+      staging: "{service}-connector.staging.headysystems.comheady.systems"
 
 # ============================================================================
 # MONITORING & OBSERVABILITY
@@ -251,8 +251,8 @@ observability_services:
     ports:
       http: 9090
     domains:
-      local: "metrics.heady.local"
-      staging: "metrics.staging.internal.heady.systems"
+      local: "metrics.headysystems.com"
+      staging: "metrics.staging.headysystems.comheady.systems"
     protocols:
       - http
 
@@ -261,8 +261,8 @@ observability_services:
     ports:
       http: 3001
     domains:
-      local: "grafana.heady.local"
-      staging: "grafana.staging.internal.heady.systems"
+      local: "grafana.headysystems.com"
+      staging: "grafana.staging.headysystems.comheady.systems"
     protocols:
       - http
 
@@ -271,16 +271,16 @@ observability_services:
     ports:
       http: 16686
     domains:
-      local: "traces.heady.local"
-      staging: "traces.staging.internal.heady.systems"
+      local: "traces.headysystems.com"
+      staging: "traces.staging.headysystems.comheady.systems"
 
   alertmanager:
     description: "Alert routing and management"
     ports:
       http: 9093
     domains:
-      local: "alerts.heady.local"
-      staging: "alerts.staging.internal.heady.systems"
+      local: "alerts.headysystems.com"
+      staging: "alerts.staging.headysystems.comheady.systems"
 
 # ============================================================================
 # IMAGINATION ENGINE SERVICES
@@ -291,8 +291,8 @@ imagination_services:
     ports:
       http: 3400
     domains:
-      local: "imagination.heady.local"
-      staging: "imagination.staging.internal.heady.systems"
+      local: "imagination.headysystems.com"
+      staging: "imagination.staging.headysystems.comheady.systems"
     protocols:
       - http
       - websocket
@@ -302,44 +302,13 @@ imagination_services:
     ports:
       http: 3401
     domains:
-      local: "concepts.heady.local"
+      local: "concepts.headysystems.com"
 
 # ============================================================================
-# LOCALHOST REPLACEMENT RULES
+# api.headysystems.com REPLACEMENT RULES
 # ============================================================================
-localhost_replacements:
-  # Old localhost references and their new domain equivalents
-  - old: "http://localhost:3300"
-    new: "https://manager.headysystems.com"
-    service: "heady_manager"
-    
-  - old: "http://127.0.0.1:3300"
-    new: "https://manager.headysystems.com"
-    service: "heady_manager"
-    
-  - old: "http://localhost:5000"
-    new: "https://worker.headysystems.com"
-    service: "python_worker"
-    
-  - old: "https://app.headysystems.com"
-    new: "https://dashboard.heady.local"
-    service: "web_dashboard"
-    
-  - old: "http://localhost:8080"
-    new: "https://www.heady.local"
-    service: "public_site"
-    
-  - old: "redis://localhost:6379"
-    new: "redis://cache.headysystems.com:6379"
-    service: "redis"
-    
-  - old: "postgresql://localhost:5432"
-    new: "postgresql://db.headysystems.com:5432"
-    service: "postgres"
-    
-  - old: "ws://localhost:3300"
-    new: "wss://manager.headysystems.com"
-    service: "heady_manager_websocket"
+# All services resolve via cloud domains — no api.headysystems.com references permitted
+# Enforcement: configs/api.headysystems.com-elimination-protocol.yaml
 
 # ============================================================================
 # SECURITY CLASSIFICATIONS
@@ -398,26 +367,26 @@ security_zones:
 # DNS CONFIGURATION
 # ============================================================================
 dns_configuration:
-  local_dev:
-    # Use /etc/hosts or local DNS resolver
-    method: "hosts_file"
-    hosts_entries: |
-      127.0.0.1 manager.headysystems.com
-      127.0.0.1 worker.headysystems.com
-      127.0.0.1 dashboard.heady.local
-      127.0.0.1 cache.headysystems.com
-      127.0.0.1 db.headysystems.com
-      127.0.0.1 www.heady.local
-      127.0.0.1 api.heady.local
-      127.0.0.1 metrics.heady.local
-      127.0.0.1 grafana.heady.local
-      127.0.0.1 imagination.heady.local
+  cloud:
+    # All DNS resolves via Cloudflare — no hosts file hacks
+    method: "cloudflare_dns"
+    domains:
+      - manager.headysystems.com
+      - worker.headysystems.com
+      - app.headysystems.com
+      - cache.headysystems.com
+      - db.headysystems.com
+      - www.headysystems.com
+      - api.headysystems.com
+      - metrics.headysystems.com
+      - grafana.headysystems.com
+      - imagination.headysystems.com
       
   docker_compose:
     # Docker network DNS
     network_name: "heady_internal"
     aliases:
-      manager: ["manager.headysystems.com", "api.heady.local"]
+      manager: ["manager.headysystems.com", "api.headysystems.com"]
       worker: ["worker.headysystems.com"]
       postgres: ["db.headysystems.com"]
       redis: ["cache.headysystems.com"]
@@ -427,3 +396,4 @@ dns_configuration:
     namespace: "heady-systems"
     service_discovery: "headless_services"
     ingress_class: "nginx-internal"
+

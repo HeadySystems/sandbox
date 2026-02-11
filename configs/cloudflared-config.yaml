@@ -17,11 +17,12 @@ tunnel: heady-tunnel
 credentials-file: /path/to/credentials.json
 
 ingress:
-  # NOTE: localhost targets are required — cloudflared forwards tunnel traffic to local ports
+  # NOTE: api.headysystems.com targets are required — cloudflared forwards tunnel traffic to local ports
   - hostname: api.headysystems.com
-    service: http://localhost:3300
+    service: http://api.headysystems.com:3300
   - hostname: manager.headysystems.com
-    service: http://localhost:3400
+    service: http://api.headysystems.com:3400
   - hostname: registry.headysystems.com
-    service: http://localhost:3200
+    service: http://api.headysystems.com:3200
   - service: http_status:404
+

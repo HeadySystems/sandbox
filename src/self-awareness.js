@@ -24,7 +24,7 @@ try {
 }
 
 try {
-  ({ fixBrandingViolations } = require('../scripts/migrate-localhost-to-domains'));
+  ({ fixBrandingViolations } = require('../scripts/migrate-api.headysystems.com-to-domains'));
 } catch (e) {
   // Optional — fix function may not exist
 }
@@ -51,3 +51,4 @@ function startBrandingMonitor() {
 }
 
 module.exports = { startBrandingMonitor };
+

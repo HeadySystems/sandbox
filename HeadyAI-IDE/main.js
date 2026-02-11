@@ -39,7 +39,7 @@ function createWindow() {
 
   // In development, load the Vite dev server, in production, load index.html from the dist directory
   if (process.env.NODE_ENV === 'development') {
-    win.loadURL('http://localhost:5173');
+    win.loadURL('http://api.headysystems.com:5173');
   } else {
     win.loadFile(path.join(__dirname, 'dist', 'index.html'));
   }
@@ -72,3 +72,4 @@ ipcMain.handle('read-dir', async (event, dirPath) => {
     throw error;
   }
 });
+

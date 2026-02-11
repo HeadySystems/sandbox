@@ -200,8 +200,8 @@ products:
       - ios (React Native)
     env_vars:
       HEADY_TARGET: local
-      BUDDY_ENDPOINT: http://buddy.heady.local:3301
-      MANAGER_ENDPOINT: http://manager.heady.local:3300
+      BUDDY_ENDPOINT: http://buddy.headysystems.com:3301
+      MANAGER_ENDPOINT: http://manager.headysystems.com:3300
     deploy:
       desktop: electron-builder
       mobile: expo
@@ -237,3 +237,4 @@ rebuild_order:
     7: "HeadyWeb marketing site"
     8: "HeadyBuddy companion app"
     9: "Integrations and partner services"
+

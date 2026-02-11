@@ -238,44 +238,8 @@ security:
         to: db-postgres.dev.local.headyio.com
         ports: [5432]
 
-# Localhost Replacement Mappings
-# Maps old localhost references to new domain names
-localhost_mappings:
-  - old: "localhost:3300"
-    new: "manager.dev.local.headyio.com:3300"
-    service: manager
-    
-  - old: "127.0.0.1:3300"
-    new: "manager.dev.local.headyio.com:3300"
-    service: manager
-    
-  - old: "localhost:5432"
-    new: "db-postgres.dev.local.headyio.com:5432"
-    service: postgres
-    
-  - old: "localhost:6379"
-    new: "db-redis.dev.local.headyio.com:6379"
-    service: redis
-    
-  - old: "localhost:3000"
-    new: "app-web.dev.local.headyio.com:3000"
-    service: web
-    
-  - old: "localhost:3001"
-    new: "tools-mcp.dev.local.headyio.com:3001"
-    service: mcp-gateway
-    
-  - old: "localhost:11434"
-    new: "ai-ollama.dev.local.headyio.com:11434"
-    service: ollama
-    
-  - old: "0.0.0.0:3300"
-    new: "manager.dev.local.headyio.com:3300"
-    service: manager
-    
-  - old: "::1:3300"
-    new: "manager.dev.local.headyio.com:3300"
-    service: manager
+# All services resolve via cloud domains — no localhost/127.0.0.1 references permitted
+# See configs/localhost-elimination-protocol.yaml for enforcement policy
 
 # Environment-specific overrides
 environments:
@@ -295,7 +259,7 @@ environments:
     auth: mtls+oauth
     
   local-offline:
-    suffix: local.headyio.com
-    tls: false
-    auth: none
-    localhost_fallback: true
+    suffix: headysystems.com
+    tls: true
+    auth: basic
+    localhost_fallback: false

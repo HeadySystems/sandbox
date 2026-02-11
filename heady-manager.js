@@ -1655,11 +1655,11 @@ try {
 
 // ─── Layer Management ─────────────────────────────────────────────────
 const LAYERS = {
-  "local": { name: "Local Dev", endpoint: "http://localhost:3301" },
+  "local": { name: "Local Dev", endpoint: "https://app.headysystems.com" },
   "cloud-me": { name: "Cloud HeadyMe", endpoint: "https://app.headysystems.com" },
   "cloud-sys": { name: "Cloud HeadySystems", endpoint: "https://app.headysystems.com" },
   "cloud-conn": { name: "Cloud HeadyConnection", endpoint: "https://app.headysystems.com" },
-  "hybrid": { name: "Hybrid", endpoint: "http://localhost:3301" }
+  "hybrid": { name: "Hybrid", endpoint: "https://app.headysystems.com" }
 };
 
 let activeLayer = "local";
@@ -2050,7 +2050,7 @@ app.get("*", (req, res) => {
 // ─── Start ──────────────────────────────────────────────────────────
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  ∞ Heady Manager v3.0.0 listening on port ${PORT}`);
-  console.log(`  ∞ Health: http://localhost:${PORT}/api/health`);
+  console.log(`  ∞ Health: https://headysystems.com/api/health (port ${PORT})`);
   console.log(`  ∞ Environment: ${process.env.NODE_ENV || "development"}\n`);
 });
 

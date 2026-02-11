@@ -12,7 +12,7 @@ layers:
   local:
     id: local
     description: "Developer/personal layer — local Docker, Ollama, private data"
-    dns_zone: "*.heady.local"
+    dns_zone: "*.headysystems.com"
     providers:
       compute: [docker, native]
       models: [ollama, vllm, gguf]
@@ -23,18 +23,18 @@ layers:
       cloud_calls: disabled_unless_explicit
       model_preference: local-first
     services:
-      manager: "manager.heady.local:3300"
-      api: "api.heady.local:3300"
-      mcp: "mcp.heady.local:3300"
-      buddy: "buddy.heady.local:3301"
-      brain: "brain.heady.local:3400"
+      manager: "manager.headysystems.com:3300"
+      api: "api.headysystems.com:3300"
+      mcp: "mcp.headysystems.com:3300"
+      buddy: "buddy.headysystems.com:3301"
+      brain: "brain.headysystems.com:3400"
     docker_profile: "local-dev.yml"
     brain_profile: personal
 
   internal:
     id: internal
     description: "Team/staging layer — shared knowledge bases, team MCP connectors"
-    dns_zone: "*.staging.internal.heady.systems"
+    dns_zone: "*.staging.headysystems.comheady.systems"
     providers:
       compute: [render, docker]
       models: [ollama, gpt-4o, claude-3.5-sonnet]
@@ -45,11 +45,11 @@ layers:
       cloud_calls: hybrid
       model_preference: hybrid
     services:
-      manager: "manager.staging.internal.heady.systems"
-      api: "api.staging.internal.heady.systems"
-      mcp: "mcp.staging.internal.heady.systems"
-      buddy: "buddy.staging.internal.heady.systems"
-      brain: "brain.staging.internal.heady.systems"
+      manager: "manager.staging.headysystems.comheady.systems"
+      api: "api.staging.headysystems.comheady.systems"
+      mcp: "mcp.staging.headysystems.comheady.systems"
+      buddy: "buddy.staging.headysystems.comheady.systems"
+      brain: "brain.staging.headysystems.comheady.systems"
     docker_profile: "cloud-saas.yml"
     brain_profile: team
 
@@ -170,3 +170,4 @@ model_routing:
     - when: { layer: production, privacy: strict }
       use: ollama
       fallback: null
+

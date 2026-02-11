@@ -15,7 +15,7 @@
 # HEADY_BRAND:END
 # ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║  HEADY SYSTEMS — FUNCTIONAL DOMAIN ARCHITECTURE                                 ║
-# ║  Uses ACTUAL Render domains + local service names (no localhost)              ║
+# ║  Uses ACTUAL Render domains + local service names (no api.headysystems.com)              ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -38,9 +38,9 @@ cloud:
     git_remote: connection
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# LOCAL SERVICE NAMES (Add to /etc/hosts pointing to 127.0.0.1)
+# LOCAL SERVICE NAMES (Add to /etc/hosts pointing to api.headysystems.com)
 # ═══════════════════════════════════════════════════════════════════════════════
-# Instead of localhost:3300, use these service names
+# Instead of api.headysystems.com:3300, use these service names
 
 local:
   manager:
@@ -72,16 +72,16 @@ local:
 # HOSTS FILE ENTRIES (What to add to /etc/hosts)
 # ═══════════════════════════════════════════════════════════════════════════════
 hosts_entries: |
-  # HEADY LOCAL SERVICES (Replace localhost:port with service names)
-  127.0.0.1 manager.local
-  127.0.0.1 buddy.local
-  127.0.0.1 app.local
-  127.0.0.1 db.local
-  127.0.0.1 cache.local
+  # HEADY LOCAL SERVICES (Replace api.headysystems.com:port with service names)
+  api.headysystems.com manager.local
+  api.headysystems.com buddy.local
+  api.headysystems.com app.local
+  api.headysystems.com db.local
+  api.headysystems.com cache.local
   
   # Optional extras (if you want more services)
-  127.0.0.1 api.local
-  127.0.0.1 metrics.local
+  api.headysystems.com api.local
+  api.headysystems.com metrics.local
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # USAGE
@@ -89,7 +89,7 @@ hosts_entries: |
 usage:
   local_dev: |
     1. Add the hosts entries above to your /etc/hosts file
-    2. Access services by name instead of localhost:port
+    2. Access services by name instead of api.headysystems.com:port
        - http://manager.local → HeadyManager
        - http://buddy.local → HeadyBuddy
        - http://app.local → Web frontend
@@ -101,3 +101,4 @@ usage:
        - https://app.headysystems.com
        - https://app.headysystems.com
        - https://app.headysystems.com
+

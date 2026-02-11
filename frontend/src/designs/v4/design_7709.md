@@ -77,7 +77,7 @@ Do this in every IDE you touch:
 
 | IDE | Action |
 |-----|--------|
-| Windsurf | Settings → disable Cascade / built-in copilot, or point "custom model" at `localhost:3300/api/chat` |
+| Windsurf | Settings → disable Cascade / built-in copilot, or point "custom model" at `https://manager.headysystems.com/api/chat` |
 | Cursor | Settings → disable Cursor AI, or configure custom API endpoint to Heady |
 | VS Code | Disable GitHub Copilot extension (or don't install it) |
 | PyCharm | Load Heady prompts as system instruction; disable JetBrains AI Pro if active |
@@ -111,8 +111,8 @@ Do this in every IDE you touch:
 | # | Task | Effort |
 |---|------|--------|
 | 1 | `docker-compose -f docker-compose.ide.yml up --build` | 5 min |
-| 2 | Verify Theia/code-server on `localhost:3400` with `HEADY_ENDPOINT` env set | 5 min |
-| 3 | Open from phone: `http://<COMPUTER_IP>:3400` or via SSH tunnel | 5 min |
+| 2 | Verify Theia/code-server on `https://ide.headysystems.com` with `HEADY_ENDPOINT` env set | 5 min |
+| 3 | Open from phone: `https://ide.headysystems.com` or via SSH tunnel | 5 min |
 | 4 | Install the VS Code `.vsix` extension inside code-server | 5 min |
 | 5 | Test: same Heady chat + completions work in browser IDE | 10 min |
 

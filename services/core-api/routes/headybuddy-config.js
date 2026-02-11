@@ -28,7 +28,7 @@ const config = {
     crossDeviceSync: true,
     adaptiveCards: true
   },
-  syncEndpoint: 'https://api.heady.internal/sync'
+  syncEndpoint: 'https://api.headysystems.com/sync'
 };
 
 router.get('/', (req, res) => {

@@ -25,5 +25,6 @@ module.exports = {
     crossDeviceSync: true,
     adaptiveCards: true
   },
-  syncEndpoint: 'https://api.heady.internal/sync'
+  syncEndpoint: 'https://api.headysystems.com/sync'
 };
+

@@ -9,21 +9,21 @@
 records:
   - name: "api.headysystems.com"
     type: CNAME
-    target: "heady-manager-headysystems.onrender.com"
+    target: "heady-manager-headysystems.headysystems.com"
     proxied: true
     ttl: 1 # Auto
     comment: "Primary API endpoint"
 
   - name: "app.headysystems.com"
     type: CNAME
-    target: "heady-app-headysystems.onrender.com"
+    target: "heady-app-headysystems.headysystems.com"
     proxied: true
     ttl: 1
     comment: "Main application interface"
 
   - name: "admin.headysystems.com"
     type: CNAME
-    target: "heady-admin-headysystems.onrender.com"
+    target: "heady-admin-headysystems.headysystems.com"
     proxied: true
     ttl: 1
     comment: "Administration console"
@@ -31,7 +31,7 @@ records:
 # Staging DNS Records
   - name: "api.staging.headysystems.com"
     type: CNAME
-    target: "heady-manager-staging-headysystems.onrender.com"
+    target: "heady-manager-staging-headysystems.headysystems.com"
     proxied: true
     ttl: 1
     comment: "Staging API endpoint"
@@ -53,3 +53,4 @@ headers:
 # 2. proxied=true means users only see branded domains (Cloudflare proxy)
 # 3. Code and configs must ONLY reference branded domains, never these targets
 # 4. TTL=1 sets automatic TTL for dynamic environments
+

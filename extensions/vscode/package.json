@@ -81,9 +81,9 @@
       "properties": {
         "heady.endpoint": {
           "type": "string",
-          "default": "http://manager.dev.local.heady.internal:3300",
+          "default": "http://manager.dev.local.headysystems.com:3300",
           "enum": [
-            "http://manager.dev.local.heady.internal:3300",
+            "http://manager.dev.local.headysystems.com:3300",
             "https://cloud-me.heady.io",
             "https://cloud-sys.heady.io",
             "https://cloud-conn.heady.io"
@@ -165,3 +165,4 @@
   },
   "license": "MIT"
 }
+

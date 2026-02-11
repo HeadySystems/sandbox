@@ -24,28 +24,28 @@
 # ═══════════════════════════════════════════════════════════════════════════════
 orchestration:
   heady-manager:
-    domain: api.manager.heady.internal
+    domain: api.manager.headysystems.com
     alt_domains:
-      - manager.heady.internal
-      - orchestrator.heady.internal
-      - gateway.heady.internal
+      - manager.headysystems.com
+      - orchestrator.headysystems.com
+      - gateway.headysystems.com
     port: 3300
     branding: "🎛️ Sacred Gateway"
     
   heady-buddy:
-    domain: buddy.heady.internal
+    domain: buddy.headysystems.com
     alt_domains:
-      - companion.heady.internal
-      - assistant.heady.internal
-      - copilot.heady.internal
+      - companion.headysystems.com
+      - assistant.headysystems.com
+      - copilot.headysystems.com
     port: 5174
     branding: "💜 Perfect Day AI"
     
   heady-conductor:
-    domain: conductor.heady.internal
+    domain: conductor.headysystems.com
     alt_domains:
-      - maestro.heady.internal
-      - director.heady.internal
+      - maestro.headysystems.com
+      - director.headysystems.com
     port: 3305
     branding: "🎼 Task Maestro"
 
@@ -54,55 +54,55 @@ orchestration:
 # ═══════════════════════════════════════════════════════════════════════════════
 ai_nodes:
   jules:
-    domain: jules.heady.internal
+    domain: jules.headysystems.com
     alt_domains:
-      - surgeon.heady.internal
-      - optimizer.heady.internal
-      - hyper.heady.internal
+      - surgeon.headysystems.com
+      - optimizer.headysystems.com
+      - hyper.headysystems.com
     port: 8001
     role: "The Hyper-Surgeon"
     branding: "🔪 Code Surgeon"
     color: "#FF6B6B"
     
   observer:
-    domain: observer.heady.internal
+    domain: observer.headysystems.com
     alt_domains:
-      - watcher.heady.internal
-      - sentinel.heady.internal
-      - monitor.heady.internal
+      - watcher.headysystems.com
+      - sentinel.headysystems.com
+      - monitor.headysystems.com
     port: 8002
     role: "The Natural Observer"
     branding: "👁️ All-Seeing Eye"
     color: "#4ECDC4"
     
   builder:
-    domain: builder.heady.internal
+    domain: builder.headysystems.com
     alt_domains:
-      - constructor.heady.internal
-      - architect.heady.internal
-      - creator.heady.internal
+      - constructor.headysystems.com
+      - architect.headysystems.com
+      - creator.headysystems.com
     port: 8003
     role: "The Constructor"
     branding: "🏗️ Master Builder"
     color: "#45B7D1"
     
   atlas:
-    domain: atlas.heady.internal
+    domain: atlas.headysystems.com
     alt_domains:
-      - archivist.heady.internal
-      - librarian.heady.internal
-      - memory.heady.internal
+      - archivist.headysystems.com
+      - librarian.headysystems.com
+      - memory.headysystems.com
     port: 8004
     role: "The Auto-Archivist"
     branding: "📚 Living Archive"
     color: "#96CEB4"
     
   pythia:
-    domain: pythia.heady.internal
+    domain: pythia.headysystems.com
     alt_domains:
-      - oracle.heady.internal
-      - prophet.heady.internal
-      - diviner.heady.internal
+      - oracle.headysystems.com
+      - prophet.headysystems.com
+      - diviner.headysystems.com
     port: 8005
     role: "The Oracle"
     branding: "🔮 Sacred Oracle"
@@ -113,47 +113,47 @@ ai_nodes:
 # ═══════════════════════════════════════════════════════════════════════════════
 intelligence:
   monte-carlo:
-    domain: mc.heady.internal
+    domain: mc.headysystems.com
     alt_domains:
-      - montecarlo.heady.internal
-      - optimizer.heady.internal
-      - planner.heady.internal
+      - montecarlo.headysystems.com
+      - optimizer.headysystems.com
+      - planner.headysystems.com
     port: 8006
     branding: "🎲 Probability Master"
     
   pattern-engine:
-    domain: patterns.heady.internal
+    domain: patterns.headysystems.com
     alt_domains:
-      - recognition.heady.internal
-      - insight.heady.internal
-      - discovery.heady.internal
+      - recognition.headysystems.com
+      - insight.headysystems.com
+      - discovery.headysystems.com
     port: 8007
     branding: "🧩 Pattern Weaver"
     
   self-critique:
-    domain: critique.heady.internal
+    domain: critique.headysystems.com
     alt_domains:
-      - reflection.heady.internal
-      - improvement.heady.internal
-      - growth.heady.internal
+      - reflection.headysystems.com
+      - improvement.headysystems.com
+      - growth.headysystems.com
     port: 8008
     branding: "🪞 Mirror of Truth"
     
   imagination:
-    domain: imagine.heady.internal
+    domain: imagine.headysystems.com
     alt_domains:
-      - creativity.heady.internal
-      - dream.heady.internal
-      - vision.heady.internal
+      - creativity.headysystems.com
+      - dream.headysystems.com
+      - vision.headysystems.com
     port: 8009
     branding: "🌈 Dream Weaver"
     
   story-driver:
-    domain: stories.heady.internal
+    domain: stories.headysystems.com
     alt_domains:
-      - narrative.heady.internal
-      - chronicle.heady.internal
-      - saga.heady.internal
+      - narrative.headysystems.com
+      - chronicle.headysystems.com
+      - saga.headysystems.com
     port: 8010
     branding: "📖 Living Chronicles"
 
@@ -162,29 +162,29 @@ intelligence:
 # ═══════════════════════════════════════════════════════════════════════════════
 infrastructure:
   postgres:
-    domain: db.postgres.heady.internal
+    domain: db.postgres.headysystems.com
     alt_domains:
-      - database.heady.internal
-      - postgres.heady.internal
-      - sql.heady.internal
+      - database.headysystems.com
+      - postgres.headysystems.com
+      - sql.headysystems.com
     port: 5432
     branding: "🐘 Sacred Elephant"
     
   redis:
-    domain: cache.redis.heady.internal
+    domain: cache.redis.headysystems.com
     alt_domains:
-      - redis.heady.internal
-      - cache.heady.internal
-      - memory.heady.internal
+      - redis.headysystems.com
+      - cache.headysystems.com
+      - memory.headysystems.com
     port: 6379
     branding: "⚡ Lightning Memory"
     
   redis-pubsub:
-    domain: pubsub.redis.heady.internal
+    domain: pubsub.redis.headysystems.com
     alt_domains:
-      - events.heady.internal
-      - messages.heady.internal
-      - bus.heady.internal
+      - events.headysystems.com
+      - messages.headysystems.com
+      - bus.headysystems.com
     port: 6380
     branding: "📡 Event Horizon"
 
@@ -193,45 +193,45 @@ infrastructure:
 # ═══════════════════════════════════════════════════════════════════════════════
 observability:
   heady-lens:
-    domain: lens.heady.internal
+    domain: lens.headysystems.com
     alt_domains:
-      - observatory.heady.internal
-      - scope.heady.internal
-      - vision.heady.internal
+      - observatory.headysystems.com
+      - scope.headysystems.com
+      - vision.headysystems.com
     port: 9090
     branding: "🔭 Cosmic Observatory"
     
   metrics:
-    domain: metrics.heady.internal
+    domain: metrics.headysystems.com
     alt_domains:
-      - prometheus.heady.internal
-      - stats.heady.internal
+      - prometheus.headysystems.com
+      - stats.headysystems.com
     port: 9091
     branding: "📊 Sacred Metrics"
     
   logs:
-    domain: logs.heady.internal
+    domain: logs.headysystems.com
     alt_domains:
-      - loki.heady.internal
-      - chronicle.heady.internal
-      - history.heady.internal
+      - loki.headysystems.com
+      - chronicle.headysystems.com
+      - history.headysystems.com
     port: 9200
     branding: "📜 Eternal Scroll"
     
   traces:
-    domain: traces.heady.internal
+    domain: traces.headysystems.com
     alt_domains:
-      - jaeger.heady.internal
-      - journey.heady.internal
+      - jaeger.headysystems.com
+      - journey.headysystems.com
     port: 9411
     branding: "🛤️ Path Finder"
     
   alerts:
-    domain: alerts.heady.internal
+    domain: alerts.headysystems.com
     alt_domains:
-      - alertmanager.heady.internal
-      - notify.heady.internal
-      - watchtower.heady.internal
+      - alertmanager.headysystems.com
+      - notify.headysystems.com
+      - watchtower.headysystems.com
     port: 9093
     branding: "🚨 Watchtower"
 
@@ -240,27 +240,27 @@ observability:
 # ═══════════════════════════════════════════════════════════════════════════════
 frontend:
   web-app:
-    domain: app.heady.internal
+    domain: app.headysystems.com
     alt_domains:
-      - web.heady.internal
-      - portal.heady.internal
-      - ui.heady.internal
+      - web.headysystems.com
+      - portal.headysystems.com
+      - ui.headysystems.com
     port: 5173
     branding: "🌐 Sacred Portal"
     
   desktop:
-    domain: desktop.heady.internal
+    domain: desktop.headysystems.com
     alt_domains:
-      - electron.heady.internal
-      - native.heady.internal
+      - electron.headysystems.com
+      - native.headysystems.com
     port: 5175
     branding: "💻 Desktop Companion"
     
   mobile:
-    domain: mobile.heady.internal
+    domain: mobile.headysystems.com
     alt_domains:
-      - phone.heady.internal
-      - handheld.heady.internal
+      - phone.headysystems.com
+      - handheld.headysystems.com
     port: 5176
     branding: "📱 Mobile Oracle"
 
@@ -269,38 +269,38 @@ frontend:
 # ═══════════════════════════════════════════════════════════════════════════════
 browser:
   chrome:
-    domain: chrome.heady.internal
+    domain: chrome.headysystems.com
     alt_domains:
-      - googlechrome.heady.internal
+      - googlechrome.headysystems.com
     port: 3302
     branding: "🌟 Chrome Companion"
     
   firefox:
-    domain: firefox.heady.internal
+    domain: firefox.headysystems.com
     alt_domains:
-      - mozilla.heady.internal
+      - mozilla.headysystems.com
     port: 3303
     branding: "🦊 Firefox Friend"
     
   edge:
-    domain: edge.heady.internal
+    domain: edge.headysystems.com
     alt_domains:
-      - microsoft.heady.internal
+      - microsoft.headysystems.com
     port: 3304
     branding: "🌊 Edge Explorer"
     
   safari:
-    domain: safari.heady.internal
+    domain: safari.headysystems.com
     alt_domains:
-      - apple.heady.internal
+      - apple.headysystems.com
     port: 3305
     branding: "🧭 Safari Guide"
     
   browser-bridge:
-    domain: bridge.browser.heady.internal
+    domain: bridge.browser.headysystems.com
     alt_domains:
-      - extension.heady.internal
-      - addon.heady.internal
+      - extension.headysystems.com
+      - addon.headysystems.com
     port: 3306
     branding: "🌉 Extension Bridge"
 
@@ -309,41 +309,41 @@ browser:
 # ═══════════════════════════════════════════════════════════════════════════════
 ides:
   vscode:
-    domain: vscode.heady.internal
+    domain: vscode.headysystems.com
     alt_domains:
-      - code.heady.internal
-      - visualstudio.heady.internal
+      - code.headysystems.com
+      - visualstudio.headysystems.com
     port: 3307
     branding: "💙 VS Code Soul"
     
   jetbrains:
-    domain: jetbrains.heady.internal
+    domain: jetbrains.headysystems.com
     alt_domains:
-      - intellij.heady.internal
-      - pycharm.heady.internal
-      - webstorm.heady.internal
+      - intellij.headysystems.com
+      - pycharm.headysystems.com
+      - webstorm.headysystems.com
     port: 3308
     branding: "🧠 JetBrains Genius"
     
   neovim:
-    domain: neovim.heady.internal
+    domain: neovim.headysystems.com
     alt_domains:
-      - vim.heady.internal
-      - nvim.heady.internal
+      - vim.headysystems.com
+      - nvim.headysystems.com
     port: 3309
     branding: "🌙 Vim Visionary"
     
   sublime:
-    domain: sublime.heady.internal
+    domain: sublime.headysystems.com
     alt_domains:
-      - textmate.heady.internal
+      - textmate.headysystems.com
     port: 3310
     branding: "✨ Sublime Spirit"
     
   emacs:
-    domain: emacs.heady.internal
+    domain: emacs.headysystems.com
     alt_domains:
-      - gnu.heady.internal
+      - gnu.headysystems.com
     port: 3311
     branding: "🐂 Emacs Elder"
 
@@ -352,57 +352,57 @@ ides:
 # ═══════════════════════════════════════════════════════════════════════════════
 integrations:
   slack:
-    domain: slack.heady.internal
+    domain: slack.headysystems.com
     alt_domains:
-      - chat.heady.internal
-      - team.heady.internal
+      - chat.headysystems.com
+      - team.headysystems.com
     port: 3312
     branding: "💬 Slack Sage"
     
   discord:
-    domain: discord.heady.internal
+    domain: discord.headysystems.com
     alt_domains:
-      - community.heady.internal
-      - guild.heady.internal
+      - community.headysystems.com
+      - guild.headysystems.com
     port: 3313
     branding: "🎮 Discord Druid"
     
   teams:
-    domain: teams.heady.internal
+    domain: teams.headysystems.com
     alt_domains:
-      - microsoft.heady.internal
+      - microsoft.headysystems.com
     port: 3314
     branding: "🏢 Teams Titan"
     
   email:
-    domain: mail.heady.internal
+    domain: mail.headysystems.com
     alt_domains:
-      - email.heady.internal
-      - post.heady.internal
+      - email.headysystems.com
+      - post.headysystems.com
     port: 3315
     branding: "📧 Email Emissary"
     
   calendar:
-    domain: calendar.heady.internal
+    domain: calendar.headysystems.com
     alt_domains:
-      - schedule.heady.internal
-      - time.heady.internal
+      - schedule.headysystems.com
+      - time.headysystems.com
     port: 3316
     branding: "📅 Time Keeper"
     
   github:
-    domain: github.heady.internal
+    domain: github.headysystems.com
     alt_domains:
-      - git.heady.internal
-      - vcs.heady.internal
+      - git.headysystems.com
+      - vcs.headysystems.com
     port: 3317
     branding: "🐙 GitHub Guardian"
     
   notion:
-    domain: notion.heady.internal
+    domain: notion.headysystems.com
     alt_domains:
-      - wiki.heady.internal
-      - docs.heady.internal
+      - wiki.headysystems.com
+      - docs.headysystems.com
     port: 3318
     branding: "📝 Notion Navigator"
 
@@ -411,41 +411,41 @@ integrations:
 # ═══════════════════════════════════════════════════════════════════════════════
 mcp_servers:
   mcp-gateway:
-    domain: mcp.heady.internal
+    domain: mcp.headysystems.com
     alt_domains:
-      - tools.heady.internal
-      - gateway.heady.internal
+      - tools.headysystems.com
+      - gateway.headysystems.com
     port: 3001
     branding: "🔌 MCP Nexus"
     
   filesystem:
-    domain: fs.heady.internal
+    domain: fs.headysystems.com
     alt_domains:
-      - files.heady.internal
-      - storage.heady.internal
+      - files.headysystems.com
+      - storage.headysystems.com
     port: 3002
     branding: "📁 File Keeper"
     
   terminal:
-    domain: shell.heady.internal
+    domain: shell.headysystems.com
     alt_domains:
-      - terminal.heady.internal
-      - bash.heady.internal
+      - terminal.headysystems.com
+      - bash.headysystems.com
     port: 3003
     branding: "💻 Terminal Titan"
     
   browser-mcp:
-    domain: browser.mcp.heady.internal
+    domain: browser.mcp.headysystems.com
     alt_domains:
-      - web.mcp.heady.internal
+      - web.mcp.headysystems.com
     port: 3004
     branding: "🌍 Web Wanderer"
     
   search:
-    domain: search.heady.internal
+    domain: search.headysystems.com
     alt_domains:
-      - find.heady.internal
-      - query.heady.internal
+      - find.headysystems.com
+      - query.headysystems.com
     port: 3005
     branding: "🔍 Search Seer"
 
@@ -454,18 +454,18 @@ mcp_servers:
 # ═══════════════════════════════════════════════════════════════════════════════
 distribution:
   billing:
-    domain: billing.heady.internal
+    domain: billing.headysystems.com
     alt_domains:
-      - payments.heady.internal
-      - stripe.heady.internal
+      - payments.headysystems.com
+      - stripe.headysystems.com
     port: 3319
     branding: "💰 Sacred Treasury"
     
   telemetry:
-    domain: telemetry.heady.internal
+    domain: telemetry.headysystems.com
     alt_domains:
-      - analytics.heady.internal
-      - tracking.heady.internal
+      - analytics.headysystems.com
+      - tracking.headysystems.com
     port: 3320
     branding: "📈 Insight Beacon"
 
@@ -474,43 +474,43 @@ distribution:
 # ═══════════════════════════════════════════════════════════════════════════════
 headyos:
   docker:
-    domain: docker.heady.internal
+    domain: docker.headysystems.com
     alt_domains:
-      - container.heady.internal
-      - podman.heady.internal
+      - container.headysystems.com
+      - podman.headysystems.com
     port: 3321
     branding: "🐳 Docker Domain"
     
   bare-metal:
-    domain: metal.heady.internal
+    domain: metal.headysystems.com
     alt_domains:
-      - kernel.heady.internal
-      - os.heady.internal
+      - kernel.headysystems.com
+      - os.headysystems.com
     port: 3322
     branding: "⚙️ Iron Core"
     
   linux-distro:
-    domain: linux.heady.internal
+    domain: linux.headysystems.com
     alt_domains:
-      - distro.heady.internal
-      - buildroot.heady.internal
+      - distro.headysystems.com
+      - buildroot.headysystems.com
     port: 3323
     branding: "🐧 Linux Legacy"
     
   android:
-    domain: android.heady.internal
+    domain: android.headysystems.com
     alt_domains:
-      - aosp.heady.internal
-      - mobile-os.heady.internal
+      - aosp.headysystems.com
+      - mobile-os.headysystems.com
     port: 3324
     branding: "🤖 Android Avatar"
     
   embedded:
-    domain: embedded.heady.internal
+    domain: embedded.headysystems.com
     alt_domains:
-      - iot.heady.internal
-      - rpi.heady.internal
-      - yocto.heady.internal
+      - iot.headysystems.com
+      - rpi.headysystems.com
+      - yocto.headysystems.com
     port: 3325
     branding: "🔌 Embedded Entity"
 
@@ -519,19 +519,19 @@ headyos:
 # ═══════════════════════════════════════════════════════════════════════════════
 security:
   secrets:
-    domain: secrets.heady.internal
+    domain: secrets.headysystems.com
     alt_domains:
-      - vault.heady.internal
-      - keys.heady.internal
-      - passwords.heady.internal
+      - vault.headysystems.com
+      - keys.headysystems.com
+      - passwords.headysystems.com
     port: 3326
     branding: "🔐 Secret Sanctuary"
     
   cloudflare:
-    domain: cloudflare.heady.internal
+    domain: cloudflare.headysystems.com
     alt_domains:
-      - cdn.heady.internal
-      - dns.heady.internal
+      - cdn.headysystems.com
+      - dns.headysystems.com
     port: 3327
     branding: "☁️ Cloud Guardian"
 
@@ -540,18 +540,18 @@ security:
 # ═══════════════════════════════════════════════════════════════════════════════
 discovery:
   service-registry:
-    domain: registry.heady.internal
+    domain: registry.headysystems.com
     alt_domains:
-      - catalog.heady.internal
-      - directory.heady.internal
+      - catalog.headysystems.com
+      - directory.headysystems.com
     port: 8600
     branding: "📋 Service Catalog"
     
   dns-internal:
-    domain: dns.heady.internal
+    domain: dns.headysystems.com
     alt_domains:
-      - nameserver.heady.internal
-      - resolver.heady.internal
+      - nameserver.headysystems.com
+      - resolver.headysystems.com
     port: 53
     branding: "🌐 Name Weaver"
 
@@ -587,86 +587,86 @@ hosts_entries: |
   # HEADY SYSTEMS — Universal Domain Architecture
   # Add these to your hosts file for local resolution
   
-  api.heady.internal api.manager.heady.internal
-  api.heady.internal buddy.heady.internal
-  api.heady.internal conductor.heady.internal
+  api.headysystems.com api.manager.headysystems.com
+  api.headysystems.com buddy.headysystems.com
+  api.headysystems.com conductor.headysystems.com
   
   # AI Nodes
-  api.heady.internal jules.heady.internal
-  api.heady.internal observer.heady.internal
-  api.heady.internal builder.heady.internal
-  api.heady.internal atlas.heady.internal
-  api.heady.internal pythia.heady.internal
+  api.headysystems.com jules.headysystems.com
+  api.headysystems.com observer.headysystems.com
+  api.headysystems.com builder.headysystems.com
+  api.headysystems.com atlas.headysystems.com
+  api.headysystems.com pythia.headysystems.com
   
   # Intelligence Systems
-  api.heady.internal mc.heady.internal
-  api.heady.internal patterns.heady.internal
-  api.heady.internal critique.heady.internal
-  api.heady.internal imagine.heady.internal
-  api.heady.internal stories.heady.internal
+  api.headysystems.com mc.headysystems.com
+  api.headysystems.com patterns.headysystems.com
+  api.headysystems.com critique.headysystems.com
+  api.headysystems.com imagine.headysystems.com
+  api.headysystems.com stories.headysystems.com
   
   # Infrastructure
-  api.heady.internal db.postgres.heady.internal
-  api.heady.internal cache.redis.heady.internal
-  api.heady.internal pubsub.redis.heady.internal
+  api.headysystems.com db.postgres.headysystems.com
+  api.headysystems.com cache.redis.headysystems.com
+  api.headysystems.com pubsub.redis.headysystems.com
   
   # Observability
-  api.heady.internal lens.heady.internal
-  api.heady.internal metrics.heady.internal
-  api.heady.internal logs.heady.internal
-  api.heady.internal traces.heady.internal
-  api.heady.internal alerts.heady.internal
+  api.headysystems.com lens.headysystems.com
+  api.headysystems.com metrics.headysystems.com
+  api.headysystems.com logs.headysystems.com
+  api.headysystems.com traces.headysystems.com
+  api.headysystems.com alerts.headysystems.com
   
   # Frontend
-  api.heady.internal app.heady.internal
-  api.heady.internal desktop.heady.internal
-  api.heady.internal mobile.heady.internal
+  api.headysystems.com app.headysystems.com
+  api.headysystems.com desktop.headysystems.com
+  api.headysystems.com mobile.headysystems.com
   
   # Browsers
-  api.heady.internal chrome.heady.internal
-  api.heady.internal firefox.heady.internal
-  api.heady.internal edge.heady.internal
-  api.heady.internal safari.heady.internal
-  api.heady.internal bridge.browser.heady.internal
+  api.headysystems.com chrome.headysystems.com
+  api.headysystems.com firefox.headysystems.com
+  api.headysystems.com edge.headysystems.com
+  api.headysystems.com safari.headysystems.com
+  api.headysystems.com bridge.browser.headysystems.com
   
   # IDEs
-  api.heady.internal vscode.heady.internal
-  api.heady.internal jetbrains.heady.internal
-  api.heady.internal neovim.heady.internal
-  api.heady.internal sublime.heady.internal
-  api.heady.internal emacs.heady.internal
+  api.headysystems.com vscode.headysystems.com
+  api.headysystems.com jetbrains.headysystems.com
+  api.headysystems.com neovim.headysystems.com
+  api.headysystems.com sublime.headysystems.com
+  api.headysystems.com emacs.headysystems.com
   
   # Integrations
-  api.heady.internal slack.heady.internal
-  api.heady.internal discord.heady.internal
-  api.heady.internal teams.heady.internal
-  api.heady.internal mail.heady.internal
-  api.heady.internal calendar.heady.internal
-  api.heady.internal github.heady.internal
-  api.heady.internal notion.heady.internal
+  api.headysystems.com slack.headysystems.com
+  api.headysystems.com discord.headysystems.com
+  api.headysystems.com teams.headysystems.com
+  api.headysystems.com mail.headysystems.com
+  api.headysystems.com calendar.headysystems.com
+  api.headysystems.com github.headysystems.com
+  api.headysystems.com notion.headysystems.com
   
   # MCP Servers
-  api.heady.internal mcp.heady.internal
-  api.heady.internal fs.heady.internal
-  api.heady.internal shell.heady.internal
-  api.heady.internal browser.mcp.heady.internal
-  api.heady.internal search.heady.internal
+  api.headysystems.com mcp.headysystems.com
+  api.headysystems.com fs.headysystems.com
+  api.headysystems.com shell.headysystems.com
+  api.headysystems.com browser.mcp.headysystems.com
+  api.headysystems.com search.headysystems.com
   
   # Distribution
-  api.heady.internal billing.heady.internal
-  api.heady.internal telemetry.heady.internal
+  api.headysystems.com billing.headysystems.com
+  api.headysystems.com telemetry.headysystems.com
   
   # HeadyOS
-  api.heady.internal docker.heady.internal
-  api.heady.internal metal.heady.internal
-  api.heady.internal linux.heady.internal
-  api.heady.internal android.heady.internal
-  api.heady.internal embedded.heady.internal
+  api.headysystems.com docker.headysystems.com
+  api.headysystems.com metal.headysystems.com
+  api.headysystems.com linux.headysystems.com
+  api.headysystems.com android.headysystems.com
+  api.headysystems.com embedded.headysystems.com
   
   # Security
-  api.heady.internal secrets.heady.internal
-  api.heady.internal cloudflare.heady.internal
+  api.headysystems.com secrets.headysystems.com
+  api.headysystems.com cloudflare.headysystems.com
   
   # Discovery
-  api.heady.internal registry.heady.internal
-  api.heady.internal dns.heady.internal
+  api.headysystems.com registry.headysystems.com
+  api.headysystems.com dns.headysystems.com

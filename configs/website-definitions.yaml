@@ -154,7 +154,7 @@ sites:
     cloud_layer: local
     backend:
       api: "https://api.heady.systems"
-      buddy: "http://buddy.heady.local:3301"
+      buddy: "https://buddy.headysystems.com"
     repo: HeadySystems/Heady
     framework: react
     platforms: [desktop-electron, mobile-android, browser-extension]
@@ -193,4 +193,4 @@ url_style:
   docs: "https://docs.heady.systems/{product}/{page}"
   app: "https://app.{product-domain}/"
   edge: "https://{product-domain}/api/*"
-  local: "http://{service}.heady.local:{port}"
+  production: "https://{service}.headysystems.com"

@@ -15,7 +15,7 @@
 # HEADY_BRAND:END
 # ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║  HEADY SYSTEMS — CUSTOM BRANDED DOMAINS                                        ║
-# ║  NO internal • NO localhost • Pure Branded Domains                           ║
+# ║  NO internal • NO api.headysystems.com • Pure Branded Domains                           ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -387,87 +387,88 @@ cloud:
 # HOSTS FILE (For Local Dev)
 # ═══════════════════════════════════════════════════════════════════════════════
 hosts_entries: |
-  # HEADY CUSTOM BRANDED DOMAINS — NO internal • NO localhost
-  127.0.0.1 api.heady.io
-  127.0.0.1 buddy.heady.io
-  127.0.0.1 maestro.heady.io
+  # HEADY CUSTOM BRANDED DOMAINS — NO internal • NO api.headysystems.com
+  api.headysystems.com api.heady.io
+  api.headysystems.com buddy.heady.io
+  api.headysystems.com maestro.heady.io
   
   # AI Nodes
-  127.0.0.1 jules.heady.io
-  127.0.0.1 observer.heady.io
-  127.0.0.1 builder.heady.io
-  127.0.0.1 atlas.heady.io
-  127.0.0.1 pythia.heady.io
+  api.headysystems.com jules.heady.io
+  api.headysystems.com observer.heady.io
+  api.headysystems.com builder.heady.io
+  api.headysystems.com atlas.heady.io
+  api.headysystems.com pythia.heady.io
   
   # Intelligence
-  127.0.0.1 montecarlo.heady.io
-  127.0.0.1 patterns.heady.io
-  127.0.0.1 critique.heady.io
-  127.0.0.1 imagine.heady.io
-  127.0.0.1 stories.heady.io
+  api.headysystems.com montecarlo.heady.io
+  api.headysystems.com patterns.heady.io
+  api.headysystems.com critique.heady.io
+  api.headysystems.com imagine.heady.io
+  api.headysystems.com stories.heady.io
   
   # Data
-  127.0.0.1 postgres.heady.io
-  127.0.0.1 redis.heady.io
-  127.0.0.1 events.heady.io
+  api.headysystems.com postgres.heady.io
+  api.headysystems.com redis.heady.io
+  api.headysystems.com events.heady.io
   
   # Observability
-  127.0.0.1 lens.heady.io
-  127.0.0.1 metrics.heady.io
-  127.0.0.1 logs.heady.io
-  127.0.0.1 traces.heady.io
-  127.0.0.1 alerts.heady.io
+  api.headysystems.com lens.heady.io
+  api.headysystems.com metrics.heady.io
+  api.headysystems.com logs.heady.io
+  api.headysystems.com traces.heady.io
+  api.headysystems.com alerts.heady.io
   
   # Frontend
-  127.0.0.1 app.heady.io
-  127.0.0.1 desktop.heady.io
-  127.0.0.1 mobile.heady.io
+  api.headysystems.com app.heady.io
+  api.headysystems.com desktop.heady.io
+  api.headysystems.com mobile.heady.io
   
   # Browsers
-  127.0.0.1 chrome.heady.io
-  127.0.0.1 firefox.heady.io
-  127.0.0.1 edge.heady.io
-  127.0.0.1 safari.heady.io
-  127.0.0.1 bridge.heady.io
+  api.headysystems.com chrome.heady.io
+  api.headysystems.com firefox.heady.io
+  api.headysystems.com edge.heady.io
+  api.headysystems.com safari.heady.io
+  api.headysystems.com bridge.heady.io
   
   # IDEs
-  127.0.0.1 vscode.heady.io
-  127.0.0.1 jetbrains.heady.io
-  127.0.0.1 neovim.heady.io
-  127.0.0.1 sublime.heady.io
-  127.0.0.1 emacs.heady.io
+  api.headysystems.com vscode.heady.io
+  api.headysystems.com jetbrains.heady.io
+  api.headysystems.com neovim.heady.io
+  api.headysystems.com sublime.heady.io
+  api.headysystems.com emacs.heady.io
   
   # Integrations
-  127.0.0.1 slack.heady.io
-  127.0.0.1 discord.heady.io
-  127.0.0.1 teams.heady.io
-  127.0.0.1 mail.heady.io
-  127.0.0.1 calendar.heady.io
-  127.0.0.1 github.heady.io
-  127.0.0.1 notion.heady.io
+  api.headysystems.com slack.heady.io
+  api.headysystems.com discord.heady.io
+  api.headysystems.com teams.heady.io
+  api.headysystems.com mail.heady.io
+  api.headysystems.com calendar.heady.io
+  api.headysystems.com github.heady.io
+  api.headysystems.com notion.heady.io
   
   # MCP
-  127.0.0.1 mcp.heady.io
-  127.0.0.1 fs.heady.io
-  127.0.0.1 shell.heady.io
-  127.0.0.1 browser-tools.heady.io
-  127.0.0.1 search.heady.io
+  api.headysystems.com mcp.heady.io
+  api.headysystems.com fs.heady.io
+  api.headysystems.com shell.heady.io
+  api.headysystems.com browser-tools.heady.io
+  api.headysystems.com search.heady.io
   
   # Business
-  127.0.0.1 billing.heady.io
-  127.0.0.1 telemetry.heady.io
+  api.headysystems.com billing.heady.io
+  api.headysystems.com telemetry.heady.io
   
   # HeadyOS
-  127.0.0.1 docker.heady.io
-  127.0.0.1 metal.heady.io
-  127.0.0.1 linux.heady.io
-  127.0.0.1 android.heady.io
-  127.0.0.1 embedded.heady.io
+  api.headysystems.com docker.heady.io
+  api.headysystems.com metal.heady.io
+  api.headysystems.com linux.heady.io
+  api.headysystems.com android.heady.io
+  api.headysystems.com embedded.heady.io
   
   # Security
-  127.0.0.1 vault.heady.io
-  127.0.0.1 cdn.heady.io
+  api.headysystems.com vault.heady.io
+  api.headysystems.com cdn.heady.io
   
   # Discovery
-  127.0.0.1 registry.heady.io
-  127.0.0.1 dns.heady.io
+  api.headysystems.com registry.heady.io
+  api.headysystems.com dns.heady.io
+

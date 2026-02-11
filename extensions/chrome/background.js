@@ -19,7 +19,7 @@
 
 // Get API endpoint from service discovery
 const API_ENDPOINTS = {
-  local: 'http://manager.dev.local.heady.internal:3300',
+  local: 'http://manager.dev.local.headysystems.com:3300',
   'cloud-me': 'https://cloud-me.heady.io',
   'cloud-sys': 'https://cloud-sys.heady.io',
   'cloud-conn': 'https://cloud-conn.heady.io',
@@ -196,3 +196,4 @@ async function captureSelection() {
 
 // Periodic health check (every 5 minutes)
 setInterval(checkHealth, 5 * 60 * 1000);
+

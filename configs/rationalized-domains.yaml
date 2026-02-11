@@ -23,13 +23,13 @@
 # ═══════════════════════════════════════════════════════════════════════════════
 core:
   heady-manager:
-    domain: api.manager.local.heady.internal
+    domain: api.manager.local.headysystems.com
     port: 3300
     category: orchestration
     description: "Central API Gateway & MCP Protocol"
     
   heady-buddy:
-    domain: buddy.local.heady.internal
+    domain: buddy.local.headysystems.com
     port: 5174
     category: companion
     description: "AI Companion & Task Assistant"
@@ -39,27 +39,27 @@ core:
 # ═══════════════════════════════════════════════════════════════════════════════
 ai_nodes:
   jules:
-    domain: jules.local.heady.internal
+    domain: jules.local.headysystems.com
     port: 8001
     function: code_optimization
     
   observer:
-    domain: observer.local.heady.internal
+    domain: observer.local.headysystems.com
     port: 8002
     function: monitoring
     
   builder:
-    domain: builder.local.heady.internal
+    domain: builder.local.headysystems.com
     port: 8003
     function: project_scaffolding
     
   atlas:
-    domain: atlas.local.heady.internal
+    domain: atlas.local.headysystems.com
     port: 8004
     function: documentation
     
   pythia:
-    domain: pythia.local.heady.internal
+    domain: pythia.local.headysystems.com
     port: 8005
     function: inference_oracle
 
@@ -67,49 +67,49 @@ ai_nodes:
 # TIER 3: INTELLIGENCE ENGINE (Combined — Same Subsystem, Different Endpoints)
 # ═══════════════════════════════════════════════════════════════════════════════
 intelligence:
-  domain: intelligence.local.heady.internal
+  domain: intelligence.local.headysystems.com
   port: 8006
   
   subsystems:
     monte-carlo:
       path: /mc
-      endpoint: intelligence.local.heady.internal:8006/mc
+      endpoint: intelligence.local.headysystems.com:8006/mc
       
     patterns:
       path: /patterns
-      endpoint: intelligence.local.heady.internal:8006/patterns
+      endpoint: intelligence.local.headysystems.com:8006/patterns
       
     self-critique:
       path: /critique
-      endpoint: intelligence.local.heady.internal:8006/critique
+      endpoint: intelligence.local.headysystems.com:8006/critique
       
     imagination:
       path: /imagine
-      endpoint: intelligence.local.heady.internal:8006/imagine
+      endpoint: intelligence.local.headysystems.com:8006/imagine
       
     stories:
       path: /stories
-      endpoint: intelligence.local.heady.internal:8006/stories
+      endpoint: intelligence.local.headysystems.com:8006/stories
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TIER 4: DATA & INFRASTRUCTURE (Combined — Data Layer Cluster)
 # ═══════════════════════════════════════════════════════════════════════════════
 data_layer:
-  domain: data.local.heady.internal
+  domain: data.local.headysystems.com
   
   services:
     postgres:
-      subdomain: db.data.local.heady.internal
+      subdomain: db.data.local.headysystems.com
       port: 5432
       protocol: postgresql
       
     redis-cache:
-      subdomain: cache.data.local.heady.internal
+      subdomain: cache.data.local.headysystems.com
       port: 6379
       protocol: redis
       
     redis-pubsub:
-      subdomain: events.data.local.heady.internal
+      subdomain: events.data.local.headysystems.com
       port: 6380
       protocol: redis
 
@@ -117,7 +117,7 @@ data_layer:
 # TIER 5: OBSERVABILITY (Combined — Monitoring Stack)
 # ═══════════════════════════════════════════════════════════════════════════════
 observability:
-  domain: observability.local.heady.internal
+  domain: observability.local.headysystems.com
   port: 9090
   
   services:
@@ -145,7 +145,7 @@ observability:
 # TIER 6: FRONTEND (Combined — UI Layer)
 # ═══════════════════════════════════════════════════════════════════════════════
 frontend:
-  domain: ui.local.heady.internal
+  domain: ui.local.headysystems.com
   port: 5173
   
   platforms:
@@ -165,7 +165,7 @@ frontend:
 # TIER 7: BROWSER ECOSYSTEM (Combined — All Browsers Under One)
 # ═══════════════════════════════════════════════════════════════════════════════
 browsers:
-  domain: browser.local.heady.internal
+  domain: browser.local.headysystems.com
   port: 3302
   
   extensions:
@@ -189,7 +189,7 @@ browsers:
 # TIER 8: IDE ECOSYSTEM (Combined — All IDEs Under One)
 # ═══════════════════════════════════════════════════════════════════════════════
 ides:
-  domain: ide.local.heady.internal
+  domain: ide.local.headysystems.com
   port: 3307
   
   integrations:
@@ -212,7 +212,7 @@ ides:
 # TIER 9: INTEGRATIONS (Combined — Third-Party Connectors)
 # ═══════════════════════════════════════════════════════════════════════════════
 integrations:
-  domain: connect.local.heady.internal
+  domain: connect.local.headysystems.com
   port: 3312
   
   connectors:
@@ -241,7 +241,7 @@ integrations:
 # TIER 10: MCP TOOLS (Combined — Tool Server Cluster)
 # ═══════════════════════════════════════════════════════════════════════════════
 mcp:
-  domain: tools.local.heady.internal
+  domain: tools.local.headysystems.com
   port: 3001
   
   servers:
@@ -264,7 +264,7 @@ mcp:
 # TIER 11: BUSINESS (Combined — Billing & Analytics)
 # ═══════════════════════════════════════════════════════════════════════════════
 business:
-  domain: business.local.heady.internal
+  domain: business.local.headysystems.com
   port: 3319
   
   services:
@@ -282,30 +282,30 @@ business:
 # ═══════════════════════════════════════════════════════════════════════════════
 headyos:
   docker:
-    domain: os-docker.local.heady.internal
+    domain: os-docker.local.headysystems.com
     port: 3321
     
   bare-metal:
-    domain: os-metal.local.heady.internal
+    domain: os-metal.local.headysystems.com
     port: 3322
     
   linux:
-    domain: os-linux.local.heady.internal
+    domain: os-linux.local.headysystems.com
     port: 3323
     
   android:
-    domain: os-android.local.heady.internal
+    domain: os-android.local.headysystems.com
     port: 3324
     
   embedded:
-    domain: os-embedded.local.heady.internal
+    domain: os-embedded.local.headysystems.com
     port: 3325
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TIER 13: SECURITY (Combined — Security Services)
 # ═══════════════════════════════════════════════════════════════════════════════
 security:
-  domain: vault.local.heady.internal
+  domain: vault.local.headysystems.com
   port: 3326
   
   services:
@@ -319,15 +319,15 @@ security:
 # TIER 14: DISCOVERY (Combined — Service Discovery & DNS)
 # ═══════════════════════════════════════════════════════════════════════════════
 discovery:
-  domain: discovery.local.heady.internal
+  domain: discovery.local.headysystems.com
   
   services:
     registry:
-      subdomain: registry.discovery.local.heady.internal
+      subdomain: registry.discovery.local.headysystems.com
       port: 8600
       
     dns:
-      subdomain: dns.discovery.local.heady.internal
+      subdomain: dns.discovery.local.headysystems.com
       port: 53
       protocol: dns
 
@@ -383,41 +383,42 @@ cloud:
 # ═══════════════════════════════════════════════════════════════════════════════
 hosts_entries: |
   # ═══ CORE ═══
-  127.0.0.1 api.manager.local.heady.internal
-  127.0.0.1 buddy.local.heady.internal
+  api.headysystems.com api.manager.local.headysystems.com
+  api.headysystems.com buddy.local.headysystems.com
   
   # ═══ AI NODES (5 separate) ═══
-  127.0.0.1 jules.local.heady.internal
-  127.0.0.1 observer.local.heady.internal
-  127.0.0.1 builder.local.heady.internal
-  127.0.0.1 atlas.local.heady.internal
-  127.0.0.1 pythia.local.heady.internal
+  api.headysystems.com jules.local.headysystems.com
+  api.headysystems.com observer.local.headysystems.com
+  api.headysystems.com builder.local.headysystems.com
+  api.headysystems.com atlas.local.headysystems.com
+  api.headysystems.com pythia.local.headysystems.com
   
   # ═══ COMBINED LAYERS ═══
-  127.0.0.1 intelligence.local.heady.internal
-  127.0.0.1 data.local.heady.internal
-  127.0.0.1 observability.local.heady.internal
-  127.0.0.1 ui.local.heady.internal
-  127.0.0.1 browser.local.heady.internal
-  127.0.0.1 ide.local.heady.internal
-  127.0.0.1 connect.local.heady.internal
-  127.0.0.1 tools.local.heady.internal
-  127.0.0.1 business.local.heady.internal
-  127.0.0.1 vault.local.heady.internal
-  127.0.0.1 discovery.local.heady.internal
+  api.headysystems.com intelligence.local.headysystems.com
+  api.headysystems.com data.local.headysystems.com
+  api.headysystems.com observability.local.headysystems.com
+  api.headysystems.com ui.local.headysystems.com
+  api.headysystems.com browser.local.headysystems.com
+  api.headysystems.com ide.local.headysystems.com
+  api.headysystems.com connect.local.headysystems.com
+  api.headysystems.com tools.local.headysystems.com
+  api.headysystems.com business.local.headysystems.com
+  api.headysystems.com vault.local.headysystems.com
+  api.headysystems.com discovery.local.headysystems.com
   
   # ═══ DATA SUBDOMAINS ═══
-  127.0.0.1 db.data.local.heady.internal
-  127.0.0.1 cache.data.local.heady.internal
-  127.0.0.1 events.data.local.heady.internal
+  api.headysystems.com db.data.local.headysystems.com
+  api.headysystems.com cache.data.local.headysystems.com
+  api.headysystems.com events.data.local.headysystems.com
   
   # ═══ HEADYOS (5 separate) ═══
-  127.0.0.1 os-docker.local.heady.internal
-  127.0.0.1 os-metal.local.heady.internal
-  127.0.0.1 os-linux.local.heady.internal
-  127.0.0.1 os-android.local.heady.internal
-  127.0.0.1 os-embedded.local.heady.internal
+  api.headysystems.com os-docker.local.headysystems.com
+  api.headysystems.com os-metal.local.headysystems.com
+  api.headysystems.com os-linux.local.headysystems.com
+  api.headysystems.com os-android.local.headysystems.com
+  api.headysystems.com os-embedded.local.headysystems.com
   
   # ═══ DISCOVERY SUBDOMAINS ═══
-  127.0.0.1 registry.discovery.local.heady.internal
-  127.0.0.1 dns.discovery.local.heady.internal
+  api.headysystems.com registry.discovery.local.headysystems.com
+  api.headysystems.com dns.discovery.local.headysystems.com
+

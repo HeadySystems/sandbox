@@ -1,33 +1,50 @@
 # LOCALHOST ELIMINATION PROTOCOL
-# Version: 1.0.0
+# Version: 2.0.0
+# Status: ENFORCED — Zero Tolerance
 # Effective: Immediately
+# Last Updated: 2026-02-11
+
+status: ENFORCED
 
 rules:
   - "No localhost references in any code, configs, or documentation"
-  - "All services must use canonical domains from domain-mappings.yaml"
-  - "Development environments must use 'dev.' prefixed domains"
-  - "Test environments must use 'test.' prefixed domains"
+  - "No 127.0.0.1 or 0.0.0.0 references anywhere"
+  - "No .local domain references (e.g., heady.local, headysystems.local)"
+  - "No C:\\ or local drive paths used as operational endpoints"
+  - "No http:// URLs in production configs — HTTPS only"
+  - "All services must use canonical cloud domains from service-domains.yaml"
+  - "Development environments must use dev.headysystems.com or dev.internal.heady.systems"
+  - "Test environments must use staging.headysystems.com"
+  - "Production uses headysystems.com / headyconnection.org / headybuddy.org"
 
 enforcement:
   scan_patterns:
     - "localhost"
     - "127.0.0.1"
-    - ":\d+"  # port numbers
-    - "http://"
+    - "0.0.0.0"
+    - ".heady.local"
+    - ".headysystems.local"
+    - "C:\\\\"
+    - "D:\\\\"
   
   auto_replacement:
-    development: "dev.headysystems.local"
-    test: "test.headysystems.com"
+    development: "dev.headysystems.com"
+    test: "staging.headysystems.com"
     production: "api.headysystems.com"
+    manager: "manager.headysystems.com"
+    app: "app.headysystems.com"
+    buddy: "buddy.headysystems.com"
 
   verification:
     - "Included in CI pipeline"
     - "Runs on every commit"
-    - "Fails build if localhost found"
+    - "Fails build if any banned pattern found"
+    - "Pre-commit hook blocks localhost introductions"
 
   exceptions:
-    - "Docker internal networking"
-    - "Kubernetes cluster DNS"
-    - "Loopback interface diagnostics"
+    - "Docker internal networking (host.docker.internal only)"
+    - "Kubernetes cluster DNS (*.svc.cluster.local)"
+    - "This protocol file itself (for documenting banned patterns)"
 
 compliance_check: "scripts/verify-no-localhost.ps1"
+violation_severity: "build-breaking"
