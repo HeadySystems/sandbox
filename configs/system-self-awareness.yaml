@@ -450,6 +450,59 @@ foundationRebuildDirective:
     orchestrator: "services/orchestrator/hc-sys-orchestrator.js"
     edge_proxy: "workers/edge-proxy/src/index.ts"
 
+# ─── FOUNDATION-FIRST REBUILD DIRECTIVE ─────────────────────────────────
+foundationFirstDirective:
+  description: >
+    The system MUST rebuild the project correctly from core outward,
+    using the Iterative Rebuild Protocol. Foundation components first,
+    high-performance MCP/API links next, Cloudflare Workers as edge
+    front doors, and only then attach websites and integrations.
+  rebuild_order:
+    tier_1: "Core Services (manager, registry, pipeline, brain, orchestrator, model-router)"
+    tier_2: "MCP & HTTP APIs (MCP gateway, API routes, SDK clients)"
+    tier_3: "Edge Routing (Cloudflare Workers, DNS, SSL)"
+    tier_4: "Websites & Frontends (dashboard, Buddy, browser/IDE extensions)"
+    tier_5: "Integrations (Slack, Discord, email, calendar connectors)"
+  configs:
+    - "configs/foundation-contract.yaml — platform contract (ports, endpoints, env vars, auth)"
+    - "configs/iterative-rebuild-directive.yaml — rebuild phases and gates"
+    - "configs/cloud-layers.yaml — local/internal/production layer definitions"
+    - "configs/brain-profiles.yaml — per-product brain profiles (agents, models, RAG)"
+    - "configs/website-definitions.yaml — all product site configs"
+  services:
+    - "services/orchestrator/hc_sys_orchestrator.js — multi-brain task router"
+    - "services/orchestrator/brain_api.js — per-layer brain (plan/feedback)"
+    - "workers/edge-proxy/ — Cloudflare Worker reverse proxy"
+  rule: >
+    No product repo (HeadyMe, HeadyConnection, HeadyWeb) may be built
+    or deployed until foundation (tiers 1-3) is fully green.
+    Product repos are thin consumers of the foundation API/SDK.
+  enforcement: strict
+
+# ─── MULTI-BRAIN ORCHESTRATION AWARENESS ────────────────────────────────
+multiBrainAwareness:
+  description: >
+    The system operates as many brains over one shared IO fabric.
+    Each brain is a (workspace x agent-catalog x model-policy x memory)
+    combination, not a separate codebase. The orchestrator routes
+    per request based on workspace, channel, and cloud layer.
+  brains:
+    HeadySystems: "sys-ops — coding agent, OS automation, infra MCP tools"
+    HeadyMe: "personal-wellbeing — wellbeing coach, teaching mentor, wealth helper"
+    HeadyConnection: "community-impact — BD agent, grant writer, ethics checker"
+    HeadyWeb: "web-platform — content, onboarding, demos"
+    HeadyBuddy: "companion — quick assistant, context keeper"
+  routing: >
+    HCSysOrchestrator reads brain-profiles.yaml and cloud-layers.yaml.
+    For each request: resolves brain_profile_id from domain/workspace/explicit,
+    selects model provider from cloud-layers.yaml decision matrix,
+    delegates to per-layer HeadyBrain for MC plan selection,
+    feeds PlanSpec into HCFullPipeline for execution.
+  transparency: >
+    Multi-Agent Transparency policy: when multiple agents are active,
+    surface which brain/agent answered. Never present multiple agents
+    as a single opaque service.
+
 # ─── Checkpoint-Rebuild Protocol ──────────────────────────────────────
 checkpointRebuild:
   standingRule: "Every checkpoint triggers a full project rebuild from scratch"

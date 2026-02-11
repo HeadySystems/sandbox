@@ -1,6 +1,6 @@
 {
-  "registryVersion": "3.2.0",
-  "updatedAt": "2026-02-09T19:47:49.495Z",
+  "registryVersion": "3.3.0",
+  "updatedAt": "2026-02-11T21:40:00.000Z",
   "description": "HeadyRegistry — Central catalog and control point for the Heady ecosystem",
   "last_deployment": "2026-02-08T21:30:00Z",
 
@@ -796,6 +796,105 @@
       "status": "active",
       "criticality": "high",
       "lastUpdated": "2026-02-10"
+    },
+    {
+      "id": "hc-sys-orchestrator",
+      "name": "HCSysOrchestrator",
+      "type": "orchestration",
+      "version": "1.0.0",
+      "sourceOfTruth": "services/orchestrator/hc_sys_orchestrator.js",
+      "responsibilities": ["multiBrainRouting", "cloudLayerResolution", "modelRouting", "taskDescriptorBuilding", "transparencyEnforcement", "foundationContractAccess"],
+      "endpoints": [
+        "/api/orchestrator/health",
+        "/api/orchestrator/route",
+        "/api/orchestrator/brains",
+        "/api/orchestrator/layers",
+        "/api/orchestrator/contract",
+        "/api/orchestrator/rebuild-status",
+        "/api/orchestrator/reload"
+      ],
+      "dependencies": ["brain-profiles.yaml", "cloud-layers.yaml", "foundation-contract.yaml", "iterative-rebuild-directive.yaml"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "critical",
+      "lastUpdated": "2026-02-11"
+    },
+    {
+      "id": "heady-brain-api",
+      "name": "HeadyBrainAPI",
+      "type": "intelligence",
+      "version": "1.0.0",
+      "sourceOfTruth": "services/orchestrator/brain_api.js",
+      "responsibilities": ["mcPlanSelection", "patternEngineIntegration", "selfCritiqueIntegration", "feedbackLearning", "perLayerIntelligence"],
+      "endpoints": [
+        "/api/brain/health",
+        "/api/brain/plan",
+        "/api/brain/feedback",
+        "/api/brain/status"
+      ],
+      "dependencies": ["hc_monte_carlo", "hc_pattern_engine", "hc_self_critique"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "critical",
+      "lastUpdated": "2026-02-11"
+    },
+    {
+      "id": "edge-proxy-worker",
+      "name": "HeadyEdgeProxy",
+      "type": "edge-gateway",
+      "version": "1.0.0",
+      "sourceOfTruth": "workers/edge-proxy/src/index.ts",
+      "responsibilities": ["reverseProxy", "corsNormalization", "headerInjection", "edgeMetrics", "multiProductRouting", "pathBasedRouting"],
+      "routes": [
+        "api.heady.systems/*",
+        "brain.heady.systems/*",
+        "headysystems.com/api/*",
+        "headyme.com/api/*",
+        "headyconnection.org/api/*",
+        "headyweb.com/api/*",
+        "headymcp.com/api/*"
+      ],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-11"
+    },
+    {
+      "id": "foundation-contract",
+      "name": "FoundationPlatformContract",
+      "type": "governance",
+      "version": "1.0.0",
+      "sourceOfTruth": "configs/foundation-contract.yaml",
+      "responsibilities": ["platformContract", "portDefinitions", "envVarContract", "authModel", "rebuildTiers", "productRepoRules"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "critical",
+      "lastUpdated": "2026-02-11"
+    },
+    {
+      "id": "iterative-rebuild-directive",
+      "name": "IterativeRebuildDirective",
+      "type": "governance",
+      "version": "1.0.0",
+      "sourceOfTruth": "configs/iterative-rebuild-directive.yaml",
+      "responsibilities": ["rebuildPhases", "foundationFirstMandate", "phaseGates", "stopConditions"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "critical",
+      "lastUpdated": "2026-02-11"
+    },
+    {
+      "id": "website-definitions",
+      "name": "WebsiteDefinitions",
+      "type": "configuration",
+      "version": "1.0.0",
+      "sourceOfTruth": "configs/website-definitions.yaml",
+      "responsibilities": ["productSiteDefinitions", "domainMapping", "brainProfileMapping", "deploymentTargets", "urlStyleGuide"],
+      "sites": ["headysystems.com", "headyme.com", "headyconnection.org", "headyweb.com", "headymcp.com"],
+      "ownership": "core",
+      "status": "active",
+      "criticality": "high",
+      "lastUpdated": "2026-02-11"
     },
     {
       "id": "distribution-pack",

@@ -310,6 +310,10 @@ app.get("/api/pulse", (req, res) => {
       "/api/v1/train",
       "/api/imagination/primitives", "/api/imagination/concepts", "/api/imagination/imagine",
       "/api/imagination/hot-concepts", "/api/imagination/top-concepts", "/api/imagination/ip-packages",
+      "/api/orchestrator/health", "/api/orchestrator/route", "/api/orchestrator/brains",
+      "/api/orchestrator/layers", "/api/orchestrator/contract", "/api/orchestrator/rebuild-status",
+      "/api/orchestrator/reload",
+      "/api/brain/health", "/api/brain/plan", "/api/brain/feedback", "/api/brain/status",
     ],
     aloha: alohaState ? {
       mode: alohaState.mode,
@@ -1226,6 +1230,28 @@ try {
   console.log("  ∞ Improvement Scheduler: LOADED (15m cycles)");
 } catch (err) {
   console.warn(`  ⚠ Improvement Scheduler not loaded: ${err.message}`);
+}
+
+// ─── HCSysOrchestrator — Multi-Brain Task Router ────────────────────
+let orchestratorRoutes = null;
+try {
+  orchestratorRoutes = require("./services/orchestrator/hc_sys_orchestrator");
+  app.use("/api/orchestrator", orchestratorRoutes);
+  console.log("  ∞ HCSysOrchestrator: LOADED");
+  console.log("    → Endpoints: /api/orchestrator/health, /route, /brains, /layers, /contract, /rebuild-status");
+} catch (err) {
+  console.warn(`  ⚠ HCSysOrchestrator not loaded: ${err.message}`);
+}
+
+// ─── HeadyBrain API — Per-Layer Intelligence ────────────────────────
+let brainApiRoutes = null;
+try {
+  brainApiRoutes = require("./services/orchestrator/brain_api");
+  app.use("/api/brain", brainApiRoutes);
+  console.log("  ∞ HeadyBrain API: LOADED");
+  console.log("    → Endpoints: /api/brain/health, /plan, /feedback, /status");
+} catch (err) {
+  console.warn(`  ⚠ HeadyBrain API not loaded: ${err.message}`);
 }
 
 // ─── HeadyBuddy API ─────────────────────────────────────────────────
