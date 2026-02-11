@@ -56,25 +56,6 @@ pipeline-output/
 # Standalone repos (separate git projects)
 windsurf-next/
 
-# Large binaries & SDKs (exceed GitHub 100MB limit)
-AndroidSDK/
-*.exe
-*.zip
-*.mp4
-*.img
-gradle-8.5-bin.zip
-platform-tools.zip
-cmake.zip
-nasm.zip
-ventoy.zip
-ventoy/
-
-# Large design assets (binary)
-**/designs/**/*.exe
-**/designs/**/*.mp4
-**/designs/**/*.pem
-**/designs/**/*.crt
-**/designs/**/*.code-workspace
 
 # Personal notebooks (experimental, not tracked)
 notebooks/personal/*
@@ -86,17 +67,6 @@ notebooks/personal/*
 *.db
 .heady/.heady/
 
-# Large binaries (do not track in git)
-AndroidSDK/
-*.zip
-*.exe
-*.mp4
-*.img
-*.dll
-!heady.bat
-!hc.bat
-!START-WEBSITE.bat
-!launch-pycharm.bat
+# Deploy packages (temp build artifacts)
 deploy-package-*/
 offline-packages/
-ventoy/

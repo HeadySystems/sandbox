@@ -1,7 +1,6 @@
 # Heady .gitattributes - prevent large binaries from bloating the repo
 # Auto-detect text files and normalize line endings
 * text=auto
-
 # Force LF line endings for scripts and configs
 *.ps1 text eol=lf
 *.sh text eol=lf
@@ -10,13 +9,12 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 *.md text eol=lf
-
 # Mark binary files to prevent diff/merge issues
-*.exe binary
-*.dll binary
-*.zip binary
-*.img binary
-*.mp4 binary
+*.exe filter=lfs diff=lfs merge=lfs -text
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.img filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
 *.png binary
 *.jpg binary
 *.jpeg binary
@@ -26,10 +24,9 @@
 *.woff2 binary
 *.ttf binary
 *.eot binary
-*.pem binary
-*.crt binary
+*.pem filter=lfs diff=lfs merge=lfs -text
+*.crt filter=lfs diff=lfs merge=lfs -text
 *.key binary
-
 # Exclude large files from archive/export
 AndroidSDK/ export-ignore
 ventoy/ export-ignore
