@@ -1,0 +1,19 @@
+{
+    "scan_timestamp":  "2026-02-11T16:37:55Z",
+    "file_count":  0,
+    "data":  [
+
+             ],
+    "type":  "personal_data",
+    "categories":  [
+                       "project_structure",
+                       "code_patterns",
+                       "configuration",
+                       "documentation",
+                       "user_preferences",
+                       "workflows",
+                       "dependencies",
+                       "assets",
+                       "secrets"
+                   ]
+}

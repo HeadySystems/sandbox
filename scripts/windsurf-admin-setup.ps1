@@ -15,7 +15,7 @@
 
 <#
 .SYNOPSIS
-    Grants Windsurf IDE administrative privileges and optimal system configuration
+    Grants Windsurf IDE administrative privileges and optimal HeadyCloud configuration
     
 .DESCRIPTION
     - Creates Windsurf service with admin rights
