@@ -14,8 +14,9 @@
 # ╚══════════════════════════════════════════════════════════════════╝
 # HEADY_BRAND:END
 # ══════════════════════════════════════════════════════════════════
-# Render.com Deployment Configuration for Heady Systems
-# Cloud-native deployment with optimized resource allocation
+# Heady Cloud Deployment Configuration
+# HeadyMe Cloud Native Deployment with Sacred Geometry Architecture
+# 100% Heady Services Integration · Zero Local Dependencies
 # Auto-scaling enabled · Health checks configured · Zero-downtime deploys
 # Production-ready · Multi-region support · Automated rollbacks
 # ══════════════════════════════════════════════════════════════════
@@ -116,15 +117,21 @@ services:
       - from: secret
         key: ADMIN_TOKEN
       - from: secret
-        key: RENDER_API_KEY
+        key: HEADYCLOUD_API_KEY
       - from: secret
         key: HF_TOKEN
       - key: NODE_ENV
         value: production
       - key: HEADYTARGET
-        value: CloudOnly
+        value: HeadyCloudOnly
       - key: HEADY_VERSION
         value: "3.0.0"
+      - key: HEADCLOUD_DOMAIN
+        value: "https://headyme.com"
+      - key: API_BASE_URL
+        value: "https://headyme.com/api"
+      - key: MANAGER_URL
+        value: "https://headyme.com/manager"
 
   - type: worker
     name: python-worker
