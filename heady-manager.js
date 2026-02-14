@@ -2072,6 +2072,46 @@ app.get("*", (req, res) => {
   res.status(404).json({ error: "Not found" });
 });
 
+// Root health endpoint
+app.get("/health", (req, res) => {
+  res.redirect("/api/health");
+});
+
+// Main health endpoint
+app.get("/api/health", (req, res) => {
+  const mem = process.memoryUsage();
+  const osLib = require("os");
+  const uptime = process.uptime();
+  
+  res.json({
+    status: "healthy",
+    service: "heady-manager",
+    version: "3.0.0",
+    uptime: Math.floor(uptime),
+    memory: {
+      used: Math.round(mem.heapUsed / 1024 / 1024),
+      total: Math.round(mem.heapTotal / 1024 / 1024),
+      external: Math.round(mem.external / 1024 / 1024)
+    },
+    system: {
+      platform: osLib.platform(),
+      arch: osLib.arch(),
+      cpus: osLib.cpus().length,
+      totalmem: Math.round(osLib.totalmem() / 1024 / 1024),
+      freemem: Math.round(osLib.freemem() / 1024 / 1024)
+    },
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: "/api/health",
+      registry: "/api/registry",
+      brain: "/api/brain/health",
+      orchestrator: "/api/orchestrator/health",
+      resources: "/api/resources/health",
+      buddy: "/api/buddy/health"
+    }
+  });
+});
+
 // ─── Start ──────────────────────────────────────────────────────────
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  ∞ Heady Manager v3.0.0 listening on port ${PORT}`);
