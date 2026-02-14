@@ -1,9 +1,31 @@
 {
-  "version": "2.4.1",
-  "timestamp": "20260210-014515",
-  "targets": [
-    "Windows",
-    "Android",
-    "Linux"
-  ]
+  "timestamp": "2026-02-14T05:45:59Z",
+  "version": "1.0.0-beta",
+  "archive": "headyweb-1.0.0-beta-production.zip",
+  "application": "HeadyWeb",
+  "metadata": {
+    "engines": {
+      "chromium": "beta-latest",
+      "comet": "beta-experimental"
+    },
+    "timestamp": "2026-02-14T05:45:57Z",
+    "buildInfo": {
+      "platform": null,
+      "nodeVersion": "v24.13.0",
+      "architecture": "AMD64"
+    },
+    "environment": "production",
+    "version": "1.0.0-beta",
+    "features": [
+      "dual-engine",
+      "quantum-acceleration",
+      "ai-enhanced-rendering",
+      "sacred-geometry-ui",
+      "comet-experimental",
+      "chromium-beta"
+    ]
+  },
+  "environment": "production",
+  "checksum": "F1112D1CDDFC7971E02BC1AE1DE314C876F7E4DB4561E11D090778A341086106",
+  "size": 8446
 }

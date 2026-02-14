@@ -1,0 +1,22 @@
+{
+  "engines": {
+    "chromium": "beta-latest",
+    "comet": "beta-experimental"
+  },
+  "timestamp": "2026-02-14T05:45:57Z",
+  "buildInfo": {
+    "platform": null,
+    "nodeVersion": "v24.13.0",
+    "architecture": "AMD64"
+  },
+  "environment": "production",
+  "version": "1.0.0-beta",
+  "features": [
+    "dual-engine",
+    "quantum-acceleration",
+    "ai-enhanced-rendering",
+    "sacred-geometry-ui",
+    "comet-experimental",
+    "chromium-beta"
+  ]
+}
