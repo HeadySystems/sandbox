@@ -90,16 +90,36 @@ try {
  * GET /api/brain/health
  */
 router.get('/health', (req, res) => {
+  const connectorStats = brainConnector.getStats();
+  const healthyEndpoints = connectorStats.circuitBreakers.filter(cb => cb.state === 'CLOSED').length;
+  const totalEndpoints = connectorStats.circuitBreakers.length;
+  
   res.json({
     ok: true,
     service: 'HeadyBrain',
     version: '1.0.0',
+    status: healthyEndpoints === totalEndpoints ? 'healthy' : 'degraded',
+    endpoints: {
+      healthy: healthyEndpoints,
+      total: totalEndpoints,
+      ratio: `${healthyEndpoints}/${totalEndpoints}`,
+      percentage: Math.round((healthyEndpoints / totalEndpoints) * 100) + '%'
+    },
     subsystems: {
       monte_carlo: !!monteCarlo,
       pattern_engine: !!patternEngine,
       self_critique: !!selfCritique,
     },
     performance: brainState.performance,
+    connector: {
+      uptime: connectorStats.uptime,
+      success_rate: connectorStats.totalRequests > 0 
+        ? (connectorStats.successfulRequests / connectorStats.totalRequests * 100).toFixed(2) + '%'
+        : '100%',
+      queue_length: connectorStats.queueLength,
+      circuit_breakers: connectorStats.circuitBreakers
+    },
+    node_id: process.env.BRAIN_NODE_ID || 'local',
     ts: new Date().toISOString(),
   });
 });

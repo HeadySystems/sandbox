@@ -1,19 +1,29 @@
 {
     "data":  [
-
+                 {
+                     "id":  "proj-001",
+                     "structure_score":  100,
+                     "path":  "C:\\Users\\erich\\Heady\\scripts",
+                     "files_indexed":  null,
+                     "directories_indexed":  null,
+                     "category":  "project_structure",
+                     "status":  "optimized"
+                 }
              ],
     "insights":  {
+                     "recent_files":  {
+
+                                      },
+                     "total_size":  null,
                      "largest_files":  {
 
                                        },
-                     "total_size":  null,
                      "file_types":  {
 
-                                    },
-                     "recent_files":  {
-
-                                      }
+                                    }
                  },
+    "type":  "project_data",
+    "file_count":  null,
     "categories":  [
                        "project_structure",
                        "code_patterns",
@@ -25,310 +35,5 @@
                        "assets",
                        "secrets"
                    ],
-    "type":  "project_data",
-    "file_count":  0,
-    "scan_timestamp":  "2026-02-11T16:58:17Z"
-}
-
-{
-    "scan_timestamp": "2026-02-11T18:45:00Z",
-    "type": "project_data",
-    "file_count": 487,
-    "data": [
-        {
-            "id": "proj-001",
-            "category": "project_structure",
-            "path": "/",
-            "files_indexed": 487,
-            "directories_indexed": 52,
-            "status": "optimized",
-            "structure_score": 100
-        },
-        {
-            "id": "proj-002",
-            "category": "code_patterns",
-            "patterns_detected": 89,
-            "patterns_optimized": 89,
-            "anti_patterns_fixed": 12,
-            "best_practices_enforced": 34
-        },
-        {
-            "id": "proj-003",
-            "category": "configuration",
-            "configs_validated": 156,
-            "errors_fixed": 15,
-            "optimizations_applied": 28,
-            "env_consistency": true
-        },
-        {
-            "id": "proj-004",
-            "category": "dependencies",
-            "total": 124,
-            "outdated_updated": 12,
-            "vulnerabilities_patched": 8,
-            "unused_removed": 7,
-            "license_compliant": true
-        },
-        {
-            "id": "proj-005",
-            "category": "security",
-            "issues_found": 14,
-            "issues_fixed": 14,
-            "enhancements_added": ["csp_headers", "rate_limiting", "input_sanitization", "xss_protection", "csrf_tokens", "sql_injection_prevention", "secure_cookies", "hsts_enabled"]
-        },
-        {
-            "id": "proj-006",
-            "category": "documentation",
-            "docs_generated": 23,
-            "docs_updated": 18,
-            "api_docs_coverage": 100,
-            "readme_enhanced": true
-        },
-        {
-            "id": "proj-007",
-            "category": "workflows",
-            "ci_cd_optimized": true,
-            "pipelines_enhanced": 6,
-            "automation_added": 12,
-            "deployment_strategies": ["blue_green", "canary", "rolling"]
-        },
-        {
-            "id": "proj-008",
-            "category": "assets",
-            "assets_optimized": 45,
-            "images_compressed": true,
-            "cdn_configured": true,
-            "cache_headers_set": true
-        },
-        {
-            "id": "proj-009",
-            "category": "secrets",
-            "secrets_rotated": 8,
-            "vault_integrated": true,
-            "env_vars_secured": true,
-            "rotation_schedule": "7_days"
-        }
-    ],
-    "categories": [
-        "project_structure",
-        "code_patterns",
-        "configuration",
-        "documentation",
-        "user_preferences",
-        "workflows",
-        "dependencies",
-        "assets",
-        "secrets"
-    ],
-    "insights": {
-        "total_size": "52.3MB",
-        "file_types": {
-            "json": 178,
-            "ts": 112,
-            "js": 52,
-            "md": 45,
-            "yml": 34,
-            "ps1": 26,
-            "other": 40
-        },
-        "largest_files": [
-            {"path": "node_modules/.cache/main.js", "size": "2.1MB", "action": "cached"},
-            {"path": "dist/bundle.js", "size": "1.4MB", "action": "minified_and_compressed"},
-            {"path": ".heady-memory/cache/project_state.json", "size": "178KB", "action": "optimized"}
-        ],
-        "recent_files": [
-            {"path": ".heady-memory/project-data-scan.json", "modified": "2026-02-11T18:45:00Z"},
-            {"path": ".heady-memory/pattern-analysis.json", "modified": "2026-02-11T18:30:00Z"},
-            {"path": ".heady-memory/personal-data-scan.json", "modified": "2026-02-11T18:30:00Z"}
-        ],
-        "code_metrics": {
-            "cyclomatic_complexity_avg": 4.2,
-            "maintainability_index": 87,
-            "technical_debt_hours": 2.5,
-            "duplicated_lines_percent": 1.2
-        }
-    },
-    "errors_fixed": [
-        {
-            "id": "err-001",
-            "type": "syntax",
-            "file": "src/utils/parser.ts",
-            "description": "Fixed missing semicolons and type annotations",
-            "severity": "low",
-            "fixed_at": "2026-02-11T18:35:00Z"
-        },
-        {
-            "id": "err-002",
-            "type": "null_reference",
-            "file": "src/services/api.ts",
-            "description": "Added null checks for optional parameters",
-            "severity": "high",
-            "fixed_at": "2026-02-11T18:35:00Z"
-        },
-        {
-            "id": "err-003",
-            "type": "async_handling",
-            "file": "src/controllers/main.ts",
-            "description": "Added proper error handling for async operations",
-            "severity": "high",
-            "fixed_at": "2026-02-11T18:35:00Z"
-        },
-        {
-            "id": "err-004",
-            "type": "memory_leak",
-            "file": "src/services/websocket.ts",
-            "description": "Fixed event listener cleanup on disconnect",
-            "severity": "critical",
-            "fixed_at": "2026-02-11T18:36:00Z"
-        },
-        {
-            "id": "err-005",
-            "type": "race_condition",
-            "file": "src/utils/cache.ts",
-            "description": "Added mutex locks for concurrent cache access",
-            "severity": "high",
-            "fixed_at": "2026-02-11T18:37:00Z"
-        },
-        {
-            "id": "err-006",
-            "type": "type_mismatch",
-            "file": "src/models/user.ts",
-            "description": "Corrected interface definitions and generic types",
-            "severity": "medium",
-            "fixed_at": "2026-02-11T18:38:00Z"
-        },
-        {
-            "id": "err-007",
-            "type": "unhandled_promise",
-            "file": "src/services/database.ts",
-            "description": "Added try-catch blocks and proper rejection handling",
-            "severity": "high",
-            "fixed_at": "2026-02-11T18:39:00Z"
-        },
-        {
-            "id": "err-008",
-            "type": "circular_dependency",
-            "file": "src/modules/index.ts",
-            "description": "Refactored imports to eliminate circular references",
-            "severity": "medium",
-            "fixed_at": "2026-02-11T18:40:00Z"
-        }
-    ],
-    "enhancements_added": {
-        "performance": [
-            "lazy_loading",
-            "code_splitting",
-            "tree_shaking",
-            "bundle_optimization",
-            "image_lazy_loading",
-            "service_worker_caching",
-            "preload_critical_assets",
-            "dns_prefetch",
-            "connection_preconnect",
-            "virtual_scrolling",
-            "web_workers_offloading",
-            "request_batching"
-        ],
-        "reliability": [
-            "retry_logic",
-            "circuit_breakers",
-            "graceful_degradation",
-            "bulkhead_pattern",
-            "timeout_handling",
-            "fallback_responses",
-            "health_check_endpoints",
-            "auto_recovery",
-            "chaos_engineering_hooks",
-            "dead_letter_queues"
-        ],
-        "observability": [
-            "structured_logging",
-            "metrics_collection",
-            "health_checks",
-            "distributed_tracing",
-            "correlation_ids",
-            "error_aggregation",
-            "performance_profiling",
-            "real_user_monitoring",
-            "synthetic_monitoring",
-            "alerting_rules",
-            "slo_dashboards"
-        ],
-        "security": [
-            "input_validation",
-            "output_encoding",
-            "secure_headers",
-            "jwt_rotation",
-            "api_key_hashing",
-            "request_signing",
-            "audit_logging",
-            "data_encryption_at_rest",
-            "tls_1_3_enforcement",
-            "cors_strict_mode",
-            "subresource_integrity",
-            "content_type_sniffing_prevention"
-        ],
-        "developer_experience": [
-            "hot_module_replacement",
-            "source_maps",
-            "prettier_integration",
-            "eslint_auto_fix",
-            "commit_hooks",
-            "auto_changelog",
-            "semantic_versioning"
-        ]
-    },
-    "optimizations_applied": {
-        "database": [
-            "query_optimization",
-            "index_creation",
-            "connection_pooling",
-            "prepared_statements",
-            "read_replicas_configured"
-        ],
-        "caching": [
-            "multi_tier_caching",
-            "cache_invalidation_strategy",
-            "edge_caching",
-            "stale_while_revalidate",
-            "cache_compression"
-        ],
-        "networking": [
-            "http2_enabled",
-            "http3_ready",
-            "gzip_compression",
-            "brotli_compression",
-            "keep_alive_connections"
-        ],
-        "build": [
-            "incremental_builds",
-            "parallel_compilation",
-            "persistent_caching",
-            "minification",
-            "dead_code_elimination"
-        ]
-    },
-    "health_status": {
-        "overall": "optimal",
-        "code_quality": 100,
-        "security_score": 100,
-        "performance_score": 100,
-        "test_coverage": 94,
-        "accessibility_score": 98,
-        "seo_score": 97,
-        "best_practices_score": 100
-    },
-    "automated_tasks_enabled": {
-        "dependency_updates": true,
-        "security_scanning": true,
-        "code_formatting": true,
-        "test_execution": true,
-        "performance_monitoring": true,
-        "backup_rotation": true,
-        "log_rotation": true,
-        "certificate_renewal": true
-    },
-    "next_scan": "2026-02-11T19:15:00Z",
-    "continuous_improvement": true,
-    "auto_fix_enabled": true
+    "scan_timestamp":  "2026-02-14T08:14:58Z"
 }

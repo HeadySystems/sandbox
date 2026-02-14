@@ -9,42 +9,42 @@
 // ║                                                                  ║
 // ║  ∞ SACRED GEOMETRY ∞  Organic Systems · Breathing Interfaces    ║
 // ║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ║
-// ║  FILE: HeadyAI-IDE/vite.config.js                                ║
-// ║  LAYER: root                                                     ║
+// ║  FILE: HeadyAI-IDE/src/components/Sidebar.jsx                   ║
+// ║  LAYER: frontend/src/components                                 ║
 // ╚══════════════════════════════════════════════════════════════════╝
 // HEADY_BRAND:END
 
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    outDir: 'build',
-    assetsDir: 'assets',
-    sourcemap: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          monaco: ['@monaco-editor/react'],
-          ui: ['framer-motion', 'lucide-react'],
-          router: ['react-router-dom']
-        }
-      }
-    }
-  },
-  server: {
-    port: 5173,
-    host: true,
-    open: false
-  },
-  resolve: {
-    alias: {
-      '@': '/src'
-    }
-  },
-  define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0')
-  }
-});
+const Sidebar = ({ isOpen, onToggle, children }) => {
+  return (
+    <motion.div
+      initial={false}
+      animate={{ width: isOpen ? 280 : 60 }}
+      className="sidebar"
+    >
+      <div className="sidebar-header">
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="toggle-btn"
+          onClick={onToggle}
+        >
+          {isOpen ? <X size={20} /> : <Menu size={20} />}
+        </motion.button>
+      </div>
+      
+      <motion.div
+        initial={false}
+        animate={{ opacity: isOpen ? 1 : 0 }}
+        className="sidebar-content-wrapper"
+      >
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export default Sidebar;

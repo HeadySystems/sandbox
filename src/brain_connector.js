@@ -62,14 +62,15 @@ class BrainConnector extends EventEmitter {
       }
     ];
     
-    // Circuit breaker state
+    // Circuit breaker state - initialize all as CLOSED (healthy)
     this.circuitBreakers = new Map();
     this.endpoints.forEach(ep => {
       this.circuitBreakers.set(ep.id, {
         failures: 0,
         lastFailure: null,
         state: 'CLOSED', // CLOSED, OPEN, HALF_OPEN
-        nextAttempt: null
+        nextAttempt: null,
+        consecutiveSuccesses: 0 // Track consecutive successes for recovery
       });
     });
     
@@ -290,6 +291,9 @@ class BrainConnector extends EventEmitter {
     const circuit = this.circuitBreakers.get(endpointId);
     circuit.failures = 0;
     circuit.state = 'CLOSED';
+    circuit.consecutiveSuccesses = (circuit.consecutiveSuccesses || 0) + 1;
+    circuit.lastFailure = null;
+    circuit.nextAttempt = null;
     
     // Update stats
     if (!this.stats.endpointStats.has(endpointId)) {
@@ -307,6 +311,8 @@ class BrainConnector extends EventEmitter {
     const circuit = this.circuitBreakers.get(endpointId);
     circuit.failures++;
     circuit.lastFailure = Date.now();
+    circuit.consecutiveSuccesses = 0; // Reset on failure
+    circuit.nextAttempt = null;
     
     // Update stats
     if (!this.stats.endpointStats.has(endpointId)) {
@@ -435,6 +441,7 @@ class BrainConnector extends EventEmitter {
       circuit.state = 'CLOSED';
       circuit.lastFailure = null;
       circuit.nextAttempt = null;
+      circuit.consecutiveSuccesses = 0;
     });
     console.log('[BrainConnector] All circuit breakers reset');
   }
