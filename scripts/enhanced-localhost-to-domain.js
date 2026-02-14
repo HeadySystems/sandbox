@@ -136,7 +136,7 @@ class ServiceDiscovery {
         this.cache = {
             services: {
                 manager: { port: 3300, domain: 'manager.headysystems.com' },
-                api: { port: 3000, domain: 'api.headysystems.com' },
+                api: { port: 3000, domain: 'api.headyio.com' },
                 redis: { port: 6379, domain: 'redis.headysystems.com' },
                 postgres: { port: 5432, domain: 'db.headysystems.com' }
             }

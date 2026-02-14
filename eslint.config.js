@@ -15,16 +15,41 @@
 // HEADY_BRAND:END
 // ESLint configuration for Heady ecosystem
 const tsEslint = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
 
 module.exports = [
   {
     files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
+    },
     plugins: {
       '@typescript-eslint': tsEslint
     },
     rules: {
       ...tsEslint.configs.recommended.rules,
       // Additional TypeScript rules
+    }
+  },
+  {
+    files: ['**/*.jsx', '**/*.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      ecmaFeatures: {
+        jsx: true
+      },
+      globals: {
+        console: 'readonly',
+        process: 'readonly'
+      }
     }
   },
   {
@@ -42,7 +67,14 @@ module.exports = [
     ignores: [
       "!.*",
       "dist",
-      "node_modules"
+      "node_modules",
+      "venv/**",
+      ".windsurf/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/*.min.js",
+      "**/coverage/**"
     ]
   }
 ];
