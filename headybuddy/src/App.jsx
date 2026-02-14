@@ -30,7 +30,7 @@ import ExpandedView from "./components/ExpandedView";
 import CrossDeviceSync from "./components/CrossDeviceSync";
 import DemoRepos from "./components/DemoRepos";
 
-const HEADY_API = import.meta.env.VITE_HEADY_API || "http://api.heady.io:3300";
+const HEADY_API = import.meta.env.VITE_HEADY_API || "https://headysystems.com/api";
 const RESOURCE_POLL_MS = 5000;
 const ORCHESTRATOR_POLL_MS = 8000;
 

@@ -15,7 +15,7 @@
 // HEADY_BRAND:END
 module.exports = {
   plugins: {
-    tailwindcss: {},
+    '@tailwindcss/postcss': {},
     autoprefixer: {},
   },
 }
