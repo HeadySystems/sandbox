@@ -2109,17 +2109,17 @@ app.use('/api/access-points', (req, res) => {
 });
 
 try {
-  const headybuddyConfigRouter = require('./src/routes/headybuddy-config');
+  const headybuddyConfigRouter = require('./services/core-api/routes/headybuddy-config');
   app.use('/api/headybuddy-config', headybuddyConfigRouter);
-  console.log("  \u221e HeadyBuddy Config Routes: LOADED");
+  console.log("  ∞ HeadyBuddy Config Routes: LOADED");
 } catch (err) {
-  console.warn(`  \u26a0 HeadyBuddy Config routes not loaded: ${err.message}`);
+  console.warn(`  ⚠ HeadyBuddy Config routes not loaded: ${err.message}`);
 }
 
 try {
   const authRoutes = require('./src/routes/auth-routes');
   app.use('/api/auth', authRoutes);
-  console.log("  \u221e Auth Routes: LOADED");
+  console.log("  ∞ Auth Routes: LOADED");
 } catch (err) {
   console.warn(`  \u26a0 Auth routes not loaded: ${err.message}`);
 }
