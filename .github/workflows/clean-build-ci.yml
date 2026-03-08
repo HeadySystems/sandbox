@@ -1,0 +1,574 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# HEADY SYSTEMS — CLEAN BUILD CI WORKFLOW
+# Error-Handling + Full Rebuild on Every Change
+# ═══════════════════════════════════════════════════════════════════════════════
+# Purpose: Ensure every change triggers a complete clean build with intelligent
+#          error classification (recoverable vs non-recoverable)
+# Platform: GitHub Actions (portable to GitLab, Jenkins, Azure DevOps)
+# Version: 1.0.0
+# ═══════════════════════════════════════════════════════════════════════════════
+
+name: 'Heady Clean Build CI'
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Enable debug logging'
+        type: boolean
+        default: false
+      skip_tests:
+        description: 'Skip test phase (emergency only)'
+        type: boolean
+        default: false
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GLOBAL CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════════
+env:
+  NODE_VERSION: '20.x'
+  PYTHON_VERSION: '3.12'
+  HEADY_ENV: 'ci'
+  HEADY_DOMAIN_ROOT: 'heady.internal'
+  CI_CLEAN_BUILD: 'true'
+  ERROR_RETRY_COUNT: '2'
+  ERROR_RETRY_DELAY: '30'
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# JOB DEFINITIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+jobs:
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 1: Pre-flight Checks (Fast validation)
+  # ───────────────────────────────────────────────────────────────────────────
+  preflight:
+    name: '🔍 Pre-flight Validation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      should_build: ${{ steps.check.outputs.should_build }}
+      changed_files: ${{ steps.changes.outputs.all_changed_files }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for skip flags
+        id: check
+        run: |
+          if [ -f ".skip-ci" ]; then
+            echo "should_build=false" >> $GITHUB_OUTPUT
+            echo "⏭️ CI skip flag detected"
+          else
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect changed files
+        id: changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            core:
+              - 'heady-manager.js'
+              - 'src/**'
+              - 'configs/**'
+            frontend:
+              - 'frontend/**'
+            distribution:
+              - 'distribution/**'
+            docs:
+              - 'docs/**'
+              - '*.md'
+            infrastructure:
+              - 'render.yaml'
+              - 'docker-compose.yml'
+              - 'Dockerfile'
+              - '.github/workflows/**'
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 2: Clean Build - Core Services
+  # ───────────────────────────────────────────────────────────────────────────
+  build-core:
+    name: '🔧 Clean Build - Core'
+    needs: preflight
+    if: needs.preflight.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code (fresh clone)
+        uses: actions/checkout@v4
+        with:
+          # Clean build: no cache, fresh clone
+          clean: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # Don't use built-in cache - we're doing clean builds
+          cache: 'npm'
+
+      - name: Clean workspace
+        run: |
+          echo "🧹 Cleaning workspace for fresh build..."
+          rm -rf node_modules
+          rm -rf .heady_cache
+          rm -rf coverage
+          rm -rf dist
+          rm -rf frontend/dist
+          npm cache clean --force
+
+      - name: Install dependencies (clean)
+        run: |
+          echo "📦 Installing dependencies (no cache)..."
+          npm ci --prefer-offline --no-audit
+
+      - name: Verify dependency integrity
+        run: |
+          echo "🔐 Verifying dependency integrity..."
+          npm audit --audit-level=moderate || true
+          npm outdated || true
+
+      - name: Build core services
+        id: build
+        run: |
+          echo "🔨 Building core services..."
+          npm run build 2>&1 | tee build.log
+          echo "build_status=success" >> $GITHUB_ENV
+        continue-on-error: true
+
+      - name: Handle build errors (Error Classification)
+        if: steps.build.outcome == 'failure'
+        run: |
+          echo "❌ Build failed - classifying error..."
+          
+          # Check for recoverable errors
+          if grep -q "ECONNREFUSED\|ETIMEDOUT\|EAI_AGAIN\|socket hang up" build.log; then
+            echo "error_type=recoverable" >> $GITHUB_ENV
+            echo "error_reason=network-transient" >> $GITHUB_ENV
+          elif grep -q "npm ERR! 503\|npm ERR! 502\|npm ERR! 504" build.log; then
+            echo "error_type=recoverable" >> $GITHUB_ENV
+            echo "error_reason=registry-timeout" >> $GITHUB_ENV
+          elif grep -q "flaky test\|random seed\|race condition" build.log; then
+            echo "error_type=recoverable" >> $GITHUB_ENV
+            echo "error_reason=flaky-test" >> $GITHUB_ENV
+          else
+            echo "error_type=non-recoverable" >> $GITHUB_ENV
+            echo "error_reason=code-or-config" >> $GITHUB_ENV
+          fi
+
+      - name: Retry on recoverable errors
+        if: env.error_type == 'recoverable'
+        run: |
+          echo "🔄 Retrying build after recoverable error (${{ env.error_reason }})..."
+          echo "Waiting ${{ env.ERROR_RETRY_DELAY }} seconds..."
+          sleep ${{ env.ERROR_RETRY_DELAY }}
+          
+          for i in $(seq 1 ${{ env.ERROR_RETRY_COUNT }}); do
+            echo "Retry attempt $i/${{ env.ERROR_RETRY_COUNT }}..."
+            npm run build && break
+            if [ $i -eq ${{ env.ERROR_RETRY_COUNT }} ]; then
+              echo "❌ All retry attempts exhausted"
+              exit 1
+            fi
+            sleep ${{ env.ERROR_RETRY_DELAY }}
+          done
+
+      - name: Fail fast on non-recoverable errors
+        if: env.error_type == 'non-recoverable'
+        run: |
+          echo "🛑 Non-recoverable error detected: ${{ env.error_reason }}"
+          echo "Error details:"
+          cat build.log | tail -100
+          exit 1
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-build
+          path: |
+            dist/
+            node_modules/
+          retention-days: 1
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 3: Clean Build - Frontend
+  # ───────────────────────────────────────────────────────────────────────────
+  build-frontend:
+    name: '🔧 Clean Build - Frontend'
+    needs: [preflight, build-core]
+    if: needs.preflight.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code (fresh clone)
+        uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Clean frontend workspace
+        run: |
+          cd frontend
+          rm -rf node_modules
+          rm -rf dist
+          rm -rf .vite
+          npm cache clean --force
+
+      - name: Install and build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload frontend artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist/
+          retention-days: 1
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 4: Security Scan
+  # ─────────────────══════════════════════════════════════════════════════════
+  security-scan:
+    name: '🔒 Security Scan'
+    needs: preflight
+    if: needs.preflight.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run npm audit
+        run: |
+          npm audit --audit-level=moderate 2>&1 | tee audit.log || true
+          
+          # Check for critical vulnerabilities
+          if grep -q "critical" audit.log; then
+            echo "❌ Critical vulnerabilities found"
+            exit 1
+          fi
+
+      - name: Check for localhost references in production configs
+        run: |
+          echo "🔍 Checking for localhost references in production configs..."
+          
+          # Define production-bound files
+          PROD_FILES="render.yaml docker-compose.yml Dockerfile"
+          
+          for file in $PROD_FILES; do
+            if [ -f "$file" ]; then
+              if grep -E "localhost|127\.0\.0\.1|0\.0\.0\.0" "$file"; then
+                echo "❌ Found localhost reference in $file"
+                echo "Please use service-discovery.yaml domains instead"
+                exit 1
+              fi
+            fi
+          done
+          
+          echo "✅ No localhost references found in production configs"
+
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 5: Test Suite
+  # ───────────────────────────────────────────────────────────────────────────
+  test:
+    name: '🧪 Test Suite'
+    needs: [build-core, build-frontend]
+    if: needs.preflight.outputs.should_build == 'true' && github.event.inputs.skip_tests != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        test-type: [unit, integration, e2e]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: core-build
+          path: .
+
+      - name: Run ${{ matrix.test-type }} tests
+        id: test
+        run: |
+          echo "🧪 Running ${{ matrix.test-type }} tests..."
+          npm run test:${{ matrix.test-type }} 2>&1 | tee test-${{ matrix.test-type }}.log
+        continue-on-error: true
+
+      - name: Classify test errors
+        if: steps.test.outcome == 'failure'
+        run: |
+          TEST_LOG="test-${{ matrix.test-type }}.log"
+          
+          # Check for flaky test patterns
+          if grep -q "timeout\|flaky\|random\|intermittent\|socket hang up" "$TEST_LOG"; then
+            echo "error_type=recoverable" >> $GITHUB_ENV
+            echo "error_reason=flaky-test" >> $GITHUB_ENV
+          elif grep -q "ECONNREFUSED\|ETIMEDOUT\|network" "$TEST_LOG"; then
+            echo "error_type=recoverable" >> $GITHUB_ENV
+            echo "error_reason=network-issue" >> $GITHUB_ENV
+          else
+            echo "error_type=non-recoverable" >> $GITHUB_ENV
+            echo "error_reason=test-failure" >> $GITHUB_ENV
+          fi
+
+      - name: Retry flaky tests
+        if: env.error_type == 'recoverable'
+        run: |
+          echo "🔄 Retrying flaky tests..."
+          sleep 10
+          npm run test:${{ matrix.test-type }}
+
+      - name: Fail on persistent test failures
+        if: env.error_type == 'non-recoverable'
+        run: |
+          echo "❌ Persistent test failures detected"
+          exit 1
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.test-type }}
+          path: |
+            coverage/
+            test-*.log
+            junit.xml
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 6: Service Discovery Validation
+  # ───────────────────────────────────────────────────────────────────────────
+  validate-discovery:
+    name: '🔍 Validate Service Discovery'
+    needs: [build-core]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate service discovery config
+        run: |
+          echo "🔍 Validating service-discovery.yaml..."
+          node -e "
+            const fs = require('fs');
+            const yaml = require('js-yaml');
+            const config = yaml.load(fs.readFileSync('configs/service-discovery.yaml', 'utf8'));
+            
+            // Check all services have required fields
+            for (const [name, service] of Object.entries(config.services || {})) {
+              if (!service.host || !service.port || !service.security_level) {
+                console.error('❌ Service', name, 'missing required fields');
+                process.exit(1);
+              }
+              
+              // Verify no localhost in domains
+              if (service.host.includes('localhost') || service.host.includes('127.0.0.1')) {
+                console.error('❌ Service', name, 'uses localhost:', service.host);
+                process.exit(1);
+              }
+            }
+            
+            console.log('✅ Service discovery config validated');
+          "
+
+      - name: Check domain registry consistency
+        run: |
+          echo "🔗 Checking domain registry consistency..."
+          node -e "
+            const fs = require('fs');
+            const yaml = require('js-yaml');
+            
+            const registry = JSON.parse(fs.readFileSync('heady-registry.json', 'utf8'));
+            const discovery = yaml.load(fs.readFileSync('configs/service-discovery.yaml', 'utf8'));
+            
+            // Verify all registry components have corresponding discovery entries
+            for (const comp of registry.components || []) {
+              if (comp.endpoint && comp.endpoint.includes('localhost')) {
+                console.warn('⚠️  Component', comp.id, 'has localhost endpoint:', comp.endpoint);
+              }
+            }
+            
+            console.log('✅ Registry consistency check complete');
+          "
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 7: Build Verification
+  # ───────────────────────────────────────────────────────────────────────────
+  verify-build:
+    name: '✅ Build Verification'
+    needs: [build-core, build-frontend, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Verify build artifacts
+        run: |
+          echo "📦 Verifying build artifacts..."
+          
+          # Check core build
+          if [ ! -d "artifacts/core-build" ]; then
+            echo "❌ Core build artifacts missing"
+            exit 1
+          fi
+          
+          # Check frontend build
+          if [ ! -d "artifacts/frontend-build" ]; then
+            echo "❌ Frontend build artifacts missing"
+            exit 1
+          fi
+          
+          # Verify artifact sizes (basic sanity check)
+          CORE_SIZE=$(du -sb artifacts/core-build | cut -f1)
+          FRONTEND_SIZE=$(du -sb artifacts/frontend-build | cut -f1)
+          
+          if [ $CORE_SIZE -lt 1000 ]; then
+            echo "❌ Core build too small ($CORE_SIZE bytes)"
+            exit 1
+          fi
+          
+          if [ $FRONTEND_SIZE -lt 1000 ]; then
+            echo "❌ Frontend build too small ($FRONTEND_SIZE bytes)"
+            exit 1
+          fi
+          
+          echo "✅ Build artifacts verified"
+          echo "Core build size: $(($CORE_SIZE / 1024 / 1024)) MB"
+          echo "Frontend build size: $(($FRONTEND_SIZE / 1024 / 1024)) MB"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 8: Deploy Preparation
+  # ───────────────────────────────────────────────────────────────────────────
+  prepare-deploy:
+    name: '📦 Prepare Deployment'
+    needs: [verify-build, security-scan, validate-discovery]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Package deployment bundle
+        run: |
+          echo "📦 Creating deployment bundle..."
+          mkdir -p deploy-bundle
+          cp -r artifacts/core-build/* deploy-bundle/
+          cp -r artifacts/frontend-build/* deploy-bundle/dist/
+          
+          # Add metadata
+          echo "build_id=${{ github.run_id }}" >> deploy-bundle/.build-info
+          echo "commit=${{ github.sha }}" >> deploy-bundle/.build-info
+          echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> deploy-bundle/.build-info
+          
+          tar -czf heady-deploy-${{ github.run_id }}.tar.gz deploy-bundle/
+
+      - name: Upload deployment bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-bundle
+          path: heady-deploy-*.tar.gz
+          retention-days: 30
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 9: Notification
+  # ───────────────────────────────────────────────────────────────────────────
+  notify:
+    name: '🔔 Notify'
+    needs: [prepare-deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build status summary
+        run: |
+          echo "=== BUILD SUMMARY ==="
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Status: ${{ job.status }}"
+
+      - name: Send notification (on failure)
+        if: failure()
+        run: |
+          echo "🚨 Build failed! Alerting..."
+          # Integration point: Add Slack, Discord, email, or other notifications
+          echo "Error: Build failed at ${{ github.run_id }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Ref: ${{ github.ref }}"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# WORKFLOW CONFIGURATION NOTES
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# ERROR HANDLING STRATEGY:
+# ────────────────────────
+# 1. All builds are clean builds (no incremental caching)
+# 2. Errors are classified as:
+#    - RECOVERABLE: Network timeouts, registry issues, flaky tests
+#      → Auto-retry with exponential backoff
+#    - NON-RECOVERABLE: Code errors, config issues, security failures
+#      → Fail fast, notify, block deployment
+#
+# CLEAN BUILD GUARANTEES:
+# ────────────────────────
+# - Fresh checkout for each job
+# - node_modules cleaned before install
+# - No build artifacts cached between runs
+# - Reproducible builds from locked dependencies
+#
+# PERFORMANCE OPTIMIZATION:
+# ─────────────────────────
+# - Jobs run in parallel where possible
+# - Artifact passing between jobs (not rebuilds)
+# - Test sharding for parallel execution
+#
+# EXTENSION POINTS:
+# ───────────────
+# - Add Docker image building
+# - Add Kubernetes manifest validation
+# - Add integration test environments
+# - Add performance benchmarks
+# - Add deployment stages

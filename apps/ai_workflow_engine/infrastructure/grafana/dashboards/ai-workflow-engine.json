@@ -1,0 +1,122 @@
+apiVersion: 1
+
+providers:
+  - name: default
+    orgId: 1
+    folder: ''
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
+
+dashboards:
+  - id: ai-workflow-engine
+    title: AI Workflow Engine Dashboard
+    tags: [ai-workflow, orchestration]
+    timezone: browser
+    panels:
+      - id: workflow-overview
+        title: Workflow Overview
+        type: stat
+        targets:
+          - expr: sum(workflow_executions_total)
+            legendFormat: __auto
+        fieldConfig:
+          defaults:
+            unit: short
+        options:
+          reduceOptions:
+            - values: false
+            - fields: ''
+            - calcs: []
+        gridPos:
+          h: 8
+          w: 12
+          x: 0
+          y: 0
+        options:
+          colorMode: value
+          graphMode: area
+          justifyMode: auto
+          orientation: auto
+          reduceOptions:
+            values: false
+            fields: ''
+            calcs: []
+          text: {}
+          textMode: auto
+          wideLayout: true
+        pluginVersion: 9.0.0
+        type: stat
+
+      - id: active-workflows
+        title: Active Workflows
+        type: stat
+        targets:
+          - expr: sum(workflow_executions_active)
+            legendFormat: __auto
+        gridPos:
+          h: 8
+          w: 12
+          x: 12
+          y: 0
+        options:
+          colorMode: value
+          graphMode: area
+          justifyMode: auto
+          orientation: auto
+          reduceOptions:
+            values: false
+            fields: ''
+            calcs: []
+          text: {}
+          textMode: auto
+          wideLayout: true
+        pluginVersion: 9.0.0
+        type: stat
+
+      - id: workflow-executions
+        title: Workflow Executions
+        type: graph
+        targets:
+          - expr: rate(workflow_executions_total[5m])
+            legendFormat: __auto
+        gridPos:
+          h: 9
+          w: 24
+          x: 0
+          y: 8
+        options:
+          legend:
+            displayMode: list
+            placement: bottom
+          tooltip:
+            mode: multi
+            sort: desc
+        pluginVersion: 9.0.0
+        type: timeseries
+
+      - id: resource-utilization
+        title: Resource Utilization
+        type: graph
+        targets:
+          - expr: workflow_resource_pool_allocated_cpu_cores
+            legendFormat: CPU Cores
+          - expr: workflow_resource_pool_allocated_memory_mb
+            legendFormat: Memory MB
+        gridPos:
+          h: 9
+          w: 24
+          x: 0
+          y: 17
+        options:
+          legend:
+            displayMode: list
+            placement: bottom
+          tooltip:
+            mode: multi
+            sort: desc
+        pluginVersion: 9.0.0
+        type: timeseries

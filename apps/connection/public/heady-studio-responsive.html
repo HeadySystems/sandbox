@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeadyStudio - Unified Creative Ecosystem</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide-react@latest"></script>
+    <script src="heady-auth-state.js"></script>
+    <script src="heady-navigator.js"></script>
+    <style>
+        /* Base Styles */
+        body { 
+            background: #0f172a; 
+            color: white; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Glass Morphism */
+        .glass-morphism { 
+            background: rgba(30, 41, 59, 0.5); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(148, 163, 184, 0.1); 
+        }
+
+        /* Neon Effects */
+        .neon-glow { 
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), 0 0 40px rgba(6, 182, 212, 0.1); 
+        }
+
+        .neon-border {
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3), inset 0 0 10px rgba(6, 182, 212, 0.1);
+        }
+
+        /* Animations */
+        .module-card { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
+        .module-card:hover { 
+            transform: translateY(-4px) scale(1.02); 
+        }
+
+        .active-module { 
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.2)); 
+            border-color: rgb(6, 182, 212); 
+        }
+
+        .pulse-animation { 
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; 
+        }
+        
+        @keyframes pulse { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.5; } 
+        }
+
+        .slide-in { 
+            animation: slideIn 0.3s ease-out; 
+        }
+        
+        @keyframes slideIn { 
+            from { transform: translateX(100%); opacity: 0; } 
+            to { transform: translateX(0); opacity: 1; } 
+        }
+
+        .fade-in { 
+            animation: fadeIn 0.5s ease-out; 
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { 
+            width: 6px; 
+            height: 6px; 
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track { 
+            background: rgba(30, 41, 59, 0.3); 
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+            background: rgba(148, 163, 184, 0.3); 
+            border-radius: 3px; 
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+            background: rgba(148, 163, 184, 0.5); 
+        }
+
+        /* Responsive Layout */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+            display: none;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+        }
+
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100%;
+            background: #0f172a;
+            border-right: 1px solid #334155;
+            transition: left 0.3s ease-out;
+            z-index: 50;
+        }
+
+        .mobile-sidebar.active {
+            left: 0;
+        }
+
+        /* Responsive Grid */
+        .responsive-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .responsive-grid-1 { grid-template-columns: 1fr; }
+        .responsive-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .responsive-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .responsive-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+        @media (max-width: 1536px) {
+            .responsive-grid-4 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 1280px) {
+            .responsive-grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .responsive-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .responsive-grid-2 { grid-template-columns: 1fr; }
+            .responsive-grid-3 { grid-template-columns: 1fr; }
+            .responsive-grid-4 { grid-template-columns: 1fr; }
+        }
+
+        /* Mobile Optimizations */
+        .mobile-hidden {
+            display: block;
+        }
+
+        .mobile-only {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-hidden {
+                display: none;
+            }
+            .mobile-only {
+                display: block;
+            }
+        }
+
+        /* Touch Optimizations */
+        .touch-button {
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+        }
+
+        /* Loading States */
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Adaptive Typography */
+        .text-responsive-xs { font-size: 0.75rem; }
+        .text-responsive-sm { font-size: 0.875rem; }
+        .text-responsive-base { font-size: 1rem; }
+        .text-responsive-lg { font-size: 1.125rem; }
+        .text-responsive-xl { font-size: 1.25rem; }
+        .text-responsive-2xl { font-size: 1.5rem; }
+
+        @media (max-width: 768px) {
+            .text-responsive-xs { font-size: 0.625rem; }
+            .text-responsive-sm { font-size: 0.75rem; }
+            .text-responsive-base { font-size: 0.875rem; }
+            .text-responsive-lg { font-size: 1rem; }
+            .text-responsive-xl { font-size: 1.125rem; }
+            .text-responsive-2xl { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useCallback, useRef } = React;
+        const { 
+            Layers, Music, BookOpen, Code, Palette, Settings, Activity, Terminal, 
+            Github, Play, Pause, SkipForward, Volume2, Mic, Video, Image, FileText,
+            Zap, Users, Cloud, Database, Shield, Globe, Smartphone, Monitor, Headphones,
+            Edit3, Save, Share2, Download, Upload, Search, Bell, User, LogOut, Menu,
+            X, ChevronRight, ChevronLeft, Plus, Trash2, Copy, Move, Maximize2, Grid3x3,
+            Home, Archive, Star, TrendingUp, Clock, CheckCircle, AlertCircle, Loader2
+        } = lucide;
+
+        // Responsive Hook
+        const useResponsive = () => {
+            const [windowSize, setWindowSize] = useState({
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+            const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+            const [isTablet, setIsTablet] = useState(window.innerWidth > 768 && window.innerWidth <= 1024);
+            const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
+
+            useEffect(() => {
+                const handleResize = () => {
+                    const width = window.innerWidth;
+                    const height = window.innerHeight;
+                    
+                    setWindowSize({ width, height });
+                    setIsMobile(width <= 768);
+                    setIsTablet(width > 768 && width <= 1024);
+                    setIsDesktop(width > 1024);
+                };
+
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }, []);
+
+            return {
+                windowSize,
+                isMobile,
+                isTablet,
+                isDesktop,
+                breakpoint: isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop'
+            };
+        };
+
+        // Mobile Menu Hook
+        const useMobileMenu = () => {
+            const [isOpen, setIsOpen] = useState(false);
+
+            const open = useCallback(() => setIsOpen(true), []);
+            const close = useCallback(() => setIsOpen(false), []);
+            const toggle = useCallback(() => setIsOpen(prev => !prev), []);
+
+            useEffect(() => {
+                if (isOpen) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+
+                return () => {
+                    document.body.style.overflow = '';
+                };
+            }, [isOpen]);
+
+            return { isOpen, open, close, toggle };
+        };
+
+        // Unified State Management
+        const useHeadyState = () => {
+            const responsive = useResponsive();
+            const mobileMenu = useMobileMenu();
+            const [activeModule, setActiveModule] = useState('studio');
+            const [user, setUser] = useState({ name: 'Heady Creator', avatar: '👨‍🎨', role: 'Master Creator' });
+            const [notifications, setNotifications] = useState([]);
+            const [globalSearch, setGlobalSearch] = useState('');
+            const [sidebarCollapsed, setSidebarCollapsed] = useState(responsive.isMobile);
+            const [projects, setProjects] = useState([
+                { id: 1, name: 'Symphony No.5', type: 'music', modified: '2 hours ago', status: 'active' },
+                { id: 2, name: 'Digital Art Collection', type: 'studio', modified: '1 day ago', status: 'completed' },
+                { id: 3, name: 'Interactive Learning Module', type: 'education', modified: '3 days ago', status: 'in-progress' },
+                { id: 4, name: 'Code Repository', type: 'development', modified: '1 week ago', status: 'archived' }
+            ]);
+            const [recentActivity, setRecentActivity] = useState([
+                { id: 1, action: 'Edited', project: 'Symphony No.5', time: '5 min ago', icon: Edit3 },
+                { id: 2, action: 'Shared', project: 'Digital Art Collection', time: '1 hour ago', icon: Share2 },
+                { id: 3, action: 'Created', project: 'New Track', time: '2 hours ago', icon: Plus },
+                { id: 4, action: 'Completed', project: 'Learning Module', time: '3 hours ago', icon: Save }
+            ]);
+
+            // Auto-collapse sidebar on mobile
+            useEffect(() => {
+                setSidebarCollapsed(responsive.isMobile);
+            }, [responsive.isMobile]);
+
+            return {
+                ...responsive,
+                mobileMenu,
+                activeModule, setActiveModule,
+                user, setUser,
+                notifications, setNotifications,
+                globalSearch, setGlobalSearch,
+                sidebarCollapsed, setSidebarCollapsed,
+                projects, setProjects,
+                recentActivity, setRecentActivity
+            };
+        };
+
+        // Module Definitions
+        const modules = {
+            studio: {
+                id: 'studio',
+                name: 'HeadyStudio',
+                icon: Palette,
+                color: 'from-purple-500 to-pink-500',
+                description: 'Digital art & design workspace',
+                features: ['Canvas Editor', '3D Modeling', 'Animation', 'Collaboration']
+            },
+            music: {
+                id: 'music',
+                name: 'HeadyMusic',
+                icon: Music,
+                color: 'from-green-500 to-teal-500',
+                description: 'Music production & audio editing',
+                features: ['Multi-track Editor', 'Virtual Instruments', 'Effects', 'Mixing Console']
+            },
+            education: {
+                id: 'education',
+                name: 'HeadyEd',
+                icon: BookOpen,
+                color: 'from-blue-500 to-indigo-500',
+                description: 'Interactive learning platform',
+                features: ['Course Builder', 'Assessments', 'Analytics', 'Student Portal']
+            },
+            development: {
+                id: 'development',
+                name: 'HeadyDev',
+                icon: Code,
+                color: 'from-orange-500 to-red-500',
+                description: 'Code development & deployment',
+                features: ['IDE Integration', 'Git Management', 'CI/CD', 'Code Review']
+            },
+            cloud: {
+                id: 'cloud',
+                name: 'HeadyCloud',
+                icon: Cloud,
+                color: 'from-cyan-500 to-blue-500',
+                description: 'Cloud storage & services',
+                features: ['File Storage', 'API Gateway', 'Microservices', 'Monitoring']
+            }
+        };
+
+        // Responsive Sidebar Component
+        const ResponsiveSidebar = ({ activeModule, setActiveModule, sidebarCollapsed, setSidebarCollapsed, isMobile, mobileMenu }) => {
+            const renderSidebarContent = () => (
+                <>
+                    <div className="p-4 border-b border-slate-800">
+                        <div className="flex items-center justify-between">
+                            {!sidebarCollapsed && (
+                                <div className="flex items-center gap-2">
+                                    <Layers className="text-cyan-400" size={24} />
+                                    <span className="font-bold text-lg">HeadyStudio</span>
+                                </div>
+                            )}
+                            {!isMobile && (
+                                <button 
+                                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                                    className="p-1 hover:bg-slate-800 rounded transition-colors"
+                                >
+                                    {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    
+                    <div className="flex-1 p-2 overflow-y-auto custom-scrollbar">
+                        {Object.values(modules).map(module => {
+                            const Icon = module.icon;
+                            return (
+                                <button
+                                    key={module.id}
+                                    onClick={() => {
+                                        setActiveModule(module.id);
+                                        if (isMobile) mobileMenu.close();
+                                    }}
+                                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all mb-1 ${
+                                        activeModule === module.id 
+                                            ? 'bg-gradient-to-r ' + module.color + ' text-white' 
+                                            : 'hover:bg-slate-800 text-slate-300'
+                                    }`}
+                                >
+                                    <Icon size={20} />
+                                    {!sidebarCollapsed && (
+                                        <div className="text-left">
+                                            <div className="font-medium text-sm">{module.name}</div>
+                                            <div className="text-xs opacity-75">{module.description}</div>
+                                        </div>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    <div className="p-2 border-t border-slate-800">
+                        <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-all">
+                            <Settings size={20} />
+                            {!sidebarCollapsed && <span className="text-sm">Settings</span>}
+                        </button>
+                    </div>
+                </>
+            );
+
+            if (isMobile) {
+                return (
+                    <>
+                        <div className={`mobile-menu-overlay ${mobileMenu.isOpen ? 'active' : ''}`} onClick={mobileMenu.close} />
+                        <div className={`mobile-sidebar ${mobileMenu.isOpen ? 'active' : ''}`}>
+                            {renderSidebarContent()}
+                        </div>
+                    </>
+                );
+            }
+
+            return (
+                <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col`}>
+                    {renderSidebarContent()}
+                </div>
+            );
+        };
+
+        // Responsive Header Component
+        const ResponsiveHeader = ({ user, notifications, globalSearch, setGlobalSearch, isMobile, mobileMenu }) => {
+            const [showNotifications, setShowNotifications] = useState(false);
+            
+            return (
+                <div className="h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 md:px-6">
+                    <div className="flex items-center gap-4">
+                        {isMobile && (
+                            <button
+                                onClick={mobileMenu.toggle}
+                                className="p-2 hover:bg-slate-800 rounded-lg transition-colors touch-button"
+                            >
+                                <Menu size={20} />
+                            </button>
+                        )}
+                        
+                        <div className={`relative ${isMobile ? 'max-w-48' : 'max-w-md'} flex-1`}>
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={globalSearch}
+                                onChange={(e) => setGlobalSearch(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                            />
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <div className="hidden sm:flex items-center gap-2">
+                            <div className="w-2 h-2 bg-green-400 rounded-full pulse-animation"></div>
+                            <span className="text-xs text-green-400">Connected</span>
+                        </div>
+                        
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowNotifications(!showNotifications)}
+                                className="relative p-2 hover:bg-slate-800 rounded-lg transition-colors touch-button"
+                            >
+                                <Bell size={18} />
+                                {notifications.length > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center">
+                                        {notifications.length}
+                                    </span>
+                                )}
+                            </button>
+                            
+                            {showNotifications && (
+                                <div className="absolute right-0 mt-2 w-80 glass-morphism rounded-lg shadow-lg z-50">
+                                    <div className="p-4 border-b border-slate-700">
+                                        <h3 className="font-semibold">Notifications</h3>
+                                    </div>
+                                    <div className="max-h-96 overflow-y-auto">
+                                        {notifications.length === 0 ? (
+                                            <div className="p-4 text-center text-slate-400">
+                                                No new notifications
+                                            </div>
+                                        ) : (
+                                            notifications.map(notif => (
+                                                <div key={notif.id} className="p-4 border-b border-slate-700 hover:bg-slate-800 transition-colors">
+                                                    <div className="text-sm">{notif.message}</div>
+                                                    <div className="text-xs text-slate-400 mt-1">{notif.time}</div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="flex items-center gap-2 md:gap-3 pl-2 md:pl-4 border-l border-slate-700">
+                            <div className="hidden md:block text-right">
+                                <div className="text-sm font-medium">{user.name}</div>
+                                <div className="text-xs text-slate-400">{user.role}</div>
+                            </div>
+                            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm">
+                                {user.avatar}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Responsive Studio Module
+        const ResponsiveHeadyStudio = ({ projects, isMobile, isTablet }) => {
+            const [canvas, setCanvas] = useState(null);
+            const [tools, setTools] = useState(['brush', 'eraser', 'shape', 'text']);
+            const [activeTool, setActiveTool] = useState('brush');
+
+            const getGridCols = () => {
+                if (isMobile) return 'grid-cols-1';
+                if (isTablet) return 'grid-cols-2';
+                return 'grid-cols-4';
+            };
+
+            return (
+                <div className="h-full flex flex-col fade-in">
+                    <div className="glass-morphism p-4 border-b border-slate-800">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <h2 className="text-responsive-lg font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Creative Canvas</h2>
+                            <div className="flex flex-wrap gap-2">
+                                {tools.map(tool => (
+                                    <button
+                                        key={tool}
+                                        onClick={() => setActiveTool(tool)}
+                                        className={`px-3 py-1 rounded text-xs font-bold transition-all ${
+                                            activeTool === tool 
+                                                ? 'bg-purple-600 text-white' 
+                                                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                                        }`}
+                                    >
+                                        {tool.toUpperCase()}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex-1 p-4">
+                        <div className={`grid ${getGridCols()} gap-4 h-full`}>
+                            <div className={`${isMobile ? 'col-span-1' : isTablet ? 'col-span-2' : 'col-span-3'} glass-morphism rounded-lg p-4 flex items-center justify-center`}>
+                                <div className="text-center">
+                                    <Palette size={isMobile ? 32 : 48} className="mx-auto mb-4 text-purple-400" />
+                                    <h3 className="text-responsive-base font-semibold mb-2">Canvas Workspace</h3>
+                                    <p className="text-slate-400 text-sm mb-4">Interactive design canvas with advanced tools</p>
+                                    <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                                        <button className="px-4 py-2 bg-purple-600 rounded text-xs font-bold hover:bg-purple-700 transition-colors touch-button">
+                                            New Canvas
+                                        </button>
+                                        <button className="px-4 py-2 bg-slate-700 rounded text-xs font-bold hover:bg-slate-600 transition-colors touch-button">
+                                            Import Project
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="glass-morphism rounded-lg p-4 overflow-y-auto custom-scrollbar">
+                                <h3 className="text-sm font-semibold mb-3 text-purple-400">Recent Projects</h3>
+                                <div className="space-y-2">
+                                    {projects.filter(p => p.type === 'studio').map(project => (
+                                        <div key={project.id} className="bg-slate-800 rounded p-3 hover:bg-slate-700 transition-colors cursor-pointer">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <div className="text-sm font-medium">{project.name}</div>
+                                                    <div className="text-xs text-slate-400">{project.modified}</div>
+                                                </div>
+                                                <div className={`w-2 h-2 rounded-full ${
+                                                    project.status === 'active' ? 'bg-green-400' : 
+                                                    project.status === 'completed' ? 'bg-blue-400' : 'bg-yellow-400'
+                                                }`} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Main App Component
+        const App = () => {
+            const state = useHeadyState();
+            const {
+                activeModule, setActiveModule,
+                user, notifications, setNotifications,
+                globalSearch, setGlobalSearch,
+                sidebarCollapsed, setSidebarCollapsed,
+                projects,
+                isMobile, isTablet, isDesktop,
+                mobileMenu
+            } = state;
+
+            // Initialize with some notifications
+            useEffect(() => {
+                setNotifications([
+                    { id: 1, message: 'New collaboration request from John', time: '5 min ago', type: 'info' },
+                    { id: 2, message: 'Project "Symphony No.5" exported successfully', time: '1 hour ago', type: 'success' },
+                    { id: 3, message: 'System update available', time: '2 hours ago', type: 'warning' }
+                ]);
+            }, []);
+
+            const renderActiveModule = () => {
+                const moduleProps = { projects, isMobile, isTablet };
+                
+                switch (activeModule) {
+                    case 'studio': return <ResponsiveHeadyStudio {...moduleProps} />;
+                    case 'music': return <div className="h-full flex items-center justify-center text-slate-400">Music Module (Mobile Responsive)</div>;
+                    case 'education': return <div className="h-full flex items-center justify-center text-slate-400">Education Module (Mobile Responsive)</div>;
+                    case 'development': return <div className="h-full flex items-center justify-center text-slate-400">Development Module (Mobile Responsive)</div>;
+                    case 'cloud': return <div className="h-full flex items-center justify-center text-slate-400">Cloud Module (Mobile Responsive)</div>;
+                    default: return <ResponsiveHeadyStudio {...moduleProps} />;
+                }
+            };
+
+            const currentModule = modules[activeModule];
+
+            return (
+                <div className="h-screen flex flex-col bg-slate-950">
+                    <ResponsiveHeader 
+                        user={user} 
+                        notifications={notifications}
+                        globalSearch={globalSearch}
+                        setGlobalSearch={setGlobalSearch}
+                        isMobile={isMobile}
+                        mobileMenu={mobileMenu}
+                    />
+                    
+                    <div className="flex-1 flex overflow-hidden">
+                        <ResponsiveSidebar 
+                            activeModule={activeModule}
+                            setActiveModule={setActiveModule}
+                            sidebarCollapsed={sidebarCollapsed}
+                            setSidebarCollapsed={setSidebarCollapsed}
+                            isMobile={isMobile}
+                            mobileMenu={mobileMenu}
+                        />
+                        
+                        <div className="flex-1 flex flex-col min-w-0">
+                            <div className={`h-12 glass-morphism border-b border-slate-800 flex items-center px-4 md:px-6`}>
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className={`p-2 rounded-lg bg-gradient-to-r ${currentModule.color} flex-shrink-0`}>
+                                        <currentModule.icon size={16} />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <h1 className="font-semibold text-responsive-sm truncate">{currentModule.name}</h1>
+                                        <p className="text-xs text-slate-400 hidden sm:block truncate">{currentModule.description}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="ml-auto flex items-center gap-1 md:gap-2">
+                                    {currentModule.features.slice(0, isMobile ? 2 : isTablet ? 3 : 4).map(feature => (
+                                        <span key={feature} className="hidden sm:inline-block px-2 py-1 bg-slate-800 rounded text-xs">
+                                            {feature}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            <div className="flex-1 overflow-hidden">
+                                {renderActiveModule()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

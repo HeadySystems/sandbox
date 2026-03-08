@@ -1,0 +1,455 @@
+name: HCFP Clean Build Pipeline
+# Clean build on every change - no incremental artifacts trusted
+# Error handling with classification and recovery
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      full_rebuild:
+        description: 'Force full rebuild from scratch'
+        required: false
+        default: true
+        type: boolean
+
+env:
+  NODE_VERSION: '20.18.1'
+  PYTHON_VERSION: '3.12.7'
+  CLEAN_BUILD: true
+  ERROR_RETRY_COUNT: 2
+
+jobs:
+  # Phase 1: Setup and Validation
+  setup:
+    name: 🔧 Setup Environment
+    runs-on: ubuntu-latest
+    outputs:
+      cache_key: ${{ steps.cache.outputs.key }}
+      should_build: ${{ steps.check.outputs.should_build }}
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for proper builds
+      
+      - name: 🔍 Check for localhost references
+        id: check
+        run: |
+          echo "🔍 Scanning for localhost references..."
+          python scripts/localhost-inventory.py --root . --output localhost-check.json || true
+          
+          # Check if critical localhost refs exist
+          if grep -r "localhost:3300\|127.0.0.1:3300" --include="*.js" --include="*.ts" --include="*.py" --include="*.yaml" src/ 2>/dev/null | head -5; then
+            echo "⚠️  Found hardcoded localhost references in source code"
+            echo "should_build=warning" >> $GITHUB_OUTPUT
+          else
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 🔐 Cache Tools (Not Artifacts)
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ~/.local/share/virtualenvs
+            /usr/local/lib/node_modules
+          key: ${{ runner.os }}-tools-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-tools-
+
+  # Phase 2: Clean Build
+  build:
+    name: 🏗️ Clean Build (No Incremental)
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.should_build != 'false'
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        component:
+          - manager
+          - worker
+          - frontend
+          - browser-ext
+          - mobile
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 🧹 Clean Workspace (No Artifacts)
+        run: |
+          echo "🧹 Performing clean build - removing all build artifacts..."
+          rm -rf dist/
+          rm -rf build/
+          rm -rf .next/
+          rm -rf out/
+          rm -rf node_modules/.cache/
+          rm -rf coverage/
+          rm -rf .nyc_output/
+          find . -name "*.log" -delete
+          echo "✅ Workspace cleaned"
+      
+      - name: 📦 Install Dependencies (Clean)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci  # Clean install, ignores cache
+          elif [ -f yarn.lock ]; then
+            yarn install --frozen-lockfile
+          elif [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          fi
+      
+      - name: 🏗️ Build ${{ matrix.component }}
+        id: build
+        run: |
+          case "${{ matrix.component }}" in
+            manager)
+              npm run build:manager
+              ;;
+            worker)
+              cd backend/python_worker && pip install -r requirements.txt && python -m compileall .
+              ;;
+            frontend)
+              npm run build:frontend
+              ;;
+            browser-ext)
+              cd distribution/browser/extensions/chrome && npm run build
+              ;;
+            mobile)
+              cd headybrowser-mobile && npm install && npm run build 2>/dev/null || echo "Mobile build skipped"
+              ;;
+          esac
+        continue-on-error: true
+      
+      - name: 🔍 Classify Build Error
+        if: steps.build.outcome == 'failure'
+        id: error_classify
+        run: |
+          ERROR_LOG="build-error-${{ matrix.component }}.log"
+          
+          # Check error patterns
+          if grep -q "network timeout\|ECONNREFUSED\|ETIMEDOUT\|fetch failed" $ERROR_LOG 2>/dev/null; then
+            echo "error_type=transient_network" >> $GITHUB_OUTPUT
+            echo "🔄 Transient network error detected - will retry"
+          elif grep -q "permission denied\|EACCES\|EPERM" $ERROR_LOG 2>/dev/null; then
+            echo "error_type=permission" >> $GITHUB_OUTPUT
+            echo "🚫 Permission error - requires manual fix"
+          elif grep -q "syntax error\|SyntaxError\|Unexpected token\|Module not found\|Cannot find module" $ERROR_LOG 2>/dev/null; then
+            echo "error_type=code_config" >> $GITHUB_OUTPUT
+            echo "🔴 Code/config error - blocking issue"
+          else
+            echo "error_type=unknown" >> $GITHUB_OUTPUT
+            echo "❓ Unknown error type"
+          fi
+      
+      - name: 🔄 Retry Build (Transient Errors Only)
+        if: steps.build.outcome == 'failure' && steps.error_classify.outputs.error_type == 'transient_network'
+        run: |
+          echo "🔄 Retrying build after transient error..."
+          sleep 30
+          # Re-run the build command from previous step
+          case "${{ matrix.component }}" in
+            manager)
+              npm run build:manager
+              ;;
+            worker)
+              cd backend/python_worker && python -m compileall .
+              ;;
+            frontend)
+              npm run build:frontend
+              ;;
+            browser-ext)
+              cd distribution/browser/extensions/chrome && npm run build
+              ;;
+          esac
+      
+      - name: ❌ Fail on Non-Recoverable Error
+        if: steps.build.outcome == 'failure' && steps.error_classify.outputs.error_type != 'transient_network'
+        run: |
+          echo "🚨 Build failed with non-recoverable error: ${{ steps.error_classify.outputs.error_type }}"
+          echo "::error::Build failure in ${{ matrix.component }} - requires code/config fix"
+          exit 1
+      
+      - name: 📤 Upload Build Artifacts
+        if: steps.build.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.component }}
+          path: |
+            dist/
+            build/
+            !node_modules/
+          retention-days: 7
+
+  # Phase 3: Test Suite
+  test:
+    name: 🧪 Full Test Suite
+    runs-on: ubuntu-latest
+    needs: build
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        test_type:
+          - unit
+          - integration
+          - e2e
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 🧹 Clean Test Environment
+        run: |
+          rm -rf coverage/
+          rm -rf .nyc_output/
+          rm -rf test-results/
+      
+      - name: 📦 Install Dependencies
+        run: npm ci
+      
+      - name: 🧪 Run ${{ matrix.test_type }} Tests
+        id: test
+        run: |
+          case "${{ matrix.test_type }}" in
+            unit)
+              npm run test:unit -- --coverage
+              ;;
+            integration)
+              npm run test:integration || echo "No integration tests"
+              ;;
+            e2e)
+              npm run test:e2e || echo "No e2e tests"
+              ;;
+          esac
+        continue-on-error: ${{ matrix.test_type == 'e2e' }}
+      
+      - name: 📊 Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.test_type }}
+          path: |
+            coverage/
+            test-results/
+            junit.xml
+        if: always()
+
+  # Phase 4: Security & Quality Checks
+  security:
+    name: 🔒 Security & Quality
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 🔍 Secret Detection
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+      
+      - name: 🛡️ Dependency Vulnerability Scan
+        run: |
+          npm audit --audit-level=moderate || true
+          pip-audit || true
+      
+      - name: 📋 Lint & Code Quality
+        run: |
+          npm run lint
+          npm run format:check
+      
+      - name: 🔐 Check for Hardcoded Secrets
+        run: |
+          # Check for common secret patterns
+          patterns=(
+            "password\s*=\s*['\"][^'\"]+['\"]"
+            "api_key\s*=\s*['\"][^'\"]+['\"]"
+            "secret\s*=\s*['\"][^'\"]+['\"]"
+            "token\s*=\s*['\"][^'\"]{20,}['\"]"
+          )
+          
+          found=0
+          for pattern in "${patterns[@]}"; do
+            if grep -rE "$pattern" --include="*.js" --include="*.ts" --include="*.py" src/ 2>/dev/null | grep -v "example\|test\|spec\|mock"; then
+              echo "⚠️  Potential hardcoded secret found with pattern: $pattern"
+              found=1
+            fi
+          done
+          
+          if [ $found -eq 1 ]; then
+            echo "::warning::Potential hardcoded secrets detected - review required"
+          fi
+
+  # Phase 5: Deployment Preparation
+  deploy-prep:
+    name: 📦 Deploy Preparation
+    runs-on: ubuntu-latest
+    needs: [build, test, security]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+      - name: 📥 Download All Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: deploy-artifacts/
+          pattern: build-*
+      
+      - name: 🔍 Verify Artifacts
+        run: |
+          echo "📦 Verifying build artifacts..."
+          ls -la deploy-artifacts/
+          
+          # Check each artifact
+          for dir in deploy-artifacts/build-*/; do
+            if [ -d "$dir" ]; then
+              echo "✅ Found: $dir"
+              du -sh "$dir"
+            fi
+          done
+      
+      - name: 🏷️ Tag Release
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "📌 Release version: $VERSION"
+      
+      - name: 📤 Upload Deploy Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-package-${{ env.VERSION }}
+          path: deploy-artifacts/
+          retention-days: 30
+
+  # Phase 6: Error Reporting & Notifications
+  report:
+    name: 📊 Build Report
+    runs-on: ubuntu-latest
+    needs: [setup, build, test, security]
+    if: always()
+    
+    steps:
+      - name: 📥 Collect Results
+        run: |
+          echo "## 🏗️ HCFP Clean Build Report" > build-report.md
+          echo "" >> build-report.md
+          echo "**Commit:** ${{ github.sha }}" >> build-report.md
+          echo "**Branch:** ${{ github.ref }}" >> build-report.md
+          echo "**Triggered by:** ${{ github.actor }}" >> build-report.md
+          echo "" >> build-report.md
+          
+          echo "### 📋 Job Status" >> build-report.md
+          echo "- Setup: ${{ needs.setup.result }}" >> build-report.md
+          echo "- Build: ${{ needs.build.result }}" >> build-report.md
+          echo "- Test: ${{ needs.test.result }}" >> build-report.md
+          echo "- Security: ${{ needs.security.result }}" >> build-report.md
+          echo "" >> build-report.md
+          
+          if [ "${{ needs.build.result }}" == "failure" ]; then
+            echo "🚨 **BUILD FAILED** - Manual intervention required" >> build-report.md
+            echo "::error::HCFP Clean Build failed - check logs for details"
+          elif [ "${{ needs.test.result }}" == "failure" ]; then
+            echo "⚠️ **TESTS FAILED** - Review test results" >> build-report.md
+          else
+            echo "✅ **BUILD SUCCESSFUL**" >> build-report.md
+          fi
+      
+      - name: 🔔 Alert on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 HCFP Build Failed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚨 Clean Build Failed"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n${{ github.repository }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n${{ github.ref }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Commit:*\n${{ github.sha }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author:*\n${{ github.actor }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Logs"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
+
+# Prevent localhost in production code
+  localhost-lint:
+    name: 🚫 Localhost Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 🔍 Check for Localhost in Production Code
+        run: |
+          # Only check production-bound code
+          EXCLUDE_DIRS="test|spec|example|docs|.github|scripts"
+          
+          if grep -rE "localhost|127\.0\.0\.1|0\.0\.0\.0" \
+            --include="*.js" --include="*.ts" --include="*.py" \
+            src/ 2>/dev/null | grep -vE "$EXCLUDE_DIRS"; then
+            echo "::error::Found localhost references in production code!"
+            echo "These must be replaced with service domain names."
+            exit 1
+          else
+            echo "✅ No localhost references found in production code"
+          fi

@@ -1,0 +1,14 @@
+{
+  "name": "heady-v17-1",
+  "scripts": { 
+    "start:api": "node src/api.js", 
+    "start:architect": "node src/architect.js",
+    "start:opt": "node src/optimizer.js",
+    "start:conductor": "node src/conductor.js",
+    "dev:api": "node --watch src/api.js",
+    "dev:architect": "node --watch src/architect.js",
+    "dev:opt": "node --watch src/optimizer.js",
+    "dev:conductor": "node --watch src/conductor.js"
+  },
+  "dependencies": { "express": "^4.18.2", "cors": "^2.8.5" }
+}

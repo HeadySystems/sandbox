@@ -1,0 +1,79 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "heady-manager",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Heady/heady-manager.js"],
+      "port": 3300
+    },
+    {
+      "name": "heady-quick-server",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Heady/quick-server.js"],
+      "port": 3300
+    },
+    {
+      "name": "heady-frontend",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "vite", "--config", "C:/Heady/frontend/vite.config.ts"],
+      "cwd": "C:/Heady/frontend",
+      "port": 3001
+    },
+    {
+      "name": "headybuddy",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "vite", "--config", "C:/Heady/headybuddy/vite.config.js"],
+      "cwd": "C:/Heady/headybuddy",
+      "port": 3400
+    },
+    {
+      "name": "heady-backend",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Heady/backend/src/index.js"],
+      "port": 4000
+    },
+    {
+      "name": "hive-orchestrator",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Heady/apps/hive/src/api.js"],
+      "port": 3100
+    },
+    {
+      "name": "ai-workflow-engine",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["C:/Heady/apps/ai_workflow_engine/app.py"],
+      "port": 8000
+    },
+    {
+      "name": "huggingface-gateway",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["C:/Heady/services/huggingface_gateway/server.py"],
+      "port": 8083
+    },
+    {
+      "name": "colab-gateway",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["C:/Heady/services/colab_gateway/server.py"],
+      "port": 8084
+    },
+    {
+      "name": "silicon-bridge",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["C:/Heady/services/silicon_bridge/server.py"],
+      "port": 8085
+    },
+    {
+      "name": "secret-gateway",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["C:/Heady/services/secret_gateway/server.py"],
+      "port": 8082
+    },
+    {
+      "name": "model-gateway",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["C:/Heady/services/model_gateway/server.py"],
+      "port": 8086
+    }
+  ]
+}
