@@ -1,0 +1,12 @@
+# GAPS FOUND
+- `auth-session-server` was missing.
+- `search-service` was missing.
+- `notification-service` was missing.
+- `analytics-service` was missing.
+- `billing-service` was missing.
+- `scheduler-service` was missing.
+- `migration-service` was missing.
+- `asset-pipeline` was missing.
+- Strict Content Security Policy (CSP) options were missing.
+- Rate limiting was hard-coded with 1000 instead of a Fibonacci value (233).
+- Missing docker-compose services (NATS JetStream, PgBouncer, Prometheus, Grafana).

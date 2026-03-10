@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # HEADY_BRAND:BEGIN
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║  ██╗  ██╗███████╗ █████╗ ██████╗ ██╗   ██╗                     ║
@@ -9,78 +10,48 @@
 # ║                                                                  ║
 # ║  ∞ SACRED GEOMETRY ∞  Organic Systems · Breathing Interfaces    ║
 # ║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ║
-# ║  FILE: docker-compose.yml                                                    ║
+# ║  FILE: scripts/setup-dev.sh                                                    ║
 # ║  LAYER: root                                                  ║
 # ╚══════════════════════════════════════════════════════════════════╝
 # HEADY_BRAND:END
-version: '3.8'
 
-services:
-  heady-manager:
-    build: .
-    ports:
-      - "3300:3300"
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=${REDIS_URL}
-    depends_on:
-      - heady-postgres
-      - heady-redis
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3300/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+set -e
 
-  heady-postgres:
-    image: postgres:16
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+echo "  ∞ Welcome to Heady Systems Development Setup ∞ "
 
-  heady-redis:
-    image: redis:7
-    ports:
-      - "6379:6379"
+# 1. Validate Node.js 20+
+NODE_VERSION=$(node -v | cut -d 'v' -f 2 | cut -d '.' -f 1)
+if [ "$NODE_VERSION" -lt 20 ]; then
+  echo "  ⚠ Node.js 20+ is required. Found $NODE_VERSION"
+  exit 1
+fi
+echo "  ∞ Node.js 20+ detected."
 
-  nats-jetstream:
-    image: nats:2.10
-    command: ["-js"]
-    ports:
-      - "4222:4222"
-      - "8222:8222"
+# 2. Check Docker
+if ! command -v docker >/dev/null 2>&1; then
+  echo "  ⚠ Docker is required."
+  exit 1
+fi
+echo "  ∞ Docker detected."
 
-  pgbouncer:
-    image: edoburu/pgbouncer:latest
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - POOL_MODE=transaction
-      - MAX_CLIENT_CONN=233
-      - DEFAULT_POOL_SIZE=34
-    ports:
-      - "6432:6432"
-    depends_on:
-      - heady-postgres
+# 3. Check .env
+if [ ! -f .env ]; then
+  echo "  ∞ Copying .env.example to .env..."
+  cp .env.example .env
+fi
+echo "  ∞ .env file ready."
 
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
+# 4. Install dependencies
+echo "  ∞ Installing dependencies..."
+npm install
 
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+# 5. Pull Docker images
+echo "  ∞ Pulling required Docker images..."
+docker-compose pull
 
-volumes:
-  postgres_data:
+# 6. Boot in development mode
+echo "  ∞ Booting docker-compose in development mode..."
+docker-compose up -d
+
+echo "  ∞ Development environment is ready!"
+echo "  ∞ Visit http://localhost:3300 for the Sacred Geometry UI."

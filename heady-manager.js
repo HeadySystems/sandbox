@@ -75,7 +75,20 @@ const PORT = Number(process.env.PORT || 3300);
 const app = express();
 
 // ─── Middleware ─────────────────────────────────────────────────────
-app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      frameAncestors: ["'self'", "https://*.headysystems.com"],
+      upgradeInsecureRequests: [],
+    },
+  },
+  crossOriginEmbedderPolicy: false
+}));
 app.use(compression());
 app.use(express.json({ limit: "5mb" }));
 app.use(cors({
@@ -84,7 +97,7 @@ app.use(cors({
 }));
 app.use("/api/", rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 1000,
+  max: 233, // Fibonacci sequence max
   standardHeaders: true,
   legacyHeaders: false,
 }));
