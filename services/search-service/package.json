@@ -1,0 +1,16 @@
+{
+  "name": "search-service",
+  "version": "1.0.0",
+  "description": "Hybrid Search Service for Heady Systems",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.11.3",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^8.2.1"
+  }
+}
