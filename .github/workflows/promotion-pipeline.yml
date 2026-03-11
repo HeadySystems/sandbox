@@ -350,7 +350,7 @@ jobs:
 
       # Download stored baseline from most recent successful run
       - name: Download performance baseline
-        uses: dawidd6/action-download-artifact@v6
+        uses: dawidd6/action-download-artifact@v16
         with:
           workflow: performance-baseline.yml
           branch: pre-production
@@ -418,7 +418,7 @@ jobs:
           turbo-team: ${{ env.TURBO_TEAM }}
 
       - name: Download bundle baseline
-        uses: dawidd6/action-download-artifact@v6
+        uses: dawidd6/action-download-artifact@v16
         with:
           workflow: performance-baseline.yml
           branch: pre-production
