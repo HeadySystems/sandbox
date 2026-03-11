@@ -1,156 +1,133 @@
-// HEADY_BRAND:BEGIN
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  ██╗  ██╗███████╗ █████╗ ██████╗ ██╗   ██╗                     ║
-// ║  ██║  ██║██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝                     ║
-// ║  ███████║█████╗  ███████║██║  ██║ ╚████╔╝                      ║
-// ║  ██╔══██║██╔══╝  ██╔══██║██║  ██║  ╚██╔╝                       ║
-// ║  ██║  ██║███████╗██║  ██║██████╔╝   ██║                        ║
-// ║  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝    ╚═╝                        ║
-// ║                                                                  ║
-// ║  ∞ SACRED GEOMETRY ∞  Organic Systems · Breathing Interfaces    ║
-// ║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ║
-// ║  FILE: extensions/chrome/background.js                                                    ║
-// ║  LAYER: extensions                                                  ║
-// ╚══════════════════════════════════════════════════════════════════╝
-// HEADY_BRAND:END
 /**
- * Heady Chrome Extension - Background Service Worker
+ * Heady Chrome Extension v3.1.0 — Background Service Worker
+ * Production-ready with Cloud Run endpoints, side panel, and context menus
  */
 
-// Get API endpoint from service discovery
 const API_ENDPOINTS = {
-  local: 'http://manager.dev.local.heady.internal:3300',
-  'cloud-me': 'https://cloud-me.heady.io',
-  'cloud-sys': 'https://cloud-sys.heady.io',
-  'cloud-conn': 'https://cloud-conn.heady.io',
+  production: 'https://heady-ai-main-1003436179562.us-central1.run.app',
+  headyme: 'https://headyme.com',
+  headysystems: 'https://headysystems.com',
+  headymcp: 'https://headymcp.com',
+  local: 'http://localhost:3300',
 };
 
-let activeEndpoint = API_ENDPOINTS.local;
+let activeEndpoint = API_ENDPOINTS.production;
 
-// Initialize extension
+// ── Installation ────────────────────────────────────────────
 chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('[Heady] Extension installed:', details.reason);
-  
-  // Create context menu
-  chrome.contextMenus.create({
-    id: 'send-to-heady',
-    title: 'Send to Heady',
-    contexts: ['selection'],
-  });
-  
-  // Load saved endpoint
+
+  chrome.contextMenus.create({ id: 'ask-heady', title: 'Ask Heady about "%s"', contexts: ['selection'] });
+  chrome.contextMenus.create({ id: 'summarize-page', title: 'Summarize this page with Heady', contexts: ['page'] });
+  chrome.contextMenus.create({ id: 'explain-selection', title: 'Explain this with Heady', contexts: ['selection'] });
+  chrome.contextMenus.create({ id: 'send-to-heady', title: 'Send to Heady', contexts: ['selection'] });
+
   const { endpoint } = await chrome.storage.sync.get('endpoint');
-  if (endpoint) {
-    activeEndpoint = endpoint;
+  if (endpoint) activeEndpoint = endpoint;
+
+  if (chrome.sidePanel) {
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false });
   }
-  
-  // Check connection health
   checkHealth();
 });
 
-// Context menu click
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+// ── Context Menu Handler ────────────────────────────────────
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (info.menuItemId === 'ask-heady' && info.selectionText) {
+    if (chrome.sidePanel) {
+      await chrome.sidePanel.open({ tabId: tab.id });
+      setTimeout(() => chrome.runtime.sendMessage({ type: 'SIDE_PANEL_QUERY', query: `Explain: ${info.selectionText}` }), 500);
+    }
+  }
+  if (info.menuItemId === 'summarize-page' && chrome.sidePanel) {
+    await chrome.sidePanel.open({ tabId: tab.id });
+    setTimeout(() => chrome.runtime.sendMessage({ type: 'SIDE_PANEL_QUERY', query: 'Summarize this page' }), 500);
+  }
+  if (info.menuItemId === 'explain-selection' && info.selectionText && chrome.sidePanel) {
+    await chrome.sidePanel.open({ tabId: tab.id });
+    setTimeout(() => chrome.runtime.sendMessage({ type: 'SIDE_PANEL_QUERY', query: `Explain simply: ${info.selectionText}` }), 500);
+  }
   if (info.menuItemId === 'send-to-heady') {
-    sendToHeady({
-      text: info.selectionText,
-      url: tab.url,
-      title: tab.title,
-    });
+    sendToHeady({ text: info.selectionText, url: tab.url, title: tab.title });
   }
 });
 
-// Command listener
-chrome.commands.onCommand.addListener((command) => {
-  if (command === 'open-heady') {
-    chrome.action.openPopup();
-  } else if (command === 'capture-selection') {
-    captureSelection();
+// ── Command Listener ────────────────────────────────────────
+chrome.commands.onCommand.addListener(async (command) => {
+  if (command === 'open-heady') chrome.action.openPopup();
+  else if (command === 'capture-selection') captureSelection();
+  else if (command === 'ask-heady') {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab) {
+      const [result] = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => window.getSelection()?.toString() || '',
+      });
+      if (result?.result && chrome.sidePanel) {
+        await chrome.sidePanel.open({ tabId: tab.id });
+        setTimeout(() => chrome.runtime.sendMessage({ type: 'SIDE_PANEL_QUERY', query: result.result }), 500);
+      }
+    }
   }
 });
 
-// Message listener from content/popup scripts
+// ── Message Handler ─────────────────────────────────────────
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'sendToHeady') {
-    sendToHeady(request.data).then(sendResponse);
-    return true; // Keep channel open for async response
-  } else if (request.action === 'checkHealth') {
-    checkHealth().then(sendResponse);
-    return true;
-  } else if (request.action === 'switchEndpoint') {
-    switchEndpoint(request.endpoint).then(sendResponse);
-    return true;
-  }
+  if (request.action === 'sendToHeady') { sendToHeady(request.data).then(sendResponse); return true; }
+  if (request.action === 'checkHealth') { checkHealth().then(sendResponse); return true; }
+  if (request.action === 'switchEndpoint') { switchEndpoint(request.endpoint).then(sendResponse); return true; }
+  if (request.type === 'CHAT') { handleChat(request.query, request.context).then(sendResponse); return true; }
+  if (request.type === 'HEALTH_CHECK') { checkHealth().then(sendResponse); return true; }
+  if (request.type === 'GET_PAGE_CONTENT') { getPageContent(sender.tab?.id).then(sendResponse); return true; }
 });
 
-// Send data to Heady API
+// ── Chat API ────────────────────────────────────────────────
+async function handleChat(query, context = '') {
+  try {
+    const res = await fetch(`${activeEndpoint}/api/buddy/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: query, context, source: 'chrome-extension', history: [] }),
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const data = await res.json();
+    return { ok: true, reply: data.reply || data.message || "I'm here to help!" };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+}
+
+// ── Send to Heady Inbox ─────────────────────────────────────
 async function sendToHeady(data) {
   try {
     const response = await fetch(`${activeEndpoint}/api/inbox/browser`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        source: 'chrome-extension',
-        timestamp: new Date().toISOString(),
-        data,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source: 'chrome-extension', timestamp: new Date().toISOString(), data }),
     });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const result = await response.json();
-    
-    // Show success notification
-    chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'icons/icon-128.png',
-      title: 'Sent to Heady',
-      message: 'Data successfully captured',
-    });
-    
+    showNotification('Sent to Heady', 'Data successfully captured');
     return { success: true, result };
   } catch (error) {
-    console.error('[Heady] Send failed:', error);
-    
-    chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'icons/icon-128.png',
-      title: 'Heady Connection Error',
-      message: `Failed to send: ${error.message}`,
-    });
-    
+    showNotification('Heady Connection Error', `Failed: ${error.message}`);
     return { success: false, error: error.message };
   }
 }
 
-// Health check
+// ── Health Check ────────────────────────────────────────────
 async function checkHealth() {
   const results = {};
-  
   for (const [name, url] of Object.entries(API_ENDPOINTS)) {
     try {
-      const response = await fetch(`${url}/api/health`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(5000),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        results[name] = { status: 'healthy', ...data };
-      } else {
-        results[name] = { status: 'unhealthy', code: response.status };
-      }
+      const response = await fetch(`${url}/api/health`, { method: 'GET', signal: AbortSignal.timeout(5000) });
+      results[name] = response.ok ? { status: 'healthy' } : { status: 'unhealthy', code: response.status };
     } catch (error) {
       results[name] = { status: 'unreachable', error: error.message };
     }
   }
-  
-  // Update badge based on active endpoint health
-  const activeHealth = results[Object.keys(API_ENDPOINTS).find(k => API_ENDPOINTS[k] === activeEndpoint)];
-  
+  const activeKey = Object.keys(API_ENDPOINTS).find(k => API_ENDPOINTS[k] === activeEndpoint);
+  const activeHealth = results[activeKey];
   if (activeHealth?.status === 'healthy') {
     chrome.action.setBadgeBackgroundColor({ color: '#4CAF50' });
     chrome.action.setBadgeText({ text: '✓' });
@@ -158,11 +135,10 @@ async function checkHealth() {
     chrome.action.setBadgeBackgroundColor({ color: '#FF5722' });
     chrome.action.setBadgeText({ text: '!' });
   }
-  
   return results;
 }
 
-// Switch endpoint
+// ── Switch Endpoint ─────────────────────────────────────────
 async function switchEndpoint(endpoint) {
   if (API_ENDPOINTS[endpoint]) {
     activeEndpoint = API_ENDPOINTS[endpoint];
@@ -173,25 +149,30 @@ async function switchEndpoint(endpoint) {
   return { success: false, error: 'Invalid endpoint' };
 }
 
-// Capture current selection
+// ── Capture Selection ───────────────────────────────────────
 async function captureSelection() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    func: () => {
-      const selection = window.getSelection().toString();
-      return {
-        text: selection,
-        url: window.location.href,
-        title: document.title,
-      };
-    },
-  }).then((results) => {
-    if (results[0]?.result) {
-      sendToHeady(results[0].result);
-    }
-  });
+    func: () => ({ text: window.getSelection().toString(), url: window.location.href, title: document.title }),
+  }).then((results) => { if (results[0]?.result) sendToHeady(results[0].result); });
+}
+
+// ── Get Page Content ────────────────────────────────────────
+async function getPageContent(tabId) {
+  if (!tabId) return { text: '' };
+  try {
+    const [result] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: () => (document.querySelector('article') || document.querySelector('main') || document.body)?.innerText?.slice(0, 8000) || '',
+    });
+    return { text: result?.result || '' };
+  } catch { return { text: '' }; }
+}
+
+// ── Notification Helper ─────────────────────────────────────
+function showNotification(title, message) {
+  chrome.notifications.create({ type: 'basic', iconUrl: 'icons/icon-128.png', title, message });
 }
 
 // Periodic health check (every 5 minutes)

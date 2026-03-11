@@ -1,0 +1,35 @@
+{
+  "name": "@heady/scheduler-service",
+  "version": "1.0.0",
+  "description": "Fibonacci-scaled task scheduler service with φ-based intervals and exponential backoff",
+  "private": true,
+  "type": "commonjs",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "NODE_ENV=development node src/index.js",
+    "test": "jest",
+    "lint": "eslint src/**/*.js"
+  },
+  "keywords": [
+    "scheduler",
+    "tasks",
+    "fibonacci",
+    "golden-ratio",
+    "webhooks"
+  ],
+  "author": "HeadySystems",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "node-cron": "^3.0.2"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3"
+  }
+}

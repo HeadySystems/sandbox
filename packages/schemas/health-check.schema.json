@@ -1,0 +1,165 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/health-check",
+  "title": "Health Check Schema",
+  "description": "Standard health check response format for all services",
+  "type": "object",
+  "definitions": {
+    "HealthCheckResponse": {
+      "type": "object",
+      "description": "Standard health check response",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["healthy", "degraded", "unhealthy"],
+          "description": "Overall service health status"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Health check time"
+        },
+        "service": {
+          "type": "object",
+          "description": "Service information",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Service name"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z0-9]+)?$",
+              "description": "Service version (semver)"
+            },
+            "environment": {
+              "type": "string",
+              "enum": ["production", "staging", "development"]
+            },
+            "uptime": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Service uptime in seconds"
+            }
+          },
+          "required": ["name", "version"]
+        },
+        "checks": {
+          "type": "object",
+          "description": "Individual component health checks",
+          "additionalProperties": {
+            "$ref": "#/definitions/HealthCheckComponent"
+          }
+        },
+        "dependencies": {
+          "type": "object",
+          "description": "Health of external dependencies",
+          "additionalProperties": {
+            "$ref": "#/definitions/HealthCheckComponent"
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "description": "Performance metrics",
+          "properties": {
+            "cpuUsage": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "CPU usage percentage"
+            },
+            "memoryUsage": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Memory usage percentage"
+            },
+            "diskUsage": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Disk usage percentage"
+            },
+            "requestsPerSecond": {
+              "type": "number",
+              "minimum": 0
+            },
+            "p99ResponseTime": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "P99 response time in milliseconds"
+            },
+            "errorRate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Error rate as decimal (0-1)"
+            }
+          }
+        },
+        "details": {
+          "type": "object",
+          "description": "Additional diagnostic information",
+          "additionalProperties": true
+        }
+      },
+      "required": ["status", "timestamp", "service"],
+      "additionalProperties": false
+    },
+    "HealthCheckComponent": {
+      "type": "object",
+      "description": "Individual health check component",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["healthy", "degraded", "unhealthy"],
+          "description": "Component status"
+        },
+        "message": {
+          "type": "string",
+          "description": "Optional status message"
+        },
+        "responseTime": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Check response time in milliseconds"
+        },
+        "details": {
+          "type": "object",
+          "description": "Component-specific details",
+          "additionalProperties": true
+        }
+      },
+      "required": ["status"],
+      "additionalProperties": false
+    },
+    "LivenessCheck": {
+      "type": "object",
+      "description": "Kubernetes liveness probe response",
+      "properties": {
+        "alive": {
+          "type": "boolean",
+          "description": "Process is alive"
+        }
+      },
+      "required": ["alive"],
+      "additionalProperties": false
+    },
+    "ReadinessCheck": {
+      "type": "object",
+      "description": "Kubernetes readiness probe response",
+      "properties": {
+        "ready": {
+          "type": "boolean",
+          "description": "Service is ready to receive traffic"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason if not ready"
+        }
+      },
+      "required": ["ready"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/vector-embedding",
+  "title": "Vector Embedding Schema",
+  "description": "Vector embedding request/response formats (384-dimensional)",
+  "type": "object",
+  "definitions": {
+    "EmbeddingRequest": {
+      "type": "object",
+      "description": "Request to generate vector embeddings",
+      "properties": {
+        "texts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "minItems": 1,
+          "maxItems": 128,
+          "description": "Texts to embed (batch up to 128)"
+        },
+        "model": {
+          "type": "string",
+          "enum": ["sentence-transformers/all-MiniLM-L6-v2", "OpenAI", "custom"],
+          "default": "sentence-transformers/all-MiniLM-L6-v2",
+          "description": "Embedding model identifier"
+        },
+        "normalize": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to normalize vectors to unit length"
+        },
+        "dimensions": {
+          "type": "integer",
+          "const": 384,
+          "description": "Vector dimensionality (fixed at 384)"
+        },
+        "inputType": {
+          "type": "string",
+          "enum": ["search_document", "search_query", "clustering", "similarity"],
+          "description": "Context for embedding generation"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Request metadata",
+          "properties": {
+            "requestId": {
+              "type": "string",
+              "description": "Request correlation ID"
+            },
+            "userId": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": ["texts"],
+      "additionalProperties": false
+    },
+    "Embedding": {
+      "type": "object",
+      "description": "Single text embedding",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Original input text"
+        },
+        "vector": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 384,
+          "maxItems": 384,
+          "description": "384-dimensional embedding vector"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Index in input batch"
+        }
+      },
+      "required": ["text", "vector"],
+      "additionalProperties": false
+    },
+    "EmbeddingResponse": {
+      "type": "object",
+      "description": "Response with generated embeddings",
+      "properties": {
+        "embeddings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Embedding"
+          },
+          "description": "Generated embeddings"
+        },
+        "model": {
+          "type": "string",
+          "description": "Embedding model used"
+        },
+        "dimensions": {
+          "type": "integer",
+          "const": 384
+        },
+        "totalTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total tokens processed (for billing)"
+        },
+        "processingTime": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Processing time in milliseconds"
+        },
+        "cached": {
+          "type": "boolean",
+          "description": "Whether embeddings were retrieved from cache"
+        }
+      },
+      "required": ["embeddings", "model", "dimensions"],
+      "additionalProperties": false
+    },
+    "VectorSimilarityRequest": {
+      "type": "object",
+      "description": "Request to compute vector similarity",
+      "properties": {
+        "vectors": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 384,
+            "maxItems": 384
+          },
+          "description": "Vectors to compare"
+        },
+        "method": {
+          "type": "string",
+          "enum": ["cosine", "euclidean", "manhattan", "dot_product"],
+          "default": "cosine",
+          "description": "Similarity metric"
+        }
+      },
+      "required": ["vectors"],
+      "additionalProperties": false
+    },
+    "VectorSimilarityResponse": {
+      "type": "object",
+      "description": "Vector similarity computation results",
+      "properties": {
+        "similarities": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "description": "Similarity matrix (NxN)"
+        },
+        "method": {
+          "type": "string"
+        }
+      },
+      "required": ["similarities", "method"],
+      "additionalProperties": false
+    },
+    "SemanticSearchRequest": {
+      "type": "object",
+      "description": "Semantic search using vector embeddings",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Search query text"
+        },
+        "queryVector": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 384,
+          "maxItems": 384,
+          "description": "Pre-computed query embedding (optional, computed if omitted)"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Number of results to return"
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.5,
+          "description": "Minimum similarity threshold"
+        },
+        "collection": {
+          "type": "string",
+          "description": "Vector collection/index to search"
+        }
+      },
+      "required": ["query"],
+      "additionalProperties": false
+    },
+    "SemanticSearchResult": {
+      "type": "object",
+      "description": "Semantic search result",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Document/item ID"
+        },
+        "text": {
+          "type": "string",
+          "description": "Source text"
+        },
+        "similarity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Similarity score"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": ["id", "text", "similarity"],
+      "additionalProperties": false
+    },
+    "SemanticSearchResponse": {
+      "type": "object",
+      "description": "Semantic search response",
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SemanticSearchResult"
+          }
+        },
+        "searchTime": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Search time in milliseconds"
+        }
+      },
+      "required": ["query", "results"],
+      "additionalProperties": false
+    }
+  }
+}

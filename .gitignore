@@ -1,49 +1,54 @@
 # Dependencies
 node_modules/
-package-lock.json
+.pnpm-store/
 
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Build outputs
+# Build artifacts
 dist/
-build/
-out/
-*.tgz
+.turbo/
+coverage/
+*.tsbuildinfo
 
-# OS files
-desktop.ini
-Thumbs.db
-.DS_Store
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+configs/secrets/
+configs/pki/private/
 
 # IDE
-.vscode/
 .idea/
+.vscode/settings.local.json
 *.swp
 *.swo
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 logs/
 *.log
-npm-debug.log*
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-.venv/
-venv/
+# Docker
+db_data/
+infrastructure/infrastructure/db_data/
 
-# Terraform / Infrastructure state
-*.tfstate
-*.tfstate.backup
-.terraform/
+# Wrangler
+.wrangler/
 
-# Electron
-desktop-overlay/node_modules/
+# Archives
+_archive/misc/heady_brain_gpu.ipynb
+_archive/misc/heady_unified_os.ipynb
 
-# Temp
-.tmp/
-temp/
+# Lock files (regenerated)
+pnpm-lock.yaml
+
+# Reports
+artifacts/*-report.json
+artifacts/*.zip
+
+# BFG
+.bfg-report/
+
+# Notebooks with secrets
+_archive/misc/*.ipynb

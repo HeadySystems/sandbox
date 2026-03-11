@@ -1,0 +1,280 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/analytics-event",
+  "title": "Analytics Event Schema",
+  "description": "Event tracking payload format for analytics collection",
+  "type": "object",
+  "definitions": {
+    "AnalyticsEvent": {
+      "type": "object",
+      "description": "Standard analytics event",
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "pattern": "^evt_[a-z0-9]{24}$",
+          "description": "Unique event identifier"
+        },
+        "eventName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Event name (e.g., 'button_clicked', 'page_viewed')"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Event occurrence time (ISO 8601)"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User ID performing the action"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Session ID for grouping related events"
+        },
+        "properties": {
+          "type": "object",
+          "description": "Event-specific properties",
+          "additionalProperties": true
+        },
+        "context": {
+          "type": "object",
+          "description": "Contextual information about the event",
+          "properties": {
+            "page": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "referrer": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            },
+            "userAgent": {
+              "type": "string",
+              "description": "Browser user agent string"
+            },
+            "ip": {
+              "type": "string",
+              "description": "Client IP address (IPv4 or IPv6)"
+            },
+            "location": {
+              "type": "object",
+              "properties": {
+                "country": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{2}$",
+                  "description": "ISO 3166-1 alpha-2 country code"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "latitude": {
+                  "type": "number"
+                },
+                "longitude": {
+                  "type": "number"
+                }
+              }
+            },
+            "device": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["mobile", "tablet", "desktop"]
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "os": {
+                  "type": "string",
+                  "enum": ["ios", "android", "windows", "macos", "linux"]
+                },
+                "osVersion": {
+                  "type": "string"
+                }
+              }
+            },
+            "browser": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["eventId", "eventName", "timestamp", "sessionId"],
+      "additionalProperties": false
+    },
+    "EventBatch": {
+      "type": "object",
+      "description": "Batch of analytics events for efficient transmission",
+      "properties": {
+        "batchId": {
+          "type": "string",
+          "description": "Unique batch identifier"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Batch submission time"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnalyticsEvent"
+          },
+          "minItems": 1,
+          "maxItems": 1000,
+          "description": "Array of events in batch"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "Source application/service"
+            },
+            "environment": {
+              "type": "string",
+              "enum": ["production", "staging", "development"]
+            },
+            "sdkVersion": {
+              "type": "string",
+              "description": "Analytics SDK version"
+            }
+          }
+        }
+      },
+      "required": ["batchId", "timestamp", "events"],
+      "additionalProperties": false
+    },
+    "PageViewEvent": {
+      "type": "object",
+      "description": "Page view tracking event",
+      "allOf": [
+        { "$ref": "#/definitions/AnalyticsEvent" },
+        {
+          "properties": {
+            "eventName": {
+              "const": "page_viewed"
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "pageTitle": {
+                  "type": "string"
+                },
+                "pageUrl": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "previousUrl": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "loadTime": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Page load time in milliseconds"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ClickEvent": {
+      "type": "object",
+      "description": "Click tracking event",
+      "allOf": [
+        { "$ref": "#/definitions/AnalyticsEvent" },
+        {
+          "properties": {
+            "eventName": {
+              "const": "element_clicked"
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "elementId": {
+                  "type": "string"
+                },
+                "elementClass": {
+                  "type": "string"
+                },
+                "elementText": {
+                  "type": "string"
+                },
+                "elementTag": {
+                  "type": "string"
+                }
+              },
+              "required": ["elementId"]
+            }
+          }
+        }
+      ]
+    },
+    "ConversionEvent": {
+      "type": "object",
+      "description": "Conversion/goal completion event",
+      "allOf": [
+        { "$ref": "#/definitions/AnalyticsEvent" },
+        {
+          "properties": {
+            "eventName": {
+              "const": "conversion"
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "conversionType": {
+                  "type": "string",
+                  "enum": ["signup", "purchase", "subscription", "activation"]
+                },
+                "value": {
+                  "type": "number",
+                  "description": "Conversion value in cents"
+                },
+                "currency": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{3}$"
+                },
+                "funnel": {
+                  "type": "string",
+                  "description": "Funnel identifier"
+                }
+              },
+              "required": ["conversionType"]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

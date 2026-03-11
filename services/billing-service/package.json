@@ -1,0 +1,25 @@
+{
+  "name": "@heady/billing-service",
+  "version": "1.0.0",
+  "description": "HEADY billing service with φ-scaled pricing and Stripe integration",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "lint": "eslint src/**/*.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "stripe": "14.8.0",
+    "pino": "8.16.2",
+    "uuid": "9.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21",
+    "@types/node": "20.10.6",
+    "typescript": "5.3.3",
+    "tsx": "4.7.0"
+  }
+}

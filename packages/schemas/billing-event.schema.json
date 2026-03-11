@@ -1,0 +1,254 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/billing-event",
+  "title": "Billing Event Schema",
+  "description": "Subscription events and webhook payload formats",
+  "type": "object",
+  "definitions": {
+    "SubscriptionEvent": {
+      "type": "object",
+      "description": "Subscription state change event",
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "pattern": "^evt_[a-z0-9]{24}$",
+          "description": "Unique event identifier"
+        },
+        "eventType": {
+          "type": "string",
+          "enum": [
+            "subscription.created",
+            "subscription.updated",
+            "subscription.activated",
+            "subscription.paused",
+            "subscription.resumed",
+            "subscription.cancelled",
+            "subscription.expired",
+            "subscription.trial_ended"
+          ],
+          "description": "Type of subscription event"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Event occurrence time"
+        },
+        "subscriptionId": {
+          "type": "string",
+          "pattern": "^sub_[a-z0-9]{24}$",
+          "description": "Subscription ID"
+        },
+        "customerId": {
+          "type": "string",
+          "description": "Customer/User ID"
+        },
+        "planId": {
+          "type": "string",
+          "description": "Billing plan ID"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "paused", "cancelled", "expired", "past_due"],
+          "description": "Subscription status after event"
+        },
+        "data": {
+          "type": "object",
+          "description": "Event-specific data",
+          "properties": {
+            "previousStatus": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Reason for state change"
+            },
+            "effectiveDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "billingCycle": {
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "eventId",
+        "eventType",
+        "timestamp",
+        "subscriptionId",
+        "customerId",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "PaymentEvent": {
+      "type": "object",
+      "description": "Payment transaction event",
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "pattern": "^evt_[a-z0-9]{24}$",
+          "description": "Unique event identifier"
+        },
+        "eventType": {
+          "type": "string",
+          "enum": [
+            "payment.initiated",
+            "payment.succeeded",
+            "payment.failed",
+            "payment.refunded",
+            "payment.disputed"
+          ]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "paymentId": {
+          "type": "string",
+          "description": "Payment transaction ID"
+        },
+        "customerId": {
+          "type": "string"
+        },
+        "subscriptionId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Payment amount in cents"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 currency code"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["succeeded", "failed", "pending", "cancelled"],
+          "description": "Payment outcome"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": ["card", "bank_transfer", "paypal", "crypto"]
+            },
+            "lastFour": {
+              "type": "string",
+              "pattern": "^[0-9]{4}$",
+              "description": "Last 4 digits of payment method"
+            },
+            "failureReason": {
+              "type": "string",
+              "description": "Reason for payment failure (if applicable)"
+            }
+          }
+        }
+      },
+      "required": [
+        "eventId",
+        "eventType",
+        "timestamp",
+        "paymentId",
+        "customerId",
+        "amount",
+        "currency",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "WebhookPayload": {
+      "type": "object",
+      "description": "Webhook payload wrapper for billing events",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^wh_[a-z0-9]{24}$",
+          "description": "Webhook delivery ID"
+        },
+        "apiVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "API version"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "event": {
+          "oneOf": [
+            { "$ref": "#/definitions/SubscriptionEvent" },
+            { "$ref": "#/definitions/PaymentEvent" }
+          ],
+          "description": "Event payload"
+        },
+        "signature": {
+          "type": "string",
+          "description": "HMAC-SHA256 signature for verification"
+        },
+        "retryCount": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of retry attempts"
+        }
+      },
+      "required": ["id", "apiVersion", "timestamp", "event", "signature"],
+      "additionalProperties": false
+    },
+    "UsageEvent": {
+      "type": "object",
+      "description": "Usage metering event for usage-based billing",
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "description": "Unique event identifier"
+        },
+        "customerId": {
+          "type": "string"
+        },
+        "subscriptionId": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "meterType": {
+          "type": "string",
+          "enum": ["api_calls", "storage_gb", "bandwidth_gb", "seats", "custom"]
+        },
+        "quantity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "eventId",
+        "customerId",
+        "timestamp",
+        "meterType",
+        "quantity"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

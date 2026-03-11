@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "heady": {
+      "transport": "streamable-http",
+      "url": "https://mcp.headysystems.com/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_HEADY_API_KEY"
+      }
+    }
+  }
+}

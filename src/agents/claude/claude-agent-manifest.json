@@ -1,0 +1,94 @@
+{
+  "name": "heady-claude-agents",
+  "version": "4.0.0",
+  "description": "Claude agent definitions for the Heady ecosystem",
+  "agents": [
+    {
+      "id": "claude-orchestrator",
+      "name": "Claude Orchestrator",
+      "ring": "middle",
+      "radius": 1.618,
+      "role": "Full HCFullPipeline lifecycle management",
+      "skill": "claude-heady-orchestrator",
+      "capabilities": ["pipeline_execution", "stage_management", "concurrent_dispatch", "health_monitoring"],
+      "mcpTools": ["heady_pipeline_status", "heady_deploy_run", "heady_health_ping", "heady_brain_think"]
+    },
+    {
+      "id": "claude-diagnostics",
+      "name": "Claude Diagnostics",
+      "ring": "middle",
+      "radius": 1.618,
+      "role": "Deep system health analysis and troubleshooting",
+      "skill": "claude-heady-diagnostics",
+      "capabilities": ["system_scan", "config_validation", "dependency_audit", "secrets_audit", "code_quality"],
+      "mcpTools": ["heady_status", "heady_health_ping", "heady_config_validate", "heady_deps_scan", "heady_env_audit", "heady_secrets_scan", "heady_conflicts_scan", "heady_brain_status", "heady_cost_report"]
+    },
+    {
+      "id": "claude-deployer",
+      "name": "Claude Deployer",
+      "ring": "middle",
+      "radius": 1.618,
+      "role": "Multi-target deployment with validation and rollback",
+      "skill": "claude-heady-deploy",
+      "capabilities": ["pre_deploy_validation", "multi_target_deploy", "git_operations", "auto_deploy_scheduler", "rollback", "post_deploy_verification"],
+      "mcpTools": ["heady_deploy_run", "heady_deploy_status", "heady_deploy_start", "heady_deploy_stop", "heady_codelock_status", "heady_git_status", "heady_health_ping"]
+    },
+    {
+      "id": "claude-vector-ops",
+      "name": "Claude Vector Ops",
+      "ring": "outer",
+      "radius": 2.618,
+      "role": "Latent space vector memory management",
+      "skill": "claude-heady-vector-ops",
+      "capabilities": ["semantic_storage", "similarity_search", "memory_analysis", "knowledge_extraction"],
+      "mcpTools": ["heady_latent_record", "heady_latent_search", "heady_latent_status", "heady_latent_log", "latent_store", "latent_search", "latent_list", "latent_delete"]
+    },
+    {
+      "id": "claude-swarm-commander",
+      "name": "Claude Swarm Commander",
+      "ring": "outer",
+      "radius": 2.618,
+      "role": "Distributed agent swarm orchestration",
+      "skill": "claude-heady-swarm-commander",
+      "capabilities": ["swarm_spawning", "task_distribution", "swarm_monitoring", "convergence", "auto_scaling"],
+      "mcpTools": ["heady_brain_think", "heady_latent_record", "heady_health_ping", "heady_code_stats"]
+    },
+    {
+      "id": "claude-code-guardian",
+      "name": "Claude Code Guardian",
+      "ring": "middle",
+      "radius": 1.618,
+      "role": "CodeLock-compliant code modifications and security",
+      "skill": null,
+      "capabilities": ["codelock_management", "file_operations", "code_search", "integrity_snapshots"],
+      "mcpTools": ["heady_codelock_status", "heady_codelock_request", "heady_codelock_approve", "heady_write_file", "heady_read_file", "heady_search", "heady_codelock_snapshot", "heady_codelock_detect"]
+    },
+    {
+      "id": "claude-translator",
+      "name": "Claude Translator",
+      "ring": "outer",
+      "radius": 2.618,
+      "role": "Cross-protocol message translation (MCP, HTTP, WS, UDP, MIDI, TCP)",
+      "skill": null,
+      "capabilities": ["protocol_translation", "message_decoding", "bridge_management", "adapter_listing"],
+      "mcpTools": ["heady_translator_translate", "heady_translator_decode", "heady_translator_adapters", "heady_translator_bridge", "heady_translator_status"]
+    }
+  ],
+  "constants": {
+    "PHI": 1.618033988749895,
+    "PSI": 0.6180339887498949,
+    "FIBONACCI": [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987],
+    "RELEVANCE_GATES": {
+      "include": 0.382,
+      "boost": 0.618,
+      "inject": 0.718
+    }
+  },
+  "topology": {
+    "central": { "radius": 0, "role": "Awareness" },
+    "inner": { "radius": 1, "role": "Processing core" },
+    "middle": { "radius": 1.618, "role": "Execution" },
+    "outer": { "radius": 2.618, "role": "Specialization" },
+    "governance": { "radius": 4.236, "role": "Quality & Security" }
+  }
+}

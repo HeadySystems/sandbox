@@ -1,0 +1,50 @@
+{
+  "name": "@heady/schemas",
+  "version": "1.0.0",
+  "description": "HEADY platform shared schema registry with JSON Schema definitions and TypeScript types",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "*.schema.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint .",
+    "validate-schemas": "node scripts/validate-schemas.js"
+  },
+  "keywords": [
+    "heady",
+    "schema",
+    "json-schema",
+    "validation",
+    "typescript"
+  ],
+  "author": "HEADY Team",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^4.9.0 || ^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": false
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

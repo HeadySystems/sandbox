@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/notification",
+  "title": "Notification Schema",
+  "description": "Notification send requests and WebSocket message formats",
+  "type": "object",
+  "definitions": {
+    "NotificationSendRequest": {
+      "type": "object",
+      "description": "Request to send a notification to users",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Target user ID (single recipient)"
+        },
+        "userIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Target user IDs (bulk recipients)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["email", "sms", "push", "websocket", "in-app"],
+          "description": "Notification channel type"
+        },
+        "template": {
+          "type": "string",
+          "description": "Template identifier (e.g., 'welcome-email', 'purchase-receipt')"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject line (for email/sms notifications)"
+        },
+        "body": {
+          "type": "string",
+          "description": "Message body content"
+        },
+        "data": {
+          "type": "object",
+          "description": "Template variables and custom data",
+          "additionalProperties": true
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "critical"],
+          "default": "normal"
+        },
+        "expireAt": {
+          "type": "integer",
+          "description": "Unix timestamp when notification expires"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "Service that triggered notification"
+            },
+            "correlationId": {
+              "type": "string",
+              "description": "Correlation ID for request tracing"
+            }
+          }
+        }
+      },
+      "required": ["type", "subject", "body"],
+      "additionalProperties": false
+    },
+    "NotificationSendResponse": {
+      "type": "object",
+      "description": "Response after notification send request",
+      "properties": {
+        "notificationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of created notification IDs"
+        },
+        "successCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failureCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["notificationIds", "successCount"],
+      "additionalProperties": false
+    },
+    "WebSocketMessage": {
+      "type": "object",
+      "description": "WebSocket notification message format",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["notification", "update", "ping", "auth"],
+          "description": "Message type"
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique message ID"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "notificationId": {
+          "type": "string",
+          "description": "Reference to notification record"
+        },
+        "payload": {
+          "type": "object",
+          "description": "Notification payload",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string",
+              "format": "uri"
+            },
+            "actionUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL to navigate to on click"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "required": ["title", "message"]
+        },
+        "sequence": {
+          "type": "integer",
+          "description": "Message sequence number for ordering"
+        }
+      },
+      "required": ["type", "id", "timestamp"],
+      "additionalProperties": false
+    },
+    "WebSocketSubscription": {
+      "type": "object",
+      "description": "WebSocket subscription request format",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["subscribe", "unsubscribe"],
+          "description": "Subscribe or unsubscribe action"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Channels to subscribe to (e.g., 'user:123', 'broadcast')"
+        }
+      },
+      "required": ["action", "channels"],
+      "additionalProperties": false
+    }
+  }
+}

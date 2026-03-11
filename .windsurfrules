@@ -1,51 +1,55 @@
-# HEADY SYSTEMS | WINDSURF PROTOCOL
+# Heady™ Sovereign AI Platform — Windsurf Rules
+# Version: 3.2.3 | Codename: Aether
+# © 2024-2026 HeadySystems Inc. All Rights Reserved.
 
-## PRIMARY DIRECTIVE
-You are the Heady Project AI. Your goal is to squash, merge, and structure data into a "Sacred Geometry" ecosystem.
+## Identity
+You are working inside the Heady™ Sovereign AI Platform monorepo.
+This is a production codebase with 60+ provisional patents.
 
-## DOCUMENTATION BEHAVIOR (The Quiz Protocol)
-When asked to document code or generate summaries, YOU MUST FOLLOW THIS EXACT PROCEDURE:
+## Unbreakable Laws
+1. THOROUGHNESS OVER SPEED — Never rush. Complete implementations only.
+2. SOLUTIONS NOT WORKAROUNDS — Fix root causes, never band-aid.
+3. CONTEXT MAXIMIZATION — Always scan vector memory and configs before acting.
+4. IMPLEMENTATION COMPLETENESS — No stubs, no TODOs, no placeholders.
+5. CROSS-ENVIRONMENT PURITY — No localhost URLs, no hardcoded secrets, no dev-only paths.
+6. TEN THOUSAND BEE SCALE — All code must work at 10,000 concurrent bee workers.
+7. AUTO-SUCCESS INTEGRITY — Never degrade the 135-task/30-second heartbeat cycle.
+8. ARENA MODE DEFAULT — Test multiple approaches; let the best win.
 
-1. **Review & Extract:** Read the material. Identify concepts, processes, and data.
-2. **Generate Quiz Questions:** Create clear questions for each concept. Use open-ended for insights, boolean/multiple-choice for recall.
-3. **Formulate Flashcards:** Convert Question-Answer pairs into flashcards. ONE idea per card.
-4. **Iterative Coverage:** Repeat until all material is processed. Avoid redundancy.
-5. **Integrate & Organize:** Group cards under logical headings (Architecture, APIs).
-6. **Ensure Precision:** Verify accuracy.
+## Sacred Geometry Constraints
+- ALL timeouts MUST use φ-power values: 1618, 2618, 4236, 6854, 11090, 17944, 29034, 46979
+- ALL retry multipliers MUST use φ (1.618), NEVER 2 or 3
+- ALL cache sizes MUST use Fibonacci numbers: 1,1,2,3,5,8,13,21,34,55,89,144,233,377
+- ALL thresholds MUST use CSL values: 0.500, 0.618, 0.691, 0.764, 0.809, 0.854, 0.882, 0.910, 0.927, 0.972
+- ALL resource allocation MUST use phi-weighted splits (34/21/13/8/5)
+- NEVER use round numbers (1000, 5000, 10000, 0.5, 0.7, 0.8, 0.9, 0.95)
+- Import phi constants from shared/phi-math.js — NEVER hardcode φ values
 
-## TECH STACK
-- **Manager:** Node.js (Express, MCP Protocol)
-- **Worker:** Python (Render Worker)
-- **Frontend:** React (CDN) with Sacred Geometry Aesthetics (Rounded, Organic, Breathing)
-- **Deployment:** Render.com Blueprint
+## Module System
+- CommonJS only (require/module.exports) — NO ESM (import/export)
+- Import core from shared/phi-math.js
+- Every new module must register in heady-registry.json
 
-## PATHS
-- `heady-manager.js` - Node.js MCP server (port 3300)
-- `src/` - Backend logic (Python worker)
-- `public/` - Sacred UI (React)
-- `configs/` - All YAML configs (pipeline, resources, governance)
-- `heady-registry.json` - HeadyRegistry central catalog
-- `notebooks/` - Colab notebooks (quick-start, tutorials, examples)
-- `docs/` - Documentation, Notion templates, ownership tracker
-- `.github/` - Copilot & Actions Configuration
-- `render.yaml` - Infrastructure as Code
+## Architecture
+- 384-dimensional embeddings, 3D projection
+- 21-stage HCFullPipeline (fib(8) = Sacred Geometry aligned)
+- 17 swarms, 89 bee types, 135 auto-success tasks
+- Hot/Warm/Cold pool model (34%/21%/13% + 8% reserve + 5% governance)
 
-## ENVIRONMENT VARIABLES
-- `DATABASE_URL` - Postgres connection (from Render)
-- `HEADY_API_KEY` - Auto-generated API key
+## Security
+- NEVER commit secrets, tokens, or API keys
+- ALL inputs validated with Zod schemas
+- ALL outputs sanitized (DOMPurify for HTML, parameterized queries for SQL)
+- NEVER use eval(), Function(), or dynamic require() with user input
 
-## SCRIPTS
-- `commit_and_build.ps1` - Local build cycle
-- `nexus_deploy.ps1` - Push to all remotes
-- `scripts/checkpoint-sync.ps1` - Checkpoint Protocol sync (all files)
-- `scripts/Heady-Sync.ps1` - Multi-remote git sync
+## File Naming
+- Lowercase kebab-case: heady-conductor.js, phi-math.js
+- Bees: *-bee.js (e.g., security-bee.js)
+- Services: descriptive names in src/services/
+- Tests: *.test.js alongside source files
 
-## CHECKPOINT PROTOCOL (Standing Instruction)
-At every checkpoint (commit, merge, pipeline stage, release), you MUST:
-1. Keep all docs, configs, registry, and notebooks in sync with current system state.
-2. Use `heady-registry.json` as the central catalog — nothing exists off the books.
-3. Update corresponding Markdown docs, config files, and examples in the same changeset.
-4. Treat outdated documentation as a defect.
-5. Validate notebooks still reference correct APIs/schemas.
-6. Check `docs/DOC_OWNERS.yaml` for overdue reviews.
-Full protocol: `docs/CHECKPOINT_PROTOCOL.md`
+## Deployment
+- NO localhost URLs — only branded Heady domains
+- Docker-ready: respect Dockerfile.production
+- Cloud Run compatible: PORT env var, graceful shutdown
+- Cloudflare Workers compatible: no Node.js-only APIs in edge code

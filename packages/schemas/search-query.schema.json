@@ -1,0 +1,282 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/search-query",
+  "title": "Search Query Schema",
+  "description": "Search request and response formats for unified search API",
+  "type": "object",
+  "definitions": {
+    "SearchRequest": {
+      "type": "object",
+      "description": "Search query request",
+      "properties": {
+        "q": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "description": "Search query text"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["all", "documents", "users", "conversations", "resources", "analytics"],
+          "default": "all",
+          "description": "Search scope"
+        },
+        "filters": {
+          "type": "object",
+          "description": "Search filters",
+          "properties": {
+            "dateRange": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "to": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            },
+            "author": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "status": {
+              "type": "string",
+              "enum": ["draft", "published", "archived", "deleted"]
+            },
+            "language": {
+              "type": "string",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "description": "ISO 639-1 language code"
+            }
+          },
+          "additionalProperties": true
+        },
+        "pagination": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "cursor": {
+              "type": "string",
+              "description": "Cursor for pagination (alternative to offset)"
+            }
+          }
+        },
+        "sort": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string",
+              "enum": ["relevance", "date", "updated", "title", "author"]
+            },
+            "order": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          }
+        },
+        "facets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Facets to aggregate results by (e.g., 'type', 'author', 'tag')"
+        },
+        "highlight": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include highlighted matching terms in results"
+        },
+        "explain": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include search explanation for debugging"
+        }
+      },
+      "required": ["q"],
+      "additionalProperties": false
+    },
+    "SearchHit": {
+      "type": "object",
+      "description": "Individual search result",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Result ID"
+        },
+        "type": {
+          "type": "string",
+          "description": "Result type (document, user, etc.)"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string",
+          "description": "Document content or excerpt"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "author": {
+              "type": "string"
+            },
+            "created": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updated": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Relevance score (0-1)"
+        },
+        "highlights": {
+          "type": "object",
+          "description": "Highlighted matching terms",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "explanation": {
+          "type": "object",
+          "description": "Search scoring explanation",
+          "properties": {
+            "factors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["id", "type", "title", "score"],
+      "additionalProperties": false
+    },
+    "SearchResponse": {
+      "type": "object",
+      "description": "Search query response",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "description": "Request correlation ID"
+        },
+        "query": {
+          "type": "string",
+          "description": "Original search query"
+        },
+        "totalHits": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of matching results"
+        },
+        "hits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SearchHit"
+          },
+          "description": "Page of search results"
+        },
+        "facets": {
+          "type": "object",
+          "description": "Facet aggregations",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        },
+        "pagination": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer"
+            },
+            "offset": {
+              "type": "integer"
+            },
+            "nextCursor": {
+              "type": "string"
+            },
+            "hasMore": {
+              "type": "boolean"
+            }
+          }
+        },
+        "executionTime": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Query execution time in milliseconds"
+        },
+        "cached": {
+          "type": "boolean",
+          "description": "Whether result was served from cache"
+        }
+      },
+      "required": ["requestId", "query", "totalHits", "hits"],
+      "additionalProperties": false
+    }
+  }
+}

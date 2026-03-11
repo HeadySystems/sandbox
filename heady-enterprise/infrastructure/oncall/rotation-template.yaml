@@ -1,0 +1,238 @@
+# =============================================================================
+# Heady™Systems Inc. — On-Call Rotation Template
+# heady-systems v3.2.2
+# =============================================================================
+# φ = 1.618033988749895 (Golden Ratio)
+# Escalation timers use Fibonacci: 5min, 8min, 13min, 21min
+# Shift length: fib(8)=21 days (3 weeks) per engineer
+# Handoff: fib(6)=8 hour overlap window
+# =============================================================================
+
+rotations:
+  # ---------------------------------------------------------------------------
+  # Primary On-Call — Platform Engineering
+  # Handles: Infrastructure, Kubernetes, Redis, Postgres, Networking
+  # ---------------------------------------------------------------------------
+  - name: platform-primary
+    displayName: "Platform Primary On-Call"
+    description: "First responder for all infrastructure alerts"
+
+    schedule:
+      # Rotation frequency: fib(8)=21 days per engineer (3 weeks)
+      shiftLengthDays: 21        # fib(8)=21
+      # Handoff overlap: fib(6)=8 hours (outgoing helps incoming)
+      handoffOverlapHours: 8     # fib(6)=8
+      # Timezone: MST (America/Denver — Eric's timezone)
+      timezone: "America/Denver"
+      startHour: 9               # 09:00 MST — business hours start
+      # Shadow period for new engineers: fib(7)=13 days before going primary
+      shadowPeriodDays: 13       # fib(7)=13
+
+    members:
+      - name: "Eric Haywood"
+        email: "eric@headyconnection.org"
+        slack: "@eric"
+        phone: "+1-REPLACE-WITH-PHONE"
+        tier: primary
+        tags: ["infrastructure", "ai-platform", "founder"]
+      # Add team members below as team grows
+      # Each new member shadows for fib(7)=13 days before going primary
+
+    restrictions:
+      # Off-hours paging: only for P0/P1 alerts
+      # Business hours: 09:00-18:00 MST (fib(5)=5 days/week)
+      quietHours:
+        enabled: true
+        start: "18:00"
+        end: "09:00"
+        timezone: "America/Denver"
+        # Override for P0/P1 — always page
+        pagerOverrideForSeverity: ["P0", "P1"]
+
+  # ---------------------------------------------------------------------------
+  # Secondary On-Call — AI Platform
+  # Handles: Agent deadlocks, MCP failures, heady-brain/conductor issues
+  # ---------------------------------------------------------------------------
+  - name: ai-platform-secondary
+    displayName: "AI Platform Secondary On-Call"
+    description: "Escalation target for AI-specific incidents"
+
+    schedule:
+      shiftLengthDays: 21       # fib(8)=21
+      handoffOverlapHours: 8    # fib(6)=8
+      timezone: "America/Denver"
+      startHour: 9
+      shadowPeriodDays: 13      # fib(7)=13
+
+    members:
+      - name: "Eric Haywood"
+        email: "eric@headyconnection.org"
+        tier: secondary
+        # Escalation: T+fib(5)=5 minutes after primary non-response
+
+# =============================================================================
+# Escalation Policies
+# =============================================================================
+
+escalationPolicies:
+  # ---------------------------------------------------------------------------
+  # P0 — Platform Down (SLO exceeded, complete outage)
+  # ---------------------------------------------------------------------------
+  - name: p0-platform-down
+    severity: P0
+    description: "Complete platform outage or SLO-exceeding incident"
+
+    steps:
+      # fib(1)=1: Immediate — page primary on-call
+      - delayMinutes: 0          # Immediate
+        target: platform-primary
+        channel: pagerduty
+
+      # fib(5)=5: If no ack in fib(5)=5 minutes — page secondary
+      - delayMinutes: 5          # fib(5)=5 minutes
+        target: ai-platform-secondary
+        channel: pagerduty
+        condition: not_acknowledged
+
+      # fib(6)=8: If not resolved — page infrastructure lead + phone call
+      - delayMinutes: 8          # fib(6)=8 minutes
+        target: infrastructure-lead
+        channel: phone
+        condition: not_resolved
+
+      # fib(7)=13: Engineering director
+      - delayMinutes: 13         # fib(7)=13 minutes
+        target: engineering-director
+        channel: phone
+        condition: not_resolved
+
+      # fib(8)=21: Executive escalation — VP Engineering / CEO
+      - delayMinutes: 21         # fib(8)=21 minutes
+        target: executive-team
+        channel: phone
+        condition: not_resolved
+
+  # ---------------------------------------------------------------------------
+  # P1 — Service Degraded
+  # ---------------------------------------------------------------------------
+  - name: p1-service-degraded
+    severity: P1
+    description: "Service degradation affecting users"
+
+    steps:
+      - delayMinutes: 0
+        target: platform-primary
+        channel: pagerduty
+
+      - delayMinutes: 5          # fib(5)=5 minutes
+        target: platform-primary
+        channel: phone            # Phone call if PagerDuty not acked
+        condition: not_acknowledged
+
+      - delayMinutes: 8          # fib(6)=8 minutes
+        target: ai-platform-secondary
+        channel: pagerduty
+        condition: not_acknowledged
+
+      - delayMinutes: 13         # fib(7)=13 minutes
+        target: infrastructure-lead
+        channel: slack
+        condition: not_resolved
+
+      - delayMinutes: 21         # fib(8)=21 minutes
+        target: engineering-director
+        channel: slack
+        condition: not_resolved
+
+  # ---------------------------------------------------------------------------
+  # P2 — Warning / Degraded Performance
+  # ---------------------------------------------------------------------------
+  - name: p2-warning
+    severity: P2
+    description: "Warning-level alert — not yet affecting users"
+
+    steps:
+      - delayMinutes: 0
+        target: platform-primary
+        channel: slack
+
+      - delayMinutes: 13         # fib(7)=13 minutes — if not acked
+        target: platform-primary
+        channel: pagerduty
+        condition: not_acknowledged
+
+      - delayMinutes: 21         # fib(8)=21 minutes
+        target: ai-platform-secondary
+        channel: slack
+        condition: not_resolved
+
+  # ---------------------------------------------------------------------------
+  # P3 — Informational
+  # ---------------------------------------------------------------------------
+  - name: p3-informational
+    severity: P3
+    description: "Informational alert — no action required immediately"
+
+    steps:
+      - delayMinutes: 0
+        target: platform-primary
+        channel: email
+
+# =============================================================================
+# Contact Methods
+# =============================================================================
+
+contacts:
+  - id: platform-primary
+    type: on-call-rotation
+    rotation: platform-primary
+
+  - id: ai-platform-secondary
+    type: on-call-rotation
+    rotation: ai-platform-secondary
+
+  - id: infrastructure-lead
+    type: individual
+    name: "Eric Haywood"
+    email: "eric@headyconnection.org"
+    slack: "@eric"
+
+  - id: engineering-director
+    type: individual
+    name: "Eric Haywood"
+    email: "eric@headyconnection.org"
+
+  - id: executive-team
+    type: individual
+    name: "Eric Haywood"
+    email: "eric@headyconnection.org"
+
+# =============================================================================
+# φ Escalation Timer Reference
+# =============================================================================
+phiEscalationTimers:
+  # Fibonacci escalation ladder:
+  # T+fib(5)=5 min:  First escalation
+  # T+fib(6)=8 min:  Second escalation
+  # T+fib(7)=13 min: Third escalation
+  # T+fib(8)=21 min: Executive (final) escalation
+  # T+fib(9)=34 min: Incident declared major (war room)
+  timers:
+    - step: 1
+      minutes: 5    # fib(5)=5
+      action: "Page secondary on-call"
+    - step: 2
+      minutes: 8    # fib(6)=8
+      action: "Phone call to primary"
+    - step: 3
+      minutes: 13   # fib(7)=13
+      action: "Escalate to lead"
+    - step: 4
+      minutes: 21   # fib(8)=21
+      action: "Executive escalation"
+    - step: 5
+      minutes: 34   # fib(9)=34
+      action: "Major incident declared"
+    - step: 6
+      minutes: 55   # fib(10)=55
+      action: "War room / customer comms"

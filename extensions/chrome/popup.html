@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,168 +11,273 @@
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
-      width: 360px;
-      min-height: 480px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
+      width: 380px;
+      min-height: 520px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0d0d1a;
+      color: #e8e8f0;
+      display: flex;
+      flex-direction: column;
     }
-    
+
     .header {
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.2);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .header h1 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    
-    .header .subtitle {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-    
-    .status {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
       padding: 16px 20px;
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(255, 255, 255, 0.1);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    
+
+    .orb {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #7c3aed, #4f46e5);
+      animation: breathe 3s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    @keyframes breathe {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+
+      50% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    .header-text h1 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .status {
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #4CAF50;
-      box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+      box-shadow: 0 0 6px rgba(76, 175, 80, 0.5);
     }
-    
+
     .status-dot.offline {
       background: #FF5722;
-      box-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
     }
-    
-    .content {
-      padding: 20px;
+
+    .status-label {
+      color: #6ee7b7;
     }
-    
-    .endpoint-selector {
-      margin-bottom: 20px;
+
+    .status-label.offline {
+      color: #FF5722;
     }
-    
-    .endpoint-selector label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 12px;
-      opacity: 0.9;
+
+    .endpoint-bar {
+      padding: 10px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
-    
-    .endpoint-selector select {
+
+    .endpoint-bar select {
       width: 100%;
-      padding: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 12px;
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      color: #e8e8f0;
+      font-size: 13px;
+      cursor: pointer;
     }
-    
-    .endpoint-selector select option {
-      background: #764ba2;
-      color: #fff;
+
+    .endpoint-bar select option {
+      background: #16213e;
     }
-    
+
     .quick-actions {
       display: grid;
-      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 12px 20px;
     }
-    
+
     .action-btn {
-      padding: 12px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      font-size: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: #c4b5fd;
       cursor: pointer;
-      transition: all 0.2s;
+      font-size: 12px;
+      font-weight: 500;
       text-align: left;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    
+
     .action-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
+      background: rgba(124, 58, 237, 0.15);
+      border-color: rgba(124, 58, 237, 0.3);
+      transform: translateY(-1px);
     }
-    
-    .action-btn .icon {
-      margin-right: 8px;
+
+    .icon {
+      font-size: 16px;
     }
-    
-    .footer {
-      padding: 16px 20px;
-      text-align: center;
+
+    .chat {
+      flex: 1;
+      padding: 12px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 150px;
+    }
+
+    .msg {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 85%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .msg.user {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: white;
+      align-self: flex-end;
+    }
+
+    .msg.bot {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #e8e8f0;
+      align-self: flex-start;
+    }
+
+    .msg.system {
       font-size: 11px;
-      opacity: 0.7;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #666;
+      text-align: center;
+      align-self: center;
+      background: none;
+    }
+
+    .input-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .input-bar input {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      color: #e8e8f0;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input-bar input:focus {
+      border-color: #7c3aed;
+    }
+
+    .input-bar button {
+      padding: 10px 18px;
+      border-radius: 20px;
+      border: none;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .footer {
+      padding: 8px 20px;
+      font-size: 10px;
+      color: #444;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .footer a {
+      color: #7c3aed;
+      text-decoration: none;
     }
   </style>
 </head>
+
 <body>
   <div class="header">
-    <h1>∞ Heady AI Companion</h1>
-    <p class="subtitle">Sacred Geometry Intelligence</p>
-  </div>
-  
-  <div class="status">
-    <div class="status-dot" id="statusDot"></div>
-    <span id="statusText">Checking connection...</span>
-  </div>
-  
-  <div class="content">
-    <div class="endpoint-selector">
-      <label for="endpoint">Active Endpoint:</label>
-      <select id="endpoint">
-        <option value="local">Local Dev (manager.dev.local.heady.internal)</option>
-        <option value="cloud-me">Cloud - HeadyMe</option>
-        <option value="cloud-sys">Cloud - HeadySystems</option>
-        <option value="cloud-conn">Cloud - HeadyConnection</option>
-      </select>
-    </div>
-    
-    <div class="quick-actions">
-      <button class="action-btn" id="openDashboard">
-        <span class="icon">🏠</span>
-        Open Dashboard
-      </button>
-      
-      <button class="action-btn" id="captureTab">
-        <span class="icon">📸</span>
-        Capture Current Tab
-      </button>
-      
-      <button class="action-btn" id="viewTasks">
-        <span class="icon">✅</span>
-        View Active Tasks
-      </button>
-      
-      <button class="action-btn" id="refreshHealth">
-        <span class="icon">🔄</span>
-        Refresh Health Check
-      </button>
+    <div class="orb">∞</div>
+    <div class="header-text">
+      <h1>Heady AI</h1>
+      <div class="status">
+        <div class="status-dot" id="statusDot"></div><span class="status-label" id="statusText">Connecting...</span>
+      </div>
     </div>
   </div>
-  
-  <div class="footer">
-    Heady Systems v3.0.0 • Sacred Geometry AI
+  <div class="endpoint-bar">
+    <select id="endpoint">
+      <option value="production">Cloud — Production</option>
+      <option value="headyme">HeadyMe</option>
+      <option value="headysystems">HeadySystems</option>
+      <option value="headymcp">HeadyMCP</option>
+      <option value="local">Local Dev (localhost:3300)</option>
+    </select>
   </div>
-  
+  <div class="quick-actions">
+    <button class="action-btn" id="summarize"><span class="icon">📋</span>Summarize Page</button>
+    <button class="action-btn" id="explain"><span class="icon">💡</span>Explain Selection</button>
+    <button class="action-btn" id="research"><span class="icon">🔍</span>Deep Research</button>
+    <button class="action-btn" id="captureTab"><span class="icon">📸</span>Capture Tab</button>
+    <button class="action-btn" id="openDashboard"><span class="icon">🏠</span>Dashboard</button>
+    <button class="action-btn" id="refreshHealth"><span class="icon">🔄</span>Refresh</button>
+  </div>
+  <div class="chat" id="chat">
+    <div class="msg system">Ask Heady anything or use quick actions above</div>
+  </div>
+  <div class="input-bar">
+    <input type="text" id="input" placeholder="Ask Heady anything..." />
+    <button id="send">Send</button>
+  </div>
+  <div class="footer"><a href="https://headysystems.com">HeadySystems</a> v3.1.0 · Sacred Geometry AI</div>
   <script src="popup.js"></script>
 </body>
+
 </html>

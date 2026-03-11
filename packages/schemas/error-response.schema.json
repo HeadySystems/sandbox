@@ -1,0 +1,383 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/error-response",
+  "title": "Error Response Schema",
+  "description": "Standard error response format with HEADY error codes",
+  "type": "object",
+  "definitions": {
+    "ErrorResponse": {
+      "type": "object",
+      "description": "Standard error response",
+      "properties": {
+        "error": {
+          "type": "object",
+          "description": "Error details",
+          "properties": {
+            "code": {
+              "type": "string",
+              "pattern": "^HEADY_[A-Z_]+$",
+              "description": "HEADY error code"
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Human-readable error message"
+            },
+            "details": {
+              "type": "object",
+              "description": "Additional error context",
+              "additionalProperties": true
+            },
+            "statusCode": {
+              "type": "integer",
+              "enum": [400, 401, 403, 404, 409, 429, 500, 502, 503],
+              "description": "HTTP status code"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Error occurrence time"
+            },
+            "requestId": {
+              "type": "string",
+              "description": "Correlation ID for tracing"
+            },
+            "traceId": {
+              "type": "string",
+              "description": "Distributed trace ID"
+            }
+          },
+          "required": ["code", "message", "statusCode", "timestamp"]
+        }
+      },
+      "required": ["error"],
+      "additionalProperties": false
+    },
+    "ValidationError": {
+      "type": "object",
+      "description": "Validation error response",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "HEADY_VALIDATION_ERROR"
+            },
+            "message": {
+              "const": "Validation failed"
+            },
+            "statusCode": {
+              "const": 400
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Field name that failed validation"
+                },
+                "value": {
+                  "description": "Actual value provided"
+                },
+                "constraint": {
+                  "type": "string",
+                  "description": "Validation constraint that failed"
+                },
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "constraint": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "description": "Multiple validation errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["error"]
+    },
+    "AuthenticationError": {
+      "type": "object",
+      "description": "Authentication error response",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "HEADY_AUTH_INVALID_CREDENTIALS",
+                "HEADY_AUTH_TOKEN_EXPIRED",
+                "HEADY_AUTH_TOKEN_INVALID",
+                "HEADY_AUTH_MFA_REQUIRED",
+                "HEADY_AUTH_SESSION_NOT_FOUND"
+              ]
+            },
+            "message": {
+              "type": "string"
+            },
+            "statusCode": {
+              "const": 401
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "retryAfter": {
+                  "type": "integer",
+                  "description": "Seconds to wait before retrying"
+                },
+                "mfaRequired": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["error"]
+    },
+    "AuthorizationError": {
+      "type": "object",
+      "description": "Authorization error response",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "HEADY_AUTHZ_INSUFFICIENT_PERMISSIONS",
+                "HEADY_AUTHZ_RESOURCE_NOT_ACCESSIBLE",
+                "HEADY_AUTHZ_ROLE_REQUIRED"
+              ]
+            },
+            "message": {
+              "type": "string"
+            },
+            "statusCode": {
+              "const": 403
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "requiredPermissions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "requiredRoles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["error"]
+    },
+    "NotFoundError": {
+      "type": "object",
+      "description": "Resource not found error response",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "HEADY_RESOURCE_NOT_FOUND"
+            },
+            "message": {
+              "type": "string"
+            },
+            "statusCode": {
+              "const": 404
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "resourceType": {
+                  "type": "string"
+                },
+                "resourceId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["error"]
+    },
+    "ConflictError": {
+      "type": "object",
+      "description": "Conflict/duplicate resource error",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "HEADY_RESOURCE_CONFLICT",
+                "HEADY_RESOURCE_ALREADY_EXISTS",
+                "HEADY_VERSION_CONFLICT"
+              ]
+            },
+            "message": {
+              "type": "string"
+            },
+            "statusCode": {
+              "const": 409
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "existingId": {
+                  "type": "string"
+                },
+                "field": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["error"]
+    },
+    "RateLimitError": {
+      "type": "object",
+      "description": "Rate limiting error",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "HEADY_RATE_LIMIT_EXCEEDED"
+            },
+            "message": {
+              "type": "string"
+            },
+            "statusCode": {
+              "const": 429
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer"
+                },
+                "remaining": {
+                  "type": "integer"
+                },
+                "resetAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["error"]
+    },
+    "ServerError": {
+      "type": "object",
+      "description": "Internal server error",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "HEADY_INTERNAL_ERROR",
+                "HEADY_SERVICE_UNAVAILABLE",
+                "HEADY_GATEWAY_ERROR"
+              ]
+            },
+            "message": {
+              "type": "string"
+            },
+            "statusCode": {
+              "enum": [500, 502, 503]
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "retryable": {
+                  "type": "boolean"
+                },
+                "retryAfter": {
+                  "type": "integer",
+                  "description": "Suggested retry delay in seconds"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["error"]
+    }
+  }
+}

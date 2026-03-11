@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Heady™ Documentation Portal — Laws, Directives, Services, Skills, Workflows, and Architecture for the φ-scaled sovereign AI operating system.">
+<meta name="author" content="HeadySystems Inc.">
+<title>Heady™ Docs — Unified Documentation Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a24;--card:rgba(255,255,255,0.03);
+  --glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);
+  --accent:#7c5eff;--gold:#f0c040;--cyan:#40e0d0;--green:#10b981;
+  --t1:#e8e8f0;--t2:#a0a0b0;--t3:#70708a;
+  --sp-xs:5px;--sp-sm:8px;--sp-md:13px;--sp-lg:21px;--sp-xl:34px;--sp-2xl:55px;--sp-3xl:89px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);line-height:1.618;overflow-x:hidden}
+a{color:var(--cyan);text-decoration:none;transition:color .3s}
+a:hover{color:var(--gold)}
+code{font-family:'JetBrains Mono',monospace;background:rgba(124,94,255,.12);padding:2px 6px;border-radius:4px;font-size:.85em}
+
+.docs-layout{display:flex;min-height:100vh}
+.sidebar{width:280px;position:fixed;top:0;left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;z-index:40;transition:transform .3s}
+.sidebar-header{padding:var(--sp-lg);border-bottom:1px solid var(--border)}
+.sidebar-logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-sub{font-size:.75rem;color:var(--t3);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+.sidebar-search{padding:var(--sp-md);border-bottom:1px solid var(--border)}
+.sidebar-search input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--t1);padding:8px 12px;border-radius:6px;font-size:.85rem;outline:none}
+.sidebar-search input:focus{border-color:var(--accent)}
+.sidebar-nav{padding:var(--sp-sm) 0}
+.nav-group{margin-bottom:var(--sp-xs)}
+.nav-group-title{display:flex;align-items:center;gap:8px;padding:8px var(--sp-lg);font-size:.7rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;user-select:none}
+.nav-group-title:hover{color:var(--gold)}
+.nav-group-items{display:none;padding:0 0 var(--sp-sm) 0}
+.nav-group.open .nav-group-items{display:block}
+.nav-group-title::before{content:'▸';transition:transform .2s;font-size:.6rem}
+.nav-group.open .nav-group-title::before{transform:rotate(90deg)}
+.nav-item{display:block;padding:6px var(--sp-lg) 6px var(--sp-2xl);font-size:.85rem;color:var(--t2);transition:all .2s;border-left:2px solid transparent}
+.nav-item:hover,.nav-item.active{color:var(--cyan);background:rgba(64,224,208,.05);border-left-color:var(--cyan)}
+
+.main-content{margin-left:280px;flex:1;min-width:0}
+.top-bar{position:sticky;top:0;z-index:30;background:rgba(10,10,15,.92);backdrop-filter:blur(13px);border-bottom:1px solid var(--border);padding:var(--sp-md) var(--sp-xl);display:flex;align-items:center;justify-content:space-between}
+.top-bar-links{display:flex;gap:var(--sp-lg);align-items:center}
+.top-bar-links a{font-size:.85rem;color:var(--t2);font-weight:500}
+.top-bar-links a:hover{color:var(--gold)}
+.burger{display:none;background:none;border:none;color:var(--t1);font-size:1.5rem;cursor:pointer}
+.content{max-width:960px;margin:0 auto;padding:var(--sp-xl) var(--sp-xl) var(--sp-3xl)}
+
+.doc-section{margin-bottom:var(--sp-3xl);scroll-margin-top:80px}
+.doc-section h2{font-size:2rem;font-weight:800;margin-bottom:var(--sp-lg);background:linear-gradient(135deg,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.doc-section h3{font-size:1.25rem;font-weight:700;color:var(--gold);margin:var(--sp-xl) 0 var(--sp-md)}
+.doc-section p,.doc-section li{color:var(--t2);font-size:.95rem;margin-bottom:var(--sp-sm)}
+.doc-section ul,.doc-section ol{padding-left:var(--sp-lg);margin-bottom:var(--sp-lg)}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--sp-lg)}
+.card{background:var(--glass);backdrop-filter:blur(13px);border:1px solid var(--border);border-radius:var(--sp-md);padding:var(--sp-lg);transition:all .3s}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 13px 34px rgba(124,94,255,.15)}
+.card h4{font-size:1rem;font-weight:700;color:var(--t1);margin-bottom:var(--sp-sm)}
+.card p{font-size:.85rem;color:var(--t2);margin:0}
+.card .tag{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:4px;font-weight:600;margin-top:var(--sp-sm)}
+.tag-law{background:rgba(240,192,64,.15);color:var(--gold)}
+.tag-directive{background:rgba(124,94,255,.15);color:var(--accent)}
+.tag-service{background:rgba(64,224,208,.15);color:var(--cyan)}
+.tag-skill{background:rgba(16,185,129,.15);color:var(--green)}
+.tag-workflow{background:rgba(240,192,64,.15);color:var(--gold)}
+
+.law-card{position:relative;overflow:hidden}
+.law-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--cyan))}
+.law-num{font-size:2.5rem;font-weight:900;color:rgba(124,94,255,.15);margin-bottom:var(--sp-sm)}
+
+.docs-hero{padding:var(--sp-3xl) 0 var(--sp-2xl);text-align:center;position:relative}
+.docs-hero h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;background:linear-gradient(135deg,var(--gold),var(--cyan),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:var(--sp-md)}
+.docs-hero p{font-size:1.1rem;color:var(--t2);max-width:600px;margin:0 auto var(--sp-lg)}
+.stat-bar{display:flex;gap:var(--sp-xl);justify-content:center;flex-wrap:wrap;padding:var(--sp-lg) 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:var(--sp-lg)}
+.stat-item{text-align:center}
+.stat-val{font-size:1.8rem;font-weight:800;color:var(--gold)}
+.stat-lbl{font-size:.75rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
+
+.eco-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--sp-md)}
+.eco-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--sp-md);padding:var(--sp-lg);text-align:center;transition:all .3s}
+.eco-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.eco-card .icon{font-size:2rem;margin-bottom:var(--sp-sm)}
+.eco-card h4{font-size:.9rem;margin-bottom:4px}
+.eco-card p{font-size:.75rem;color:var(--t3);margin:0}
+
+.docs-footer{padding:var(--sp-xl);border-top:1px solid var(--border);text-align:center}
+.docs-footer p{font-size:.8rem;color:var(--t3)}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main-content{margin-left:0}
+  .burger{display:block}
+  .card-grid{grid-template-columns:1fr}
+  .stat-bar{gap:var(--sp-lg)}
+  .content{padding:var(--sp-lg)}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">
+  <div class="sidebar-logo">Heady™ Docs</div>
+  <div class="sidebar-sub">v3.2.3 • Documentation Portal</div>
+</div>
+<div class="sidebar-search"><input type="text" id="search" placeholder="Search docs..." aria-label="Search documentation"></div>
+<nav class="sidebar-nav" id="sidebarNav">
+  <div class="nav-group open"><div class="nav-group-title">Getting Started</div><div class="nav-group-items">
+    <a class="nav-item" href="#overview">Overview</a>
+    <a class="nav-item" href="#architecture">Architecture</a>
+    <a class="nav-item" href="#ecosystem">Ecosystem Sites</a>
+  </div></div>
+  <div class="nav-group open"><div class="nav-group-title">Governance</div><div class="nav-group-items">
+    <a class="nav-item" href="#laws">8 Unbreakable Laws</a>
+    <a class="nav-item" href="#directives">10 Master Directives</a>
+  </div></div>
+  <div class="nav-group"><div class="nav-group-title">Platform</div><div class="nav-group-items">
+    <a class="nav-item" href="#services">Services (56)</a>
+    <a class="nav-item" href="#skills">Skills (79)</a>
+    <a class="nav-item" href="#workflows">Workflows (24)</a>
+  </div></div>
+  <div class="nav-group"><div class="nav-group-title">Technical</div><div class="nav-group-items">
+    <a class="nav-item" href="#csl">CSL Engine</a>
+    <a class="nav-item" href="#phi">φ-Math Foundation</a>
+    <a class="nav-item" href="#security">Security Model</a>
+    <a class="nav-item" href="#deployment">Deployment</a>
+  </div></div>
+</nav>
+</aside>
+
+<div class="main-content">
+<div class="top-bar">
+  <button class="burger" id="burger" aria-label="Toggle sidebar">☰</button>
+  <div class="top-bar-links">
+    <a href="https://headyme.com">HeadyMe</a>
+    <a href="https://headysystems.com">Systems</a>
+    <a href="https://headyos.com">HeadyOS</a>
+    <a href="https://heady-ai.com">Heady AI</a>
+    <a href="https://headyconnection.org">Connection</a>
+    <a href="https://heady-onboarding-609590223909.us-east1.run.app">Sign In</a>
+  </div>
+</div>
+<div class="content">
+
+<div class="docs-hero" id="overview">
+  <h1>Heady™ Documentation</h1>
+  <p>The complete reference for the φ-scaled sovereign AI operating system. Laws, Directives, Services, Skills, Workflows — all in one place.</p>
+  <div class="stat-bar">
+    <div class="stat-item"><div class="stat-val">8</div><div class="stat-lbl">Unbreakable Laws</div></div>
+    <div class="stat-item"><div class="stat-val">10</div><div class="stat-lbl">Master Directives</div></div>
+    <div class="stat-item"><div class="stat-val">56</div><div class="stat-lbl">Microservices</div></div>
+    <div class="stat-item"><div class="stat-val">79</div><div class="stat-lbl">Agent Skills</div></div>
+    <div class="stat-item"><div class="stat-val">24</div><div class="stat-lbl">Workflows</div></div>
+    <div class="stat-item"><div class="stat-val">60+</div><div class="stat-lbl">Patents</div></div>
+  </div>
+</div>
+
+<section class="doc-section" id="architecture">
+<h2>Architecture</h2>
+<p>Heady™ is a Continuous Latent Architecture (CLA) — a sovereign AI operating system running in vector space with Sacred Geometry (φ = 1.618) as its mathematical foundation. CSL gates replace boolean logic; all decisions are confidence-weighted vector operations.</p>
+<h3>Core Layers</h3>
+<div class="card-grid">
+  <div class="card"><h4>🧠 CSL Engine</h4><p>Continuous Semantic Logic — vector operations as logical gates. AND (cosine), OR (superposition), NOT (orthogonal projection). Decisions confidence-weighted 0→1.</p></div>
+  <div class="card"><h4>🐝 HeadyBee Swarm</h4><p>17-Swarm worker matrix, 10,000 concurrent bees. Fibonacci-stepped pool sizing, CSL-scored task routing, cooperative lifecycle management.</p></div>
+  <div class="card"><h4>💾 Vector Memory</h4><p>pgvector 384-dimensional with 3D spatial projection. Graph RAG for multi-hop reasoning. φ-scaled consolidation.</p></div>
+  <div class="card"><h4>🔀 HCFullPipeline</h4><p>21-stage cognitive state machine: CHANNEL_ENTRY → RECON → INTAKE → CLASSIFY → TRIAGE → DECOMPOSE → TRIAL → ORCHESTRATE → MONTE_CARLO → ARENA → JUDGE → APPROVE → EXECUTE → VERIFY → SELF_AWARENESS → CRITIQUE → MISTAKE_ANALYSIS → OPT_OPS → SEARCH → EVOLUTION → RECEIPT.</p></div>
+  <div class="card"><h4>🌐 Multi-Model Council</h4><p>CSL-scored routing across Claude, GPT, Gemini, Groq, Perplexity, Workers AI. Cost-aware, latency-aware with circuit breaker failover.</p></div>
+  <div class="card"><h4>☁️ Cloud Infrastructure</h4><p>Google Cloud Run (us-east1) + Cloudflare Workers (edge) + Colab Pro+ (GPU burst). Zero localhost.</p></div>
+</div>
+</section>
+
+<section class="doc-section" id="ecosystem">
+<h2>Ecosystem Sites</h2>
+<p>Nine interconnected platforms composing the Heady™ digital presence:</p>
+<div class="eco-grid">
+  <a href="https://headyme.com" class="eco-card"><div class="icon">👤</div><h4>HeadyMe</h4><p>Personal AI Cloud</p></a>
+  <a href="https://headysystems.com" class="eco-card"><div class="icon">🏢</div><h4>HeadySystems</h4><p>Enterprise Platform Hub</p></a>
+  <a href="https://headyos.com" class="eco-card"><div class="icon">💻</div><h4>HeadyOS</h4><p>AI Operating System</p></a>
+  <a href="https://heady-ai.com" class="eco-card"><div class="icon">🤖</div><h4>Heady AI</h4><p>AI Research &amp; Tools</p></a>
+  <a href="https://headyconnection.org" class="eco-card"><div class="icon">🤝</div><h4>HeadyConnection.org</h4><p>Nonprofit &amp; Community</p></a>
+  <a href="https://headyconnection.com" class="eco-card"><div class="icon">🔗</div><h4>HeadyConnection.com</h4><p>Integration Hub</p></a>
+  <a href="https://headyex.com" class="eco-card"><div class="icon">📊</div><h4>HeadyEX</h4><p>Exchange &amp; Trading</p></a>
+  <a href="https://headyfinance.com" class="eco-card"><div class="icon">💰</div><h4>HeadyFinance</h4><p>Financial Intelligence</p></a>
+  <a href="https://admin.headysystems.com" class="eco-card"><div class="icon">⚙️</div><h4>Admin Portal</h4><p>Platform Administration</p></a>
+</div>
+</section>
+
+<section class="doc-section" id="laws">
+<h2>The 8 Unbreakable Laws</h2>
+<p>Constitutional bedrock of Heady™. No agent, prompt, or instruction may weaken these. <strong>The law wins. Always.</strong></p>
+<div class="card-grid">
+  <div class="card law-card"><div class="law-num">01</div><h4>Thoroughness Over Speed</h4><p>Correctness, completeness, depth, production-grade quality. Every function has error handling, every API validates input, every async op has timeout + retry + circuit breaker.</p><span class="tag tag-law">IMMUTABLE</span></div>
+  <div class="card law-card"><div class="law-num">02</div><h4>Solutions Only — No Workarounds</h4><p>Every implementation addresses ROOT CAUSE. No band-aids, no setTimeout for race conditions, no empty catch blocks. If root cause needs 50 file refactor — that's the scope.</p><span class="tag tag-law">IMMUTABLE</span></div>
+  <div class="card law-card"><div class="law-num">03</div><h4>Context Maximization</h4><p>Never generic advice. 5-stage enrichment: Memory Recall → Ecosystem Assessment → External Intelligence → Context Fusion → Intelligence Maximization.</p><span class="tag tag-law">IMMUTABLE</span></div>
+  <div class="card law-card"><div class="law-num">04</div><h4>Implementation Completeness</h4><p>Deployable artifacts only. Code compiles, runs, handles errors, deploys in one CI/CD cycle. No TODOs, no empty functions, no placeholders.</p><span class="tag tag-law">IMMUTABLE</span></div>
+  <div class="card law-card"><div class="law-num">05</div><h4>Cross-Environment Purity</h4><p>Zero localhost contamination. Works identically across local, edge, cloud, Colab. All URLs from env vars, CORS per-domain.</p><span class="tag tag-law">IMMUTABLE</span></div>
+  <div class="card law-card"><div class="law-num">06</div><h4>10,000-Bee Scale Readiness</h4><p>HeadyBee factory supports 10K concurrent bees across 17 swarms. Fibonacci-stepped pools, &lt;50ms spawn, cooperative cancellation.</p><span class="tag tag-law">IMMUTABLE</span></div>
+  <div class="card law-card"><div class="law-num">07</div><h4>Auto-Success Engine Integrity</h4><p>φ⁷-derived cycle (29,034ms), CSL-discovered categories, φ-ratio tiered allocation. Sacred Geometry timing — no arbitrary numbers.</p><span class="tag tag-law">IMMUTABLE</span></div>
+  <div class="card law-card"><div class="law-num">08</div><h4>Arena Mode — Competitive Excellence</h4><p>Multiple approaches compete. Monte Carlo validation (1K+ sims). HeadyBattle scoring. Winners auto-promoted, losers logged for learning.</p><span class="tag tag-law">IMMUTABLE</span></div>
+</div>
+</section>
+
+<section class="doc-section" id="directives">
+<h2>The 10 Master Directives</h2>
+<p>Operational intelligence protocols implementing the Unbreakable Laws in daily execution.</p>
+<div class="card-grid">
+  <div class="card"><h4>D1: Omnipresent Contextual Awareness</h4><p>8 awareness channels: vector memory, health registry, file system, event bus, webhooks, budget tracker, git state, MCP gateway.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D2: Instant App Generation</h4><p>User intent → CSL gate → template → code synthesis → security scan → deploy → live URL. Card-based micro-frontend architecture.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D3: Zero-Trust Auto-Sanitization</h4><p>Zod schemas, DOMPurify, parameterized queries, CSP headers, TruffleHog. Self-healing: block → classify → rewrite → revalidate.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D4: Low-Latency Deterministic Orchestration</h4><p>MIDI (&lt;1ms), TCP (&lt;10ms), MCP (&lt;50ms), REST (&lt;200ms). Seeded PRNG for reproducible audit trails.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D5: Graceful Lifecycle Management</h4><p>SPAWN → INIT → READY → ACTIVE → DRAINING → SHUTDOWN → DEAD. Every resource cleaned on exit.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D6: Empathic Masking &amp; Persona</h4><p>5 modes: Empathic Safe Space, Analytical Coach, Environmental Actuator, Creative Collaborator, Executive Strategist.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D7: HCFullPipeline — 21 Stages</h4><p>Nervous system of Heady™. 21 = fib(8). Sequential stages, phi-backoff retry. Fast/Full/Arena/Learning variants.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D8: Continuous Learning</h4><p>Arena results, error patterns, performance, user prefs, external intel. wisdom.json + vector memory + Graph RAG + HeadyVinci.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D9: Multi-Model Council</h4><p>Claude, GPT, Gemini, O1, Sonar, Groq, Workers AI. CSL routing, cost-aware, Council Mode for critical decisions.</p><span class="tag tag-directive">MANDATORY</span></div>
+  <div class="card"><h4>D10: Sacred Geometry — φ Everything</h4><p>Golden ratio and Fibonacci as foundational constants. Backoff, caches, pools, timeouts, thresholds — all φ-derived.</p><span class="tag tag-directive">MANDATORY</span></div>
+</div>
+</section>
+
+<section class="doc-section" id="services">
+<h2>Services Catalog</h2>
+<p>56 microservices with health probes, structured logging, graceful shutdown, φ-scaled configuration.</p>
+<div class="card-grid">
+  <div class="card"><h4>heady-onboarding</h4><p>Next.js — Auth, Buddy, Brain/Chat, Pilot Onboarding.</p><span class="tag tag-service">CORE</span></div>
+  <div class="card"><h4>heady-buddy</h4><p>AI companion — proactive assistance, cross-device sync, memory.</p><span class="tag tag-service">CORE</span></div>
+  <div class="card"><h4>heady-brain</h4><p>Central intelligence — reasoning, context fusion, synthesis.</p><span class="tag tag-service">CORE</span></div>
+  <div class="card"><h4>heady-conductor</h4><p>Auto-success orchestration — φ⁷ heartbeat, CSL categories.</p><span class="tag tag-service">ORCHESTRATION</span></div>
+  <div class="card"><h4>heady-bee-factory</h4><p>Worker spawning — 30+ bee types, 10K capacity, Fibonacci pools.</p><span class="tag tag-service">ORCHESTRATION</span></div>
+  <div class="card"><h4>heady-orchestration</h4><p>Cross-swarm coordination — 17 swarms, task routing, event bus.</p><span class="tag tag-service">ORCHESTRATION</span></div>
+  <div class="card"><h4>heady-infer</h4><p>Multi-provider inference — Groq, Gemini, Claude, OpenAI, HF.</p><span class="tag tag-service">AI</span></div>
+  <div class="card"><h4>heady-embed</h4><p>Embedding service — 384-dim, multi-provider, MRL truncation.</p><span class="tag tag-service">AI</span></div>
+  <div class="card"><h4>heady-eval</h4><p>Agent evaluation — success rate, trajectory quality, promptfoo.</p><span class="tag tag-service">AI</span></div>
+  <div class="card"><h4>heady-memory</h4><p>Persistent vector memory — pgvector, Graph RAG, φ-consolidation.</p><span class="tag tag-service">MEMORY</span></div>
+  <div class="card"><h4>heady-vector</h4><p>Vector ops — HNSW, hybrid search, binary pre-filtering.</p><span class="tag tag-service">MEMORY</span></div>
+  <div class="card"><h4>heady-projection</h4><p>3D spatial projection — vector serving, template rendering.</p><span class="tag tag-service">MEMORY</span></div>
+  <div class="card"><h4>heady-cache</h4><p>Resilient caching — hot-cold, LRU, auto-tuning, phi-backoff.</p><span class="tag tag-service">INFRA</span></div>
+  <div class="card"><h4>heady-guard</h4><p>Security — zero-trust, input sanitization, threat detection.</p><span class="tag tag-service">SECURITY</span></div>
+  <div class="card"><h4>heady-security</h4><p>Advanced — PQC, WebAuthn, mTLS, secret rotation.</p><span class="tag tag-service">SECURITY</span></div>
+  <div class="card"><h4>heady-federation</h4><p>Auth federation — OAuth, API keys, multi-provider SSO.</p><span class="tag tag-service">SECURITY</span></div>
+  <div class="card"><h4>heady-health</h4><p>Health monitoring — all swarms, services, bees, dashboards.</p><span class="tag tag-service">OPS</span></div>
+  <div class="card"><h4>heady-mcp</h4><p>Model Context Protocol — JSON-RPC, SSE/stdio, tool registry.</p><span class="tag tag-service">PROTOCOL</span></div>
+  <div class="card"><h4>heady-web</h4><p>Web portal — micro-frontend Module Federation, 9 sites.</p><span class="tag tag-service">FRONTEND</span></div>
+  <div class="card"><h4>heady-ui</h4><p>UI components — generative-engine, CSL-gated factory.</p><span class="tag tag-service">FRONTEND</span></div>
+  <div class="card"><h4>heady-soul</h4><p>Personality — persona modes, empathic masking, preferences.</p><span class="tag tag-service">PERSONALITY</span></div>
+  <div class="card"><h4>heady-vinci</h4><p>Pattern recognition — learned patterns, historical matching.</p><span class="tag tag-service">INTELLIGENCE</span></div>
+  <div class="card"><h4>heady-chain</h4><p>Blockchain — HeadyCoin, Merkle trees, token economics.</p><span class="tag tag-service">FINTECH</span></div>
+  <div class="card"><h4>heady-midi</h4><p>MIDI integration — event bus, creative content, audio.</p><span class="tag tag-service">CREATIVE</span></div>
+  <div class="card"><h4>heady-governance</h4><p>Policy enforcement — approval gates, audit trails.</p><span class="tag tag-service">OPS</span></div>
+  <div class="card"><h4>heady-maintenance</h4><p>System maintenance — cleanup, optimization, scheduling.</p><span class="tag tag-service">OPS</span></div>
+  <div class="card"><h4>api-gateway</h4><p>API Gateway v2 — CSL routing, rate limiting, auth.</p><span class="tag tag-service">CORE</span></div>
+  <div class="card"><h4>domain-router</h4><p>Domain routing — service discovery, URL construction.</p><span class="tag tag-service">INFRA</span></div>
+  <div class="card"><h4>colab-gateway</h4><p>Colab Pro+ — GPU burst compute, notebook execution.</p><span class="tag tag-service">COMPUTE</span></div>
+  <div class="card"><h4>model-gateway</h4><p>Model routing — provider selection, cost optimization.</p><span class="tag tag-service">AI</span></div>
+</div>
+</section>
+
+<section class="doc-section" id="skills">
+<h2>Skills Reference</h2>
+<p>79 specialized skill modules extending agent capabilities with instructions, scripts, and resources.</p>
+<div class="card-grid">
+  <div class="card"><h4>heady-csl-engine</h4><p>CSL gates — cosine AND, superposition OR, orthogonal NOT. 60+ patents.</p><span class="tag tag-skill">CORE</span></div>
+  <div class="card"><h4>heady-phi-math-foundation</h4><p>φ-continuous scaling — golden ratio, Fibonacci, no magic numbers.</p><span class="tag tag-skill">CORE</span></div>
+  <div class="card"><h4>heady-bee-swarm-ops</h4><p>30+ bee types, template registry, swarm coordination.</p><span class="tag tag-skill">ORCHESTRATION</span></div>
+  <div class="card"><h4>heady-agent-orchestration</h4><p>Planner-executor-validator, swarm design, runtime workers.</p><span class="tag tag-skill">ORCHESTRATION</span></div>
+  <div class="card"><h4>heady-memory-ops</h4><p>3D vector memory — search, store, embed, learn.</p><span class="tag tag-skill">MEMORY</span></div>
+  <div class="card"><h4>heady-graph-rag-memory</h4><p>Entity extraction, Louvain communities, multi-hop reasoning.</p><span class="tag tag-skill">MEMORY</span></div>
+  <div class="card"><h4>heady-hybrid-vector-search</h4><p>BM25 + dense + SPLADE. RRF, HNSW, quantization.</p><span class="tag tag-skill">MEMORY</span></div>
+  <div class="card"><h4>heady-deployment</h4><p>Cloud Run, CF Workers, health checks, scaling.</p><span class="tag tag-skill">OPS</span></div>
+  <div class="card"><h4>heady-edge-ai</h4><p>Cloudflare edge inference — embeddings, chat, classification.</p><span class="tag tag-skill">AI</span></div>
+  <div class="card"><h4>heady-multi-model</h4><p>Cross-provider routing — Claude, GPT, Gemini, Groq.</p><span class="tag tag-skill">AI</span></div>
+  <div class="card"><h4>heady-code-generation</h4><p>HeadyCoder, HeadyCodex, HeadyCopilot, HeadyRefactor.</p><span class="tag tag-skill">DEV</span></div>
+  <div class="card"><h4>heady-deep-scan</h4><p>Project-wide context mapping into 3D vector memory.</p><span class="tag tag-skill">DEV</span></div>
+  <div class="card"><h4>heady-security-audit</h4><p>Vulnerability scanning, risk assessment, mitigation.</p><span class="tag tag-skill">SECURITY</span></div>
+  <div class="card"><h4>heady-companion-memory</h4><p>Long-term memory, preference learning, anticipation.</p><span class="tag tag-skill">BUDDY</span></div>
+  <div class="card"><h4>heady-cross-device-sync-fabric</h4><p>Session handoff, shared context, WebSocket relay.</p><span class="tag tag-skill">BUDDY</span></div>
+  <div class="card"><h4>heady-sacred-geometry-css</h4><p>φ-scaled CSS, glassmorphism, Fibonacci tokens, canvas.</p><span class="tag tag-skill">DESIGN</span></div>
+  <div class="card"><h4>heady-monetization-platform</h4><p>Stripe, phi-metering, CSL feature gates, SOC 2.</p><span class="tag tag-skill">BUSINESS</span></div>
+  <div class="card"><h4>heady-fintech-trading</h4><p>Signals, risk, backtests, portfolio, phi-constants.</p><span class="tag tag-skill">FINTECH</span></div>
+  <div class="card"><h4>heady-perplexity</h4><p>Sonar search, deep research, reasoning, embeddings.</p><span class="tag tag-skill">RESEARCH</span></div>
+  <div class="card"><h4>heady-battle-arena</h4><p>Competitive AI evaluation — pit nodes against each other.</p><span class="tag tag-skill">ARENA</span></div>
+</div>
+</section>
+
+<section class="doc-section" id="workflows">
+<h2>Workflows</h2>
+<p>24 operational workflows for system management, deployment, monitoring, and optimization.</p>
+<div class="card-grid">
+  <div class="card"><h4>/health-check</h4><p>Validates all 9 sites + Cloud Run + internal services.</p><span class="tag tag-workflow">OPS</span></div>
+  <div class="card"><h4>/deployment-verification</h4><p>Post-deploy smoke tests for all endpoints.</p><span class="tag tag-workflow">DEPLOY</span></div>
+  <div class="card"><h4>/bee-swarm-diagnostic</h4><p>Blast all bees, report health across domains.</p><span class="tag tag-workflow">SWARM</span></div>
+  <div class="card"><h4>/deep-scan-init</h4><p>Full codebase context before implementation.</p><span class="tag tag-workflow">CONTEXT</span></div>
+  <div class="card"><h4>/incident-response</h4><p>Triage → diagnose → resolve → postmortem.</p><span class="tag tag-workflow">OPS</span></div>
+  <div class="card"><h4>/memory-compaction</h4><p>Prune, deduplicate, optimize vector memory.</p><span class="tag tag-workflow">MEMORY</span></div>
+  <div class="card"><h4>/vector-space-ops</h4><p>Operate through vector space, bees, events.</p><span class="tag tag-workflow">CORE</span></div>
+  <div class="card"><h4>/heady-battle-sim</h4><p>9-stage battle-sim for competitive evaluation.</p><span class="tag tag-workflow">ARENA</span></div>
+  <div class="card"><h4>/continuous-embedding</h4><p>Auto-embed all data into 3D vector memory.</p><span class="tag tag-workflow">MEMORY</span></div>
+  <div class="card"><h4>/edge-cache-warm</h4><p>Pre-warm Cloudflare cache after deploy.</p><span class="tag tag-workflow">DEPLOY</span></div>
+  <div class="card"><h4>/domain-branding-audit</h4><p>Sacred geometry and brand compliance.</p><span class="tag tag-workflow">BRAND</span></div>
+  <div class="card"><h4>/provider-failover-drill</h4><p>Test failover paths under simulated outage.</p><span class="tag tag-workflow">RESILIENCE</span></div>
+  <div class="card"><h4>/heady-drift-monitor</h4><p>Monitor drift, auto-reconfigure.</p><span class="tag tag-workflow">QUALITY</span></div>
+  <div class="card"><h4>/foundational-pillars</h4><p>Pillar validation before modifications.</p><span class="tag tag-workflow">GOVERNANCE</span></div>
+  <div class="card"><h4>/agent-performance-review</h4><p>Evaluate all agents for effectiveness.</p><span class="tag tag-workflow">QUALITY</span></div>
+  <div class="card"><h4>/heady-service-bootstrap</h4><p>Bootstrap new services from cold start.</p><span class="tag tag-workflow">DEV</span></div>
+</div>
+</section>
+
+<section class="doc-section" id="csl">
+<h2>CSL Engine — Continuous Semantic Logic</h2>
+<p>Core geometric AI innovation using vector operations as logical gates. All decisions confidence-weighted 0→1.</p>
+<div class="card-grid">
+  <div class="card"><h4>CSL AND (Cosine)</h4><p><code>cos(A, B)</code> — alignment between concepts. ≈1 = agreement.</p></div>
+  <div class="card"><h4>CSL OR (Superposition)</h4><p><code>normalize(A + B)</code> — union of meanings.</p></div>
+  <div class="card"><h4>CSL NOT (Orthogonal)</h4><p><code>A - proj_B(A)</code> — semantic negation via projection.</p></div>
+  <div class="card"><h4>CSL GATE</h4><p><code>cos(intent, context) ≥ 0.618</code> — φ-inverse threshold.</p></div>
+</div>
+</section>
+
+<section class="doc-section" id="phi">
+<h2>φ-Math Foundation</h2>
+<p>Golden ratio (φ ≈ 1.618) and Fibonacci sequences as ALL system constants.</p>
+<div class="card-grid">
+  <div class="card"><h4>φ = 1.618</h4><p>Scaling factor for timeouts, thresholds, backoff.</p></div>
+  <div class="card"><h4>ψ = 0.618</h4><p>Default CSL resonance threshold.</p></div>
+  <div class="card"><h4>Fibonacci</h4><p>1,1,2,3,5,8,13,21,34,55,89,144 — sizes and limits.</p></div>
+  <div class="card"><h4>φ⁷×1000 = 29,034ms</h4><p>Auto-Success Engine heartbeat cycle.</p></div>
+</div>
+</section>
+
+<section class="doc-section" id="security">
+<h2>Security Model</h2>
+<p>Zero-trust by default. Post-quantum ready.</p>
+<ul>
+  <li>Input validation — Zod schemas on all endpoints</li>
+  <li>Parameterized queries — never string interpolation</li>
+  <li>CORS whitelist — no wildcards in production</li>
+  <li>httpOnly, Secure, SameSite=Strict cookies</li>
+  <li>Rate limiting on auth endpoints</li>
+  <li>Secrets from env vars / Secret Manager only</li>
+  <li>WebAuthn passwordless + mutual TLS</li>
+  <li>Ed25519 signed trust receipts</li>
+</ul>
+</section>
+
+<section class="doc-section" id="deployment">
+<h2>Deployment</h2>
+<p>Cloud Run (us-east1) or Cloudflare Workers. Never localhost.</p>
+<h3>Live Services</h3>
+<ul>
+  <li><a href="https://heady-onboarding-609590223909.us-east1.run.app">Onboarding + Auth</a></li>
+  <li><a href="https://heady-ide-bf4q4zywhq-ue.a.run.app">HeadyAI IDE</a></li>
+  <li><a href="https://headyweb-ide-bf4q4zywhq-ue.a.run.app">HeadyWeb IDE</a></li>
+</ul>
+</section>
+
+</div>
+<footer class="docs-footer">
+  <p>© 2026 HeadySystems Inc. — Eric Haywood, Founder — 60+ Provisional Patents — Sacred Geometry v4.0</p>
+  <p>Heady™ — The Sovereign AI Operating System</p>
+</footer>
+</div>
+</div>
+
+<script>
+document.getElementById('burger').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open')});
+document.querySelectorAll('.nav-group-title').forEach(t=>{t.addEventListener('click',()=>t.parentElement.classList.toggle('open'))});
+const sections=document.querySelectorAll('.doc-section,.docs-hero');
+const navItems=document.querySelectorAll('.nav-item');
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){navItems.forEach(n=>n.classList.remove('active'));const a=document.querySelector(`.nav-item[href="#${e.target.id}"]`);if(a){a.classList.add('active');a.closest('.nav-group')?.classList.add('open')}}})},{threshold:0.15,rootMargin:'-80px 0px -60% 0px'});
+sections.forEach(s=>obs.observe(s));
+document.getElementById('search').addEventListener('input',function(){const q=this.value.toLowerCase();document.querySelectorAll('.card').forEach(c=>{c.style.display=c.textContent.toLowerCase().includes(q)?'':'none'})});
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t){window.scrollTo({top:t.offsetTop-70,behavior:'smooth'})}document.getElementById('sidebar').classList.remove('open')})});
+</script>
+</body>
+</html>

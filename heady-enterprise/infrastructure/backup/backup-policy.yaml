@@ -1,0 +1,241 @@
+# =============================================================================
+# Heady™Systems Inc. — Backup Policy
+# heady-systems v3.2.2
+# =============================================================================
+# φ = 1.618033988749895 (Golden Ratio)
+# Fibonacci: 1,1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597
+#
+# RTO/RPO Targets (production):
+#   RPO = fib(5)=5 minutes  (Recovery Point Objective — max data loss)
+#   RTO = fib(8)=21 minutes (Recovery Time Objective — max downtime)
+#
+# The use of Fibonacci for RTO/RPO aligns these targets with the platform's
+# φ-governed escalation ladder (5min, 8min, 13min, 21min).
+# =============================================================================
+
+backupPolicy:
+  version: "3.2.2"
+  effectiveDate: "2026-03-07"
+  owner: "eric@headyconnection.org"
+
+  phi: "1.618033988749895"
+
+  # ---------------------------------------------------------------------------
+  # RTO/RPO Targets (Fibonacci-derived)
+  # ---------------------------------------------------------------------------
+  sloTargets:
+    production:
+      rpo:
+        # RPO = fib(5) = 5 minutes
+        # Maximum acceptable data loss is 5 minutes of transactions
+        # Achieved via: PostgreSQL PITR + continuous WAL archiving
+        # Redis: RDB snapshot every fib(5)=5 minutes + AOF every second
+        minutes: 5       # fib(5)=5
+        derivation: "fib(5)=5 — fifth Fibonacci number"
+        achievedBy:
+          - "PostgreSQL PITR (continuous WAL to GCS, fib(5)=5-min granularity)"
+          - "Redis AOF appendfsync everysec (RPO=1s for Redis data)"
+          - "Cloud SQL automated backups every hour"
+
+      rto:
+        # RTO = fib(8) = 21 minutes
+        # Maximum acceptable downtime is 21 minutes
+        # Aligned with: Executive escalation timer (T+fib(8)=21min)
+        minutes: 21      # fib(8)=21
+        derivation: "fib(8)=21 — eighth Fibonacci number (aligns with escalation policy)"
+        achievedBy:
+          - "GCP Cloud SQL REGIONAL HA: ~21s automatic failover"
+          - "pgbouncer reconnection: ~8s"
+          - "Application recovery: ~13s (startup probe allows fib(8)=21 attempts)"
+          - "Total K8s failover path: fib(8)=21 seconds"
+          - "Full DR plan (multi-zone failure): fib(8)=21 minutes"
+
+    staging:
+      rpo:
+        minutes: 13      # fib(7)=13
+        derivation: "fib(7)=13 — one step above production (less critical)"
+      rto:
+        minutes: 34      # fib(9)=34
+        derivation: "fib(9)=34 — one step above production RTO"
+
+    dev:
+      rpo:
+        minutes: 34      # fib(9)=34
+      rto:
+        minutes: 89      # fib(11)=89
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Backup Schedule
+  # ---------------------------------------------------------------------------
+  postgresql:
+    provider: "gcp-cloud-sql"
+    instance: "heady-postgres-production"
+
+    # Automated backups
+    backup:
+      enabled: true
+      type: "automated"
+      # Daily backup at 02:00 UTC (low traffic)
+      schedule: "0 2 * * *"
+      # Retention: fib(11)=89 days
+      retentionDays: 89          # fib(11)=89
+      derivation: "retention=fib(11)=89 days"
+
+      # Binary backup (faster restore than logical)
+      backupType: "binary"
+      storageLocation: "us"      # Multi-regional GCS
+
+    # Point-in-Time Recovery (PITR)
+    pitr:
+      enabled: true
+      # WAL archived every minute to GCS
+      # RPO granularity: fib(5)=5 minutes achievable
+      walArchiveIntervalS: 60    # WAL to GCS every 60s
+      # Retain transaction logs: fib(5)=5 × 24h = 5 days
+      transactionLogRetentionDays: 5  # fib(5)=5 days
+      storageLocation: "gs://heady-systems-backups/wal"
+
+    # Logical backups (for selective restore)
+    logicalBackup:
+      enabled: true
+      # Weekly full logical dump
+      schedule: "0 3 * * 0"     # Sunday 03:00 UTC (fib(2)=1 → first day of week)
+      # Retention: fib(7)=13 weeks
+      retentionWeeks: 13         # fib(7)=13
+      format: "custom"           # pg_dump -Fc (compressed)
+      compression: true
+      storageLocation: "gs://heady-systems-backups/logical"
+      encryptionKeyId: "projects/heady-systems/locations/us/keyRings/heady-backup/cryptoKeys/backup-key"
+
+    # Cross-region replication
+    crossRegion:
+      enabled: true              # For production
+      # Secondary region: us-east1 (Fibonacci-indexed from primary us-central1)
+      regions: ["us-east1"]
+      # fib(11)=89 day retention in secondary region
+      retentionDays: 89
+
+    # Read replicas (also serve as warm standby)
+    replicas:
+      count: 2                   # fib(3)=2 read replicas
+      zones:
+        - "us-central1-b"        # Replica 1 (failover target)
+        - "us-central1-c"        # Replica 2 (secondary)
+      replicationLagAlertMs: 1618  # φ^1=1618ms replication lag alert
+
+  # ---------------------------------------------------------------------------
+  # Redis Backup Schedule
+  # ---------------------------------------------------------------------------
+  redis:
+    provider: "gcp-memorystore"
+    instance: "heady-redis-production"
+
+    # RDB snapshots (point-in-time data)
+    rdb:
+      enabled: true
+      # fib(15)=610s if 1 key changed,
+      # fib(9)=34s if 10000 keys changed,
+      # fib(5)=5s if 100000 keys changed
+      saveConditions:
+        - seconds: 610     # fib(15)=610
+          changes: 1
+        - seconds: 34      # fib(9)=34
+          changes: 10000
+        - seconds: 5       # fib(5)=5
+          changes: 100000
+
+    # AOF persistence (append-only file)
+    aof:
+      enabled: true
+      # appendfsync: everysec (RPO=1s)
+      appendfsync: "everysec"
+      # AOF rewrite when it grows by φ^2 = 2.618× original size
+      noAppendfsyncOnRewrite: false
+      autoAofRewritePercentage: 162   # φ×100 ≈ 162% = rewrite when 62% growth
+
+    # Export schedule (for cold storage)
+    export:
+      enabled: true
+      schedule: "0 4 * * *"     # Daily at 04:00 UTC
+      retentionDays: 34          # fib(9)=34 days
+      storageLocation: "gs://heady-systems-backups/redis"
+
+    # HA: fib(2)=1 replica for STANDARD_HA
+    replication:
+      enabled: true
+      replicaCount: 1            # fib(2)=1
+
+  # ---------------------------------------------------------------------------
+  # Object Storage (Static Assets, Logs)
+  # ---------------------------------------------------------------------------
+  objectStorage:
+    provider: "gcp-cloud-storage"
+    bucket: "heady-systems-static"
+
+    versioning:
+      enabled: true
+      # Retain fib(11)=89 versions
+      retainVersions: 89         # fib(11)=89
+
+    lifecycle:
+      # Delete versions older than fib(11)=89 days
+      - action: "Delete"
+        condition:
+          numNewerVersions: 89   # fib(11)=89
+
+    crossRegionReplication:
+      enabled: true
+      destinationRegion: "us-east1"
+
+  # ---------------------------------------------------------------------------
+  # Backup Testing Schedule
+  # ---------------------------------------------------------------------------
+  testing:
+    # Restore test: fib(8)=21 days (monthly)
+    # Validates that backup can actually be restored
+    schedule: "0 1 1,21 * *"    # 1st and 21st of each month (fib(8)=21)
+    tests:
+      - name: "postgres-restore-verify"
+        description: "Clone production DB from backup, run schema+data checks"
+        frequency: "monthly"
+        # fib(8)=21 minute maximum restore time
+        maxRestoreMinutes: 21    # fib(8)=21 — must meet RTO
+        steps:
+          - "Restore to isolated Cloud SQL instance from latest backup"
+          - "Run heady_migrations table integrity check"
+          - "Verify pgvector extension active"
+          - "Test fib(5)=5 sample agent sessions are restorable"
+          - "Confirm restore completes in < fib(8)=21 minutes"
+          - "Delete recovery instance"
+
+      - name: "redis-restore-verify"
+        description: "Restore Redis RDB/AOF to test instance"
+        frequency: "weekly"
+        maxRestoreMinutes: 5     # fib(5)=5 — fast Redis restore
+
+      - name: "pitr-test"
+        description: "Test PITR to a specific point fib(5)=5 minutes ago"
+        frequency: "quarterly"
+        pointInTime: "T-5min"   # fib(5)=5 minutes ago
+
+  # ---------------------------------------------------------------------------
+  # Compliance
+  # ---------------------------------------------------------------------------
+  compliance:
+    # SOC2 Type II requires: documented backup policy, tested restores, encrypted backups
+    soc2: true
+    # GDPR: right to erasure — PII can be purged from backups after fib(12)=144 days
+    gdprRetentionDays: 144       # fib(12)=144
+
+    # Encryption at rest (all backups)
+    encryption:
+      enabled: true
+      algorithm: "AES-256-GCM"
+      keyManagement: "GCP KMS"
+      keyRotationDays: 89        # fib(11)=89 days
+
+    # Backup access audit log
+    auditLog:
+      enabled: true
+      # SHA-256 audit chain (matches security architecture)
+      hashAlgorithm: "SHA-256"

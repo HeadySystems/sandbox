@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/auth-session",
+  "title": "Auth Session Schema",
+  "description": "Session creation, verification, and revocation request/response formats",
+  "type": "object",
+  "definitions": {
+    "SessionCreateRequest": {
+      "type": "object",
+      "description": "Request to create a new authentication session",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User email address"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 8,
+          "description": "User password (hashed in transit via TLS)"
+        },
+        "mfaToken": {
+          "type": "string",
+          "description": "Optional MFA token for multi-factor authentication"
+        },
+        "deviceFingerprint": {
+          "type": "string",
+          "description": "Device fingerprint for session binding"
+        }
+      },
+      "required": ["email", "password"],
+      "additionalProperties": false
+    },
+    "SessionCreateResponse": {
+      "type": "object",
+      "description": "Response after successful session creation",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}$",
+          "description": "Unique session identifier (32-char hex)"
+        },
+        "accessToken": {
+          "type": "string",
+          "description": "JWT access token (15 minute expiry)"
+        },
+        "refreshToken": {
+          "type": "string",
+          "description": "JWT refresh token (7 day expiry)"
+        },
+        "expiresIn": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Access token expiry time in seconds (900)"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "User ID"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "displayName": {
+              "type": "string"
+            },
+            "roles": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["admin", "user", "editor", "viewer"]
+              }
+            }
+          },
+          "required": ["id", "email"]
+        }
+      },
+      "required": ["sessionId", "accessToken", "expiresIn", "user"],
+      "additionalProperties": false
+    },
+    "SessionVerifyRequest": {
+      "type": "object",
+      "description": "Request to verify a session token",
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "Token to verify (access or refresh token)"
+        }
+      },
+      "required": ["token"],
+      "additionalProperties": false
+    },
+    "SessionVerifyResponse": {
+      "type": "object",
+      "description": "Response after session verification",
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "description": "Whether the token is valid"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User ID from token claim"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Session ID from token claim"
+        },
+        "expiresAt": {
+          "type": "integer",
+          "description": "Token expiry timestamp (Unix seconds)"
+        },
+        "remainingTime": {
+          "type": "integer",
+          "description": "Remaining validity in seconds"
+        }
+      },
+      "required": ["valid", "userId", "sessionId", "expiresAt"],
+      "additionalProperties": false
+    },
+    "SessionRevokeRequest": {
+      "type": "object",
+      "description": "Request to revoke a session",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}$",
+          "description": "Session ID to revoke"
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["logout", "timeout", "security", "admin"],
+          "description": "Reason for revocation"
+        }
+      },
+      "required": ["sessionId"],
+      "additionalProperties": false
+    },
+    "SessionRevokeResponse": {
+      "type": "object",
+      "description": "Response after session revocation",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "revokedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["success", "revokedAt"],
+      "additionalProperties": false
+    }
+  }
+}

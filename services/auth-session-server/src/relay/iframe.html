@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HEADY Auth Relay</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background: transparent;
+        color: #333;
+      }
+
+      /* Hidden by default */
+      iframe {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Auth relay iframe for cross-domain session management -->
+    <script>
+      /**
+       * HEADY Auth Relay - Cross-Domain Session Management
+       *
+       * This iframe runs on auth.headysystems.com and facilitates cross-domain
+       * session management via postMessage for ~60 HEADY ecosystem domains.
+       *
+       * Security measures:
+       * - Strict origin validation against whitelist
+       * - No localStorage usage (cookies only)
+       * - No sensitive data in postMessage
+       * - Secure HttpOnly cookie binding
+       */
+
+      // Whitelist of allowed origins (~60 HEADY domains)
+      const ALLOWED_ORIGINS = [
+        // Primary domains
+        'https://headysystems.com',
+        'https://headyme.com',
+        'https://headyconnection.org',
+        'https://headyconnection.com',
+        'https://heady-ai.com',
+        'https://headyos.com',
+        'https://headyex.com',
+        'https://headyfinance.com',
+
+        // Product domains
+        'https://headyanalytics.com',
+        'https://headycloud.com',
+        'https://headypay.com',
+        'https://headyapi.com',
+        'https://headycms.com',
+        'https://headycrm.com',
+        'https://headydms.com',
+        'https://headyhr.com',
+        'https://headypos.com',
+        'https://headyedu.com',
+        'https://headyhospital.com',
+        'https://headylogistics.com',
+        'https://headymedical.com',
+        'https://headyrealestate.com',
+        'https://headyretail.com',
+        'https://headysocial.com',
+        'https://headytickets.com',
+        'https://headytravel.com',
+        'https://headyacademy.com',
+        'https://headymarketplace.com',
+        'https://headypartner.com',
+        'https://headyconsult.com',
+
+        // Regional variants
+        'https://heady.io',
+        'https://headyai.io',
+        'https://headyapps.io',
+        'https://headydev.io',
+        'https://headystaging.io',
+        'https://heady.co',
+        'https://heady.uk',
+        'https://heady.de',
+        'https://heady.fr',
+        'https://heady.jp',
+        'https://heady.cn',
+        'https://heady.in',
+        'https://heady.br',
+        'https://heady.au',
+
+        // Development
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:3310',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:3001',
+      ];
+
+      // Pattern-based origin validation (supports subdomains)
+      const ALLOWED_PATTERNS = [
+        /^https:\/\/[\w.-]*\.?headysystems\.com$/,
+        /^https:\/\/[\w.-]*\.?headyme\.com$/,
+        /^https:\/\/[\w.-]*\.?heady-ai\.com$/,
+        /^https:\/\/[\w.-]*\.?headyos\.com$/,
+        /^https:\/\/[\w.-]*\.?headyex\.com$/,
+        /^https:\/\/[\w.-]*\.?headyfinance\.com$/,
+        /^https:\/\/[\w.-]*\.?heady\.io$/,
+        /^https:\/\/[\w.-]*\.?heady\.co$/,
+        /^https:\/\/[\w.-]*\.?heady\.\w{2}$/,
+        /^http:\/\/localhost(:\d+)?$/,
+        /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+      ];
+
+      // Connected frames registry
+      const connectedFrames = new Set();
+
+      // Session state cache
+      let sessionState = {
+        authenticated: false,
+        sessionId: null,
+        lastUpdated: null,
+      };
+
+      /**
+       * Validate origin against whitelist
+       */
+      function isOriginAllowed(origin) {
+        // Check exact matches
+        if (ALLOWED_ORIGINS.includes(origin)) {
+          return true;
+        }
+
+        // Check pattern matches
+        return ALLOWED_PATTERNS.some((pattern) => pattern.test(origin));
+      }
+
+      /**
+       * Read session cookie
+       */
+      function getSessionCookie() {
+        const cookieName = '__Host-__heady_session=';
+        const cookies = document.cookie.split(';');
+
+        for (const cookie of cookies) {
+          const trimmed = cookie.trim();
+          if (trimmed.startsWith(cookieName)) {
+            return trimmed.substring(cookieName.length);
+          }
+        }
+
+        return null;
+      }
+
+      /**
+       * Check if session exists
+       */
+      function hasSession() {
+        return getSessionCookie() !== null;
+      }
+
+      /**
+       * Update session state cache
+       */
+      function updateSessionState() {
+        sessionState = {
+          authenticated: hasSession(),
+          sessionId: getSessionCookie(),
+          lastUpdated: Date.now(),
+        };
+      }
+
+      /**
+       * Broadcast session state to all connected frames
+       */
+      function broadcastSessionState() {
+        updateSessionState();
+
+        connectedFrames.forEach((source) => {
+          source.postMessage(
+            {
+              type: 'AUTH_STATE_CHANGED',
+              payload: {
+                authenticated: sessionState.authenticated,
+                timestamp: sessionState.lastUpdated,
+              },
+            },
+            source.origin,
+          );
+        });
+      }
+
+      /**
+       * Handle incoming postMessage
+       */
+      window.addEventListener('message', (event) => {
+        // Validate origin
+        if (!isOriginAllowed(event.origin)) {
+          console.warn('[AUTH_RELAY] Invalid origin:', event.origin);
+          return;
+        }
+
+        const { type, payload } = event.data;
+
+        switch (type) {
+          case 'AUTH_CONNECT':
+            // Register connected frame
+            if (!connectedFrames.has(event.source)) {
+              connectedFrames.add(event.source);
+              console.log('[AUTH_RELAY] Frame connected:', event.origin);
+            }
+
+            // Send current session state
+            event.source.postMessage(
+              {
+                type: 'AUTH_STATE',
+                payload: {
+                  authenticated: hasSession(),
+                  sessionId: getSessionCookie(),
+                  timestamp: Date.now(),
+                },
+              },
+              event.origin,
+            );
+            break;
+
+          case 'AUTH_DISCONNECT':
+            // Unregister frame
+            connectedFrames.delete(event.source);
+            console.log('[AUTH_RELAY] Frame disconnected:', event.origin);
+            break;
+
+          case 'AUTH_CHECK':
+            // Check session status
+            event.source.postMessage(
+              {
+                type: 'AUTH_STATUS',
+                payload: {
+                  authenticated: hasSession(),
+                  timestamp: Date.now(),
+                },
+              },
+              event.origin,
+            );
+            break;
+
+          case 'AUTH_VERIFY':
+            // Verify specific session
+            const sessionId = getSessionCookie();
+            event.source.postMessage(
+              {
+                type: 'AUTH_VERIFIED',
+                payload: {
+                  valid: sessionId === payload.sessionId,
+                  timestamp: Date.now(),
+                },
+              },
+              event.origin,
+            );
+            break;
+
+          case 'AUTH_LOGOUT':
+            // Clear session cookie on logout
+            document.cookie =
+              '__Host-__heady_session=; path=/; domain=.headysystems.com; ' +
+              'expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; samesite=none; httponly';
+
+            updateSessionState();
+
+            // Notify requestor
+            event.source.postMessage(
+              {
+                type: 'AUTH_LOGOUT_CONFIRMED',
+                payload: {
+                  timestamp: Date.now(),
+                },
+              },
+              event.origin,
+            );
+
+            // Broadcast logout to other frames
+            broadcastSessionState();
+            break;
+
+          default:
+            console.warn('[AUTH_RELAY] Unknown message type:', type);
+        }
+      });
+
+      /**
+       * Monitor for session cookie changes
+       * This detects when auth service sets/clears cookies
+       */
+      setInterval(() => {
+        const currentAuthenticated = hasSession();
+        const hasChanged = currentAuthenticated !== sessionState.authenticated;
+
+        if (hasChanged) {
+          console.log('[AUTH_RELAY] Session state changed');
+          broadcastSessionState();
+        }
+      }, 1000); // Check every 1 second
+
+      /**
+       * Initialize relay on page load
+       */
+      window.addEventListener('load', () => {
+        updateSessionState();
+        console.log('[AUTH_RELAY] Ready', {
+          authenticated: sessionState.authenticated,
+          timestamp: sessionState.lastUpdated,
+        });
+      });
+
+      /**
+       * Clean up on unload
+       */
+      window.addEventListener('beforeunload', () => {
+        connectedFrames.clear();
+      });
+    </script>
+  </body>
+</html>

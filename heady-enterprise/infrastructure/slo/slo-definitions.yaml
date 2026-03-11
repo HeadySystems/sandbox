@@ -1,0 +1,373 @@
+# =============================================================================
+# Heady™Systems Inc. — SLO/SLI Definitions
+# heady-systems v3.2.2
+# =============================================================================
+# φ = 1.618033988749895 (Golden Ratio)
+# All numeric parameters derive from φ or Fibonacci sequences
+#
+# Service Tiers:
+#   Pilot:      99.9% availability
+#   Pro:        99.95% availability
+#   Enterprise: 99.99% availability
+#
+# Latency SLOs:
+#   p50 < 100ms (base/φ^3 ≈ 236ms → target 100ms for UX)
+#   p95 < 500ms (base/φ ≈ 618ms → target 500ms)
+#   p99 < 1000ms (base × φ^0 = 1000ms)
+#
+# Error Budget:
+#   Pilot:      fib(10)=55 × 1.32s error/day (8.8 hrs/year)
+#   Pro:        fib(9)=34 × 1.32s error/day (4.4 hrs/year)
+#   Enterprise: fib(6)=8  × 1.32s error/day (52.56 min/year)
+# =============================================================================
+
+# =============================================================================
+# Availability SLOs
+# =============================================================================
+
+slos:
+  # ---------------------------------------------------------------------------
+  # Pilot Tier — 99.9% availability
+  # ---------------------------------------------------------------------------
+  - name: heady-pilot-availability
+    tier: pilot
+    displayName: "Heady™ Pilot Availability"
+    description: "99.9% uptime SLO for Pilot tier subscribers"
+    service: heady-web
+
+    sli:
+      type: availability
+      # Good events: HTTP requests with 2xx or 3xx response
+      # Bad events: HTTP 5xx responses OR timeout > φ^3=4236ms
+      goodEvents:
+        metricQuery: |
+          sum(rate(http_requests_total{service="heady-web",code=~"2..|3.."}[5m]))
+      totalEvents:
+        metricQuery: |
+          sum(rate(http_requests_total{service="heady-web"}[5m]))
+      errorEvents:
+        metricQuery: |
+          sum(rate(http_requests_total{service="heady-web",code=~"5.."}[5m]))
+
+    objective:
+      # 99.9% = 1 - 0.001
+      # Error rate must stay below 0.1% = 1/φ^7 ≈ 0.0009
+      # Aligned to CSL DORMANT threshold (0.0-0.236)
+      target: 0.999
+      window: 30d
+
+    errorBudget:
+      # 30-day budget: 30d × 24h × 60m × 60s × 0.001 = 2592s = 43.2 min
+      # Fibonacci: fib(11)=89 × 60s = 5340s... budget is 2592s
+      totalAllowedDowntimeS: 2592    # 43.2 minutes/month
+      remainingPct: 100              # populated at runtime
+      burnRate:
+        # fib(6)=8× burn rate: alert if burning through budget 8× faster than expected
+        alertThreshold8x:  8   # fib(6)=8
+        alertThreshold13x: 13  # fib(7)=13 (critical)
+        alertThreshold21x: 21  # fib(8)=21 (page immediately)
+
+    alerts:
+      - name: pilot-availability-burn-rate-fast
+        description: "Burning error budget 8× faster (fib(6)=8) — 1h window"
+        # If burning fib(6)=8× faster for 1h, will exhaust budget in 30/8=3.75 days
+        burnRateThreshold: 8    # fib(6)=8
+        window: 1h
+        severity: warning
+      - name: pilot-availability-burn-rate-critical
+        description: "Burning error budget 21× faster (fib(8)=21) — 5m window"
+        burnRateThreshold: 21   # fib(8)=21
+        window: 5m
+        severity: critical
+
+  # ---------------------------------------------------------------------------
+  # Pro Tier — 99.95% availability
+  # ---------------------------------------------------------------------------
+  - name: heady-pro-availability
+    tier: pro
+    displayName: "Heady Pro Availability"
+    description: "99.95% uptime SLO for Pro tier subscribers"
+    service: heady-web
+
+    sli:
+      type: availability
+      goodEvents:
+        metricQuery: |
+          sum(rate(http_requests_total{service="heady-web",tier="pro",code=~"2..|3.."}[5m]))
+      totalEvents:
+        metricQuery: |
+          sum(rate(http_requests_total{service="heady-web",tier="pro"}[5m]))
+
+    objective:
+      target: 0.9995
+      window: 30d
+
+    errorBudget:
+      # 30d × 0.0005 = 1296s = 21.6 minutes/month (fib(8)=21 ≈ 21.6!)
+      # fib(8)=21 minutes — Fibonacci alignment!
+      totalAllowedDowntimeS: 1296    # ~21 minutes/month
+      burnRate:
+        alertThreshold8x:  8    # fib(6)=8
+        alertThreshold13x: 13   # fib(7)=13
+        alertThreshold21x: 21   # fib(8)=21
+
+    alerts:
+      - name: pro-availability-burn-rate-fast
+        burnRateThreshold: 8
+        window: 1h
+        severity: warning
+      - name: pro-availability-burn-rate-critical
+        burnRateThreshold: 21
+        window: 5m
+        severity: critical
+
+  # ---------------------------------------------------------------------------
+  # Enterprise Tier — 99.99% availability
+  # ---------------------------------------------------------------------------
+  - name: heady-enterprise-availability
+    tier: enterprise
+    displayName: "Heady™ Enterprise Availability"
+    description: "99.99% uptime SLO for Enterprise tier — fib(13)=233 nines"
+    service: heady-web
+
+    sli:
+      type: availability
+      goodEvents:
+        metricQuery: |
+          sum(rate(http_requests_total{service="heady-web",tier="enterprise",code=~"2..|3.."}[5m]))
+      totalEvents:
+        metricQuery: |
+          sum(rate(http_requests_total{service="heady-web",tier="enterprise"}[5m]))
+
+    objective:
+      target: 0.9999
+      window: 30d
+
+    errorBudget:
+      # 30d × 0.0001 = 259.2s = 4.32 minutes/month (≈ fib(5)=5 minutes)
+      # RPO=fib(5)=5 min aligns perfectly with Enterprise error budget!
+      totalAllowedDowntimeS: 259    # ~4.32 minutes/month
+      burnRate:
+        alertThreshold8x:  8
+        alertThreshold13x: 13
+        alertThreshold21x: 21
+
+    alerts:
+      - name: enterprise-availability-burn-rate-fast
+        burnRateThreshold: 5    # fib(5)=5 — more sensitive for enterprise
+        window: 1h
+        severity: warning
+      - name: enterprise-availability-burn-rate-critical
+        burnRateThreshold: 13   # fib(7)=13
+        window: 5m
+        severity: page
+
+# =============================================================================
+# Latency SLOs
+# =============================================================================
+
+latencySlos:
+  # heady-web latency
+  - name: heady-web-latency-p50
+    displayName: "heady-web p50 Latency < 100ms"
+    service: heady-web
+    tier: all
+
+    sli:
+      type: latency
+      # p50 < 100ms
+      # Derivation: base=1000ms / φ^3 = 236ms → aggressive target: 100ms
+      thresholdMs: 100
+      percentile: 50
+      metricQuery: |
+        histogram_quantile(0.50,
+          sum(rate(http_request_duration_ms_bucket{service="heady-web"}[5m])) by (le)
+        )
+
+    objective:
+      # 99% of requests meet this p50 target
+      target: 0.990
+      window: 30d
+
+  - name: heady-web-latency-p95
+    displayName: "heady-web p95 Latency < 500ms"
+    service: heady-web
+    tier: all
+
+    sli:
+      type: latency
+      # p95 < 500ms
+      # Derivation: base=1000ms / φ = 618ms → target 500ms
+      thresholdMs: 500
+      percentile: 95
+      metricQuery: |
+        histogram_quantile(0.95,
+          sum(rate(http_request_duration_ms_bucket{service="heady-web"}[5m])) by (le)
+        )
+
+    objective:
+      target: 0.990
+      window: 30d
+
+  - name: heady-web-latency-p99
+    displayName: "heady-web p99 Latency < 1000ms"
+    service: heady-web
+    tier: all
+
+    sli:
+      type: latency
+      # p99 < 1000ms
+      # Derivation: base=1000ms (φ^0 × base)
+      thresholdMs: 1000
+      percentile: 99
+      metricQuery: |
+        histogram_quantile(0.99,
+          sum(rate(http_request_duration_ms_bucket{service="heady-web"}[5m])) by (le)
+        )
+
+    objective:
+      target: 0.990
+      window: 30d
+
+  # heady-brain AI latency (higher thresholds for AI completions)
+  - name: heady-brain-latency-p50
+    displayName: "heady-brain p50 Latency < 1618ms (φ^1)"
+    service: heady-brain
+    tier: pro
+
+    sli:
+      type: latency
+      # p50 < φ^1 = 1618ms for AI brain
+      thresholdMs: 1618   # φ^1 = 1618ms — first φ-timeout
+      percentile: 50
+      metricQuery: |
+        histogram_quantile(0.50,
+          sum(rate(http_request_duration_ms_bucket{service="heady-brain"}[5m])) by (le)
+        )
+
+    objective:
+      target: 0.990
+      window: 30d
+
+  - name: heady-brain-latency-p95
+    displayName: "heady-brain p95 Latency < 4236ms (φ^3)"
+    service: heady-brain
+    tier: pro
+
+    sli:
+      type: latency
+      # p95 < φ^3 = 4236ms
+      thresholdMs: 4236   # φ^3 = 4236ms — slow operation threshold
+      percentile: 95
+      metricQuery: |
+        histogram_quantile(0.95,
+          sum(rate(http_request_duration_ms_bucket{service="heady-brain"}[5m])) by (le)
+        )
+
+    objective:
+      target: 0.990
+      window: 30d
+
+  - name: heady-brain-latency-p99
+    displayName: "heady-brain p99 Latency < 11090ms (φ^5)"
+    service: heady-brain
+    tier: enterprise
+
+    sli:
+      type: latency
+      # p99 < φ^5 = 11090ms — upstream timeout
+      thresholdMs: 11090  # φ^5 = 11090ms — maximum reasonable AI response time
+      percentile: 99
+
+    objective:
+      target: 0.990
+      window: 30d
+
+# =============================================================================
+# Error Rate SLO
+# =============================================================================
+
+errorRateSlos:
+  - name: heady-error-rate
+    displayName: "Platform Error Rate < 0.1%"
+    description: "5xx error rate must stay below 0.1% — CSL DORMANT threshold (0.0-0.236)"
+    service: heady-web
+
+    sli:
+      type: error_rate
+      # Error rate < 0.1% = 1/φ^7 ≈ 0.09%
+      # Context brief: DORMANT zone is 0.0-0.236 — targeting well within DORMANT
+      errorThreshold: 0.001    # 0.1%
+      metricQuery: |
+        sum(rate(http_requests_total{service="heady-web",code=~"5.."}[5m]))
+        /
+        sum(rate(http_requests_total{service="heady-web"}[5m]))
+
+    objective:
+      target: 0.999      # 99.9% of time, error rate < 0.1%
+      window: 30d
+
+    alerts:
+      - name: error-rate-warning
+        # Warning: CSL HIGH onset (0.618 × threshold = 0.618/1000 = 0.062%)
+        threshold: 0.00062   # 0.062% = 1/φ × 0.1% threshold
+        window: 5m
+        severity: warning
+      - name: error-rate-critical
+        # Critical: CSL CRITICAL onset (0.854 × threshold = 0.085%)
+        threshold: 0.00085   # 0.085% = 0.854 × 0.1%
+        window: 5m
+        severity: critical
+
+# =============================================================================
+# SLO Summary — Error Budget Calculations
+# =============================================================================
+
+errorBudgetSummary:
+  # 30-day calculations
+  window30d:
+    totalMinutes: 43200         # 30 × 24 × 60
+    pilot:
+      # fib(10)=55: coincidence with budget structure
+      # 99.9% → 43.2 min error budget per month
+      targetPct: 99.9
+      allowedDowntimeMinutes: 43.2
+      # fib(8)=21 ≈ 43.2/2... not exact, but close approximation
+      fibonacciApproximation: "fib(8)=21 min × 2 ≈ 43.2 min budget"
+    pro:
+      targetPct: 99.95
+      allowedDowntimeMinutes: 21.6
+      # fib(8)=21 ≈ 21.6 min — almost exact Fibonacci!
+      fibonacciApproximation: "fib(8)=21 min ≈ 21.6 min budget (0.97% error)"
+    enterprise:
+      targetPct: 99.99
+      allowedDowntimeMinutes: 4.32
+      # fib(5)=5 min ≈ 4.32 min → RPO=fib(5)=5 min aligns with Enterprise budget!
+      fibonacciApproximation: "fib(5)=5 min (RPO) ≈ 4.32 min budget (16% buffer)"
+
+  # Burn rate windows (fib-indexed)
+  burnRateWindows:
+    # fib(5)=5 minutes — immediate page window
+    - window: "5m"
+      purpose: "Immediate detection — fast burn"
+      burnRateThreshold: 21   # fib(8)=21×
+
+    # fib(6)=8 minutes — secondary check
+    - window: "8m"
+      purpose: "Secondary detection"
+      burnRateThreshold: 13   # fib(7)=13×
+
+    # fib(7)=13 minutes
+    - window: "13m"
+      purpose: "Tertiary check"
+      burnRateThreshold: 8    # fib(6)=8×
+
+    # fib(8)=21 minutes
+    - window: "21m"
+      purpose: "Slow burn detection"
+      burnRateThreshold: 5    # fib(5)=5×
+
+    # 1h
+    - window: "1h"
+      purpose: "Hourly trend — warning"
+      burnRateThreshold: 3    # fib(4)=3×

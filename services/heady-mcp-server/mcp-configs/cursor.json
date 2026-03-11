@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "heady": {
+      "command": "node",
+      "args": ["./services/heady-mcp-server/src/index.js"],
+      "env": {
+        "HEADY_MCP_TRANSPORT": "stdio",
+        "HEADY_SERVICE_HOST": "localhost"
+      }
+    }
+  }
+}

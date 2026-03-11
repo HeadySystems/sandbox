@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heady System Dashboard — Sacred Geometry v4.0</title>
+<style>
+:root {
+  --phi: 1.618033988749895;
+  --space-xs: 5px; --space-sm: 8px; --space-md: 13px;
+  --space-lg: 21px; --space-xl: 34px; --space-2xl: 55px; --space-3xl: 89px;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+  --text-lg: 1.125rem; --text-xl: 1.618rem; --text-2xl: 2.618rem;
+  --bg-primary: #0a0a0f; --bg-secondary: #12121a;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --bg-glass: rgba(255, 255, 255, 0.05);
+  --text-primary: #e8e8f0; --text-secondary: #9898a8;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --accent: #00d4aa; --accent-dim: rgba(0, 212, 170, 0.15);
+  --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s cubic-bezier(0.618, 0, 0.382, 1); }
+body { background: var(--bg-primary); color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; min-height: 100vh; overflow-x: hidden; }
+.container { max-width: 1400px; margin: 0 auto; padding: var(--space-xl); }
+header { text-align: center; padding: var(--space-3xl) 0 var(--space-2xl); }
+header h1 { font-size: var(--text-2xl); background: linear-gradient(135deg, var(--accent), #00b4d8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+header .subtitle { color: var(--text-secondary); margin-top: var(--space-sm); font-size: var(--text-sm); }
+.glass { background: var(--bg-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-subtle); border-radius: var(--space-md); }
+.grid { display: grid; gap: var(--space-lg); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.card { padding: var(--space-xl); }
+.card-title { font-size: var(--text-lg); color: var(--accent); margin-bottom: var(--space-md); display: flex; align-items: center; gap: var(--space-sm); }
+.metric { font-size: 2.5rem; font-weight: 700; line-height: 1; }
+.metric-label { color: var(--text-secondary); font-size: var(--text-sm); margin-top: var(--space-xs); }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.status-green { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.status-yellow { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+.status-red { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+.service-list { list-style: none; }
+.service-list li { display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-subtle); font-size: var(--text-sm); }
+.service-list li:last-child { border-bottom: none; }
+.tag { display: inline-block; padding: 2px var(--space-sm); border-radius: 4px; font-size: var(--text-xs); }
+.tag-active { background: rgba(0, 212, 170, 0.2); color: var(--accent); }
+.tag-planned { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+.tag-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+.ring-viz { position: relative; width: 100%; aspect-ratio: 1; max-width: 400px; margin: 0 auto; }
+.ring { position: absolute; border: 1px solid var(--border-subtle); border-radius: 50%; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.ring-label { position: absolute; color: var(--text-secondary); font-size: var(--text-xs); white-space: nowrap; }
+.node { position: absolute; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; transform: translate(-50%, -50%); cursor: pointer; }
+.node:hover { width: 16px; height: 16px; box-shadow: 0 0 12px var(--accent); }
+.node-tooltip { display: none; position: absolute; background: var(--bg-secondary); border: 1px solid var(--border-subtle); padding: var(--space-sm) var(--space-md); border-radius: 8px; font-size: var(--text-xs); white-space: nowrap; z-index: 10; top: -30px; left: 50%; transform: translateX(-50%); }
+.node:hover .node-tooltip { display: block; }
+.pipeline-stage { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-xs) 0; font-size: var(--text-sm); }
+.stage-num { color: var(--accent); min-width: 24px; text-align: right; }
+.stage-name { color: var(--text-primary); }
+.stage-arrow { color: var(--text-secondary); }
+.progress-bar { height: 4px; background: var(--border-subtle); border-radius: 2px; overflow: hidden; margin-top: var(--space-sm); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #00b4d8); border-radius: 2px; }
+.constants-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); }
+.constant { padding: var(--space-sm) var(--space-md); background: var(--bg-card); border-radius: 8px; }
+.constant-name { color: var(--accent); font-size: var(--text-xs); }
+.constant-value { font-size: var(--text-lg); margin-top: 2px; }
+footer { text-align: center; padding: var(--space-3xl) 0 var(--space-xl); color: var(--text-secondary); font-size: var(--text-xs); }
+@media (max-width: 768px) {
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>HEADY SYSTEM DASHBOARD</h1>
+    <div class="subtitle">Sacred Geometry v4.0 — Liquid Latent OS — 58 Services | 37 Packages | 21 Pipeline Stages</div>
+  </header>
+
+  <!-- Top Metrics -->
+  <div class="grid grid-3" style="margin-bottom: var(--space-xl);">
+    <div class="glass card">
+      <div class="card-title"><span class="status-dot status-green"></span> System Health</div>
+      <div class="metric" style="color: var(--accent);">94/100</div>
+      <div class="metric-label">ORS Score (Operational Readiness)</div>
+      <div class="progress-bar"><div class="progress-fill" style="width: 94%;"></div></div>
+    </div>
+    <div class="glass card">
+      <div class="card-title"><span class="status-dot status-green"></span> Active Services</div>
+      <div class="metric">58</div>
+      <div class="metric-label">Microservices Running</div>
+      <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+    </div>
+    <div class="glass card">
+      <div class="card-title"><span class="status-dot status-green"></span> Latent Space</div>
+      <div class="metric">103</div>
+      <div class="metric-label">Vectors Stored</div>
+      <div class="progress-bar"><div class="progress-fill" style="width: 62%;"></div></div>
+    </div>
+  </div>
+
+  <!-- Sacred Geometry Ring + Pipeline -->
+  <div class="grid grid-2" style="margin-bottom: var(--space-xl);">
+    <div class="glass card">
+      <div class="card-title">Node Topology — Concentric Rings</div>
+      <div class="ring-viz" id="ringViz"></div>
+    </div>
+    <div class="glass card">
+      <div class="card-title">HCFullPipeline — 21 Stages (F(8))</div>
+      <div id="pipelineStages"></div>
+    </div>
+  </div>
+
+  <!-- Services + Constants -->
+  <div class="grid grid-2" style="margin-bottom: var(--space-xl);">
+    <div class="glass card">
+      <div class="card-title">Core Services</div>
+      <ul class="service-list" id="serviceList"></ul>
+    </div>
+    <div class="glass card">
+      <div class="card-title">Sacred Constants</div>
+      <div class="constants-grid" id="constants"></div>
+    </div>
+  </div>
+
+  <!-- Claude Agents -->
+  <div class="glass card" style="margin-bottom: var(--space-xl);">
+    <div class="card-title">Claude Agent Fleet</div>
+    <div class="grid grid-3" id="claudeAgents" style="margin-top: var(--space-md);"></div>
+  </div>
+
+  <!-- Patterns -->
+  <div class="glass card" style="margin-bottom: var(--space-xl);">
+    <div class="card-title">Architecture Patterns</div>
+    <div class="grid grid-3" id="patterns" style="margin-top: var(--space-md);"></div>
+  </div>
+
+  <footer>
+    &copy; 2026 HeadySystems Inc. — Eric Haywood, Founder — Sacred Geometry v4.0<br>
+    Built with phi-based design principles | 51 Provisional Patents
+  </footer>
+</div>
+
+<script>
+const PHI = 1.618033988749895;
+const PSI = 1 / PHI;
+
+// Ring visualization
+const rings = [
+  { name: 'Central', radius: 0, nodes: ['HeadySoul'], color: '#00d4aa' },
+  { name: 'Inner', radius: 1, nodes: ['HeadyBrains', 'HeadyConductor', 'HeadyVinci'], color: '#00b4d8' },
+  { name: 'Middle', radius: PHI, nodes: ['Claude-Orch', 'Claude-Diag', 'Claude-Deploy', 'Claude-Guard'], color: '#8b5cf6' },
+  { name: 'Outer', radius: PHI*PHI, nodes: ['Claude-Swarm', 'Claude-Vector', 'Claude-Translate', 'Researcher'], color: '#f59e0b' },
+  { name: 'Governance', radius: PHI*PHI*PHI, nodes: ['HeadyQA', 'HeadyGuard', 'HeadyGov'], color: '#ef4444' },
+];
+
+const vizEl = document.getElementById('ringViz');
+const maxR = PHI * PHI * PHI;
+const vizSize = 380;
+const center = vizSize / 2;
+
+rings.forEach(ring => {
+  if (ring.radius === 0) return;
+  const pxR = (ring.radius / maxR) * (vizSize / 2 - 20);
+  const el = document.createElement('div');
+  el.className = 'ring';
+  el.style.width = el.style.height = `${pxR * 2}px`;
+  el.style.borderColor = ring.color + '40';
+  vizEl.appendChild(el);
+
+  const label = document.createElement('div');
+  label.className = 'ring-label';
+  label.textContent = ring.name;
+  label.style.left = '50%';
+  label.style.top = `${center - pxR - 14}px`;
+  label.style.transform = 'translateX(-50%)';
+  label.style.color = ring.color;
+  vizEl.appendChild(label);
+});
+
+rings.forEach(ring => {
+  const pxR = ring.radius === 0 ? 0 : (ring.radius / maxR) * (vizSize / 2 - 20);
+  ring.nodes.forEach((nodeName, i) => {
+    const angle = (2 * Math.PI * i / ring.nodes.length) - Math.PI / 2;
+    const x = center + pxR * Math.cos(angle);
+    const y = center + pxR * Math.sin(angle);
+    const node = document.createElement('div');
+    node.className = 'node';
+    node.style.left = `${x}px`;
+    node.style.top = `${y}px`;
+    node.style.background = ring.color;
+    const tooltip = document.createElement('div');
+    tooltip.className = 'node-tooltip';
+    tooltip.textContent = nodeName;
+    node.appendChild(tooltip);
+    vizEl.appendChild(node);
+  });
+});
+vizEl.style.height = `${vizSize}px`;
+
+// Pipeline stages
+const stages = [
+  'channel-entry', 'recon', 'intake', 'classify', 'triage', 'decompose',
+  'trial-and-error', 'orchestrate', 'monte-carlo', 'arena', 'judge',
+  'approve', 'execute', 'verify', 'self-awareness', 'self-critique',
+  'mistake-analysis', 'optimization-ops', 'continuous-search', 'evolution', 'receipt'
+];
+const pipeEl = document.getElementById('pipelineStages');
+stages.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'pipeline-stage';
+  div.innerHTML = `<span class="stage-num">${i + 1}.</span><span class="stage-name">${s}</span>${i < stages.length - 1 ? '<span class="stage-arrow">→</span>' : '<span style="color:var(--accent)">✓</span>'}`;
+  pipeEl.appendChild(div);
+});
+
+// Services
+const services = [
+  { name: 'heady-manager', port: 3300, status: 'green', role: 'API Gateway' },
+  { name: 'heady-conductor', port: 4306, status: 'green', role: 'Orchestrator' },
+  { name: 'heady-brains', port: 4307, status: 'green', role: 'Brain' },
+  { name: 'heady-soul', port: 4308, status: 'green', role: 'Awareness' },
+  { name: 'heady-memory', port: 4304, status: 'green', role: 'Vector Memory' },
+  { name: 'heady-health', port: 4305, status: 'green', role: 'Health Checks' },
+  { name: 'heady-buddy', port: 4312, status: 'green', role: 'AI Companion' },
+  { name: 'heady-bee-factory', port: 4313, status: 'green', role: 'Swarm Factory' },
+  { name: 'api-gateway', port: 4301, status: 'green', role: 'Gateway' },
+  { name: 'heady-governance', port: 4310, status: 'green', role: 'Governance' },
+];
+const slEl = document.getElementById('serviceList');
+services.forEach(s => {
+  const li = document.createElement('li');
+  li.innerHTML = `<span><span class="status-dot status-${s.status}"></span> ${s.name} <span style="color:var(--text-secondary)">:${s.port}</span></span><span style="color:var(--text-secondary)">${s.role}</span>`;
+  slEl.appendChild(li);
+});
+
+// Constants
+const constants = [
+  { name: 'φ (Golden Ratio)', value: '1.618034' },
+  { name: 'ψ (Conjugate)', value: '0.618034' },
+  { name: 'Pipeline Stages', value: '21 (F₈)' },
+  { name: 'Max Agents', value: '21 (F₈)' },
+  { name: 'Heartbeat', value: '8000ms (F₆×1k)' },
+  { name: 'Rate Limit', value: '987/hr (F₁₆)' },
+  { name: 'Retry Backoff', value: 'φ¹·φ²·φ³ sec' },
+  { name: 'Pool Max', value: '13 (F₇)' },
+];
+const cEl = document.getElementById('constants');
+constants.forEach(c => {
+  const div = document.createElement('div');
+  div.className = 'constant';
+  div.innerHTML = `<div class="constant-name">${c.name}</div><div class="constant-value">${c.value}</div>`;
+  cEl.appendChild(div);
+});
+
+// Claude Agents
+const agents = [
+  { name: 'Orchestrator', ring: 'Middle (φ)', desc: 'Pipeline lifecycle management' },
+  { name: 'Diagnostics', ring: 'Middle (φ)', desc: 'System health analysis' },
+  { name: 'Deployer', ring: 'Middle (φ)', desc: 'Multi-target deployment' },
+  { name: 'Vector Ops', ring: 'Outer (φ²)', desc: 'Latent space memory' },
+  { name: 'Swarm Commander', ring: 'Outer (φ²)', desc: 'Distributed agent swarms' },
+  { name: 'Code Guardian', ring: 'Middle (φ)', desc: 'CodeLock compliance' },
+];
+const caEl = document.getElementById('claudeAgents');
+agents.forEach(a => {
+  const div = document.createElement('div');
+  div.className = 'glass card';
+  div.style.padding = 'var(--space-md)';
+  div.innerHTML = `<div style="color:var(--accent);font-weight:700;margin-bottom:4px">Claude ${a.name}</div><div style="font-size:var(--text-xs);color:var(--text-secondary);margin-bottom:4px">${a.ring}</div><div style="font-size:var(--text-sm)">${a.desc}</div>`;
+  caEl.appendChild(div);
+});
+
+// Patterns
+const pats = [
+  { name: 'Orchestrator-Conductor', status: 'active' },
+  { name: 'Sacred Geometry', status: 'active' },
+  { name: 'Model Context Protocol', status: 'active' },
+  { name: 'Deterministic Build', status: 'active' },
+  { name: 'Checkpoint Recovery', status: 'active' },
+  { name: 'System Brain Meta-Controller', status: 'active' },
+  { name: 'Circuit Breaker', status: 'planned' },
+  { name: 'Event Sourcing', status: 'planned' },
+  { name: 'CQRS', status: 'planned' },
+];
+const patEl = document.getElementById('patterns');
+pats.forEach(p => {
+  const div = document.createElement('div');
+  div.innerHTML = `<span class="tag ${p.status === 'active' ? 'tag-active' : 'tag-planned'}">${p.status}</span> <span style="margin-left:4px">${p.name}</span>`;
+  patEl.appendChild(div);
+});
+</script>
+</body>
+</html>

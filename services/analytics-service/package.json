@@ -1,0 +1,17 @@
+{
+  "name": "@heady/analytics-service",
+  "version": "1.0.0",
+  "description": "HEADY™ privacy-first analytics service with φ-scaled batch processing",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

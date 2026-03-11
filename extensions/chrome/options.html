@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heady AI — Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d0d1a;
+            color: #e8e8f0;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .orb {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #7c3aed, #4f46e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #c4b5fd;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .setting {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .setting label {
+            display: block;
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 0.5rem;
+        }
+
+        .setting input,
+        .setting select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+            color: #e8e8f0;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .setting input:focus,
+        .setting select:focus {
+            border-color: #7c3aed;
+        }
+
+        .setting select option {
+            background: #16213e;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+        }
+
+        .toggle-row label {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #e8e8f0;
+        }
+
+        .toggle {
+            width: 44px;
+            height: 24px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: #7c3aed;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            transition: transform 0.3s;
+        }
+
+        .toggle.active::after {
+            transform: translateX(20px);
+        }
+
+        .shortcuts {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .shortcut {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.85rem;
+        }
+
+        .shortcut-key {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #c4b5fd;
+        }
+
+        .btn-save {
+            display: block;
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+        }
+
+        .status-msg {
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+            color: #6ee7b7;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #444;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .footer a {
+            color: #7c3aed;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="orb">∞</div>
+        <h1>Heady AI Settings</h1>
+    </div>
+
+    <h2>API Endpoint</h2>
+    <div class="setting">
+        <label>Active Endpoint</label>
+        <select id="endpoint">
+            <option value="https://heady-ai-main-1003436179562.us-central1.run.app">Cloud — Production (recommended)
+            </option>
+            <option value="https://headyme.com">HeadyMe</option>
+            <option value="https://headysystems.com">HeadySystems</option>
+            <option value="https://headymcp.com">HeadyMCP</option>
+            <option value="http://localhost:3300">Local Dev (localhost:3300)</option>
+        </select>
+    </div>
+    <div class="setting">
+        <label>Custom API URL (overrides above)</label>
+        <input type="url" id="customApi" placeholder="https://your-heady-instance.run.app" />
+    </div>
+
+    <h2>Display</h2>
+    <div class="setting">
+        <div class="toggle-row"><label>Show floating capture button</label>
+            <div class="toggle" id="toggleFloat"></div>
+        </div>
+        <div class="toggle-row"><label>Show in-page notifications</label>
+            <div class="toggle active" id="toggleNotify"></div>
+        </div>
+    </div>
+
+    <h2>Keyboard Shortcuts</h2>
+    <div class="setting">
+        <div class="shortcuts">
+            <div class="shortcut"><span>Open Heady popup</span><span class="shortcut-key">Ctrl+Shift+H</span></div>
+            <div class="shortcut"><span>Capture selection</span><span class="shortcut-key">Ctrl+Shift+C</span></div>
+            <div class="shortcut"><span>Ask Heady</span><span class="shortcut-key">Ctrl+Shift+A</span></div>
+        </div>
+    </div>
+
+    <button class="btn-save" id="save">Save Settings</button>
+    <div class="status-msg" id="statusMsg">✓ Settings saved!</div>
+    <div class="footer">
+        <p>Heady AI v3.1.0 · <a href="https://headysystems.com">HeadySystems Inc.</a></p>
+    </div>
+
+    <script>
+        const endpointSelect = document.getElementById('endpoint');
+        const customApi = document.getElementById('customApi');
+        const toggleFloat = document.getElementById('toggleFloat');
+        const toggleNotify = document.getElementById('toggleNotify');
+        chrome.storage.sync.get(['apiUrl', 'showFloatingButton', 'showNotifications'], (s) => {
+            if (s.apiUrl) {
+                const match = [...endpointSelect.options].find(o => o.value === s.apiUrl);
+                if (match) endpointSelect.value = s.apiUrl; else customApi.value = s.apiUrl;
+            }
+            if (s.showFloatingButton !== false) toggleFloat.classList.add('active');
+            if (s.showNotifications !== false) toggleNotify.classList.add('active');
+        });
+        toggleFloat.addEventListener('click', () => toggleFloat.classList.toggle('active'));
+        toggleNotify.addEventListener('click', () => toggleNotify.classList.toggle('active'));
+        document.getElementById('save').addEventListener('click', () => {
+            chrome.storage.sync.set({
+                apiUrl: customApi.value.trim() || endpointSelect.value,
+                endpoint: customApi.value.trim() || endpointSelect.value,
+                showFloatingButton: toggleFloat.classList.contains('active'),
+                showNotifications: toggleNotify.classList.contains('active'),
+            }, () => {
+                const msg = document.getElementById('statusMsg');
+                msg.style.display = 'block';
+                setTimeout(() => { msg.style.display = 'none'; }, 2000);
+            });
+        });
+    </script>
+</body>
+
+</html>

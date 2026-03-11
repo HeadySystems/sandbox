@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heady Auth — Central Sign In</title>
+  <meta name="description" content="Secure centralized authentication for the Heady ecosystem.">
+  <meta property="og:title" content="Heady Auth — Central Sign In">
+  <meta property="og:description" content="Central authentication relay for all Heady properties.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://auth.headysystems.com/login">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../packages/design-system/heady-design.css">
+  <style>
+    :root { --accent: #7c5eff; --accent-glow: rgba(124,94,255,0.25); }
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem; }
+    .auth-container { width:100%; max-width:460px; position:relative; z-index:1; }
+    .auth-card { background:rgba(13,13,26,0.88); backdrop-filter:blur(40px); border:1px solid rgba(255,255,255,0.08); border-radius:21px; padding:34px; }
+    .auth-logo { font-family:'JetBrains Mono',monospace; font-size:2rem; font-weight:700; text-align:center; letter-spacing:6px; background:linear-gradient(135deg,#7c5eff,#40e0d0,#f0c040); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+    .auth-subtitle { text-align:center; color:var(--text-secondary); font-size:var(--text-sm); margin-bottom:21px; }
+    .auth-tabs { display:flex; gap:2px; background:rgba(255,255,255,0.03); border-radius:8px; padding:2px; margin-bottom:21px; }
+    .auth-tab { flex:1; padding:10px; background:none; border:none; color:var(--text-tertiary); font-size:var(--text-sm); font-weight:500; cursor:pointer; border-radius:6px; transition:all .2s; font-family:inherit; }
+    .auth-tab.active { background:rgba(255,255,255,0.06); color:var(--text-primary); }
+    .auth-field { margin-bottom:16px; }
+    .auth-field label { display:block; font-size:var(--text-xs); color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.08em; }
+    .auth-field input { width:100%; padding:12px 16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:var(--text-primary); font-size:var(--text-sm); transition:border-color .2s; font-family:inherit; }
+    .auth-field input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,94,255,0.15); }
+    .auth-submit, .auth-provider, .auth-guest { width:100%; padding:14px; border:none; border-radius:8px; font-size:var(--text-sm); font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit; }
+    .auth-submit { background:var(--accent); color:#fff; margin-top:8px; }
+    .auth-submit:hover { box-shadow:0 0 21px var(--accent-glow); transform:translateY(-1px); }
+    .auth-provider { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:var(--text-secondary); margin-top:10px; }
+    .auth-provider:hover { background:rgba(255,255,255,0.06); color:var(--text-primary); }
+    .auth-guest { background:transparent; color:var(--text-tertiary); margin-top:10px; border:1px dashed rgba(255,255,255,0.08); }
+    .auth-footer { text-align:center; margin-top:21px; font-size:.75rem; color:var(--text-muted); }
+    .auth-meta { margin:16px 0 0; padding:12px; background:rgba(255,255,255,0.02); border-radius:8px; font-size:var(--text-xs); color:var(--text-tertiary); line-height:1.5; }
+    .auth-status { margin-top:12px; min-height:20px; font-size:var(--text-xs); color:var(--text-secondary); text-align:center; }
+    .allowed-domains { display:flex; flex-wrap:wrap; gap:4px; justify-content:center; margin-top:13px; }
+    .allowed-domains .tag { font-size:9px; padding:2px 6px; }
+    .sacred-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+  </style>
+</head>
+<body>
+  <canvas id="sacred-canvas" class="sacred-canvas"></canvas>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-logo">HEADY</div>
+      <p class="auth-subtitle">Authenticate once. Return safely to your selected Heady property.</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login" type="button">Sign In</button>
+        <button class="auth-tab" data-tab="signup" type="button">Create Account</button>
+      </div>
+      <form id="auth-form">
+        <div class="auth-field">
+          <label for="auth-email">Email</label>
+          <input type="email" id="auth-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" placeholder="Your secure password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="auth-submit" id="auth-submit-btn">Sign In</button>
+      </form>
+      <button class="auth-provider" type="button" id="google-btn">Google OAuth entrypoint</button>
+      <button class="auth-provider" type="button" id="github-btn">GitHub OAuth entrypoint</button>
+      <button class="auth-guest" type="button" id="guest-btn">Continue as Guest</button>
+      <div class="auth-meta" id="auth-meta"></div>
+      <div class="auth-status" id="auth-status"></div>
+      <div class="allowed-domains">
+        <span class="tag">headyme.com</span>
+        <span class="tag">headysystems.com</span>
+        <span class="tag">heady-ai.com</span>
+        <span class="tag">headyos.com</span>
+        <span class="tag">headyconnection.org</span>
+        <span class="tag">headyconnection.com</span>
+        <span class="tag">headyex.com</span>
+        <span class="tag">headyfinance.com</span>
+        <span class="tag">admin.headysystems.com</span>
+      </div>
+      <p class="auth-footer">
+        Central auth domain: <strong>auth.headysystems.com/login</strong><br>
+        Cookie model: httpOnly · Secure · SameSite=Strict<br>
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer" style="color:var(--text-muted);">Created with Perplexity Computer</a>
+      </p>
+    </div>
+  </div>
+  <script src="../packages/sacred-geometry/sacred-geometry.js"></script>
+  <script>
+    new SacredGeometryCanvas('sacred-canvas', {
+      accentColor: '#7c5eff',
+      secondaryColor: '#40e0d0',
+      goldColor: '#f0c040',
+      opacity: 0.25,
+      nodeCount: 21,
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const redirectUrl = params.get('redirect') || 'https://headysystems.com';
+    const state = params.get('state') || crypto.randomUUID();
+    const nonce = params.get('nonce') || crypto.randomUUID();
+    let mode = params.get('mode') === 'signup' ? 'signup' : 'login';
+
+    const meta = document.getElementById('auth-meta');
+    const statusEl = document.getElementById('auth-status');
+    const submitBtn = document.getElementById('auth-submit-btn');
+
+    function setStatus(message, isError = false) {
+      statusEl.textContent = message;
+      statusEl.style.color = isError ? '#f38ba8' : 'var(--text-secondary)';
+    }
+
+    function syncModeUI() {
+      document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.tab === mode));
+      submitBtn.textContent = mode === 'signup' ? 'Create Account' : 'Sign In';
+      document.getElementById('auth-password').autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
+    }
+
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        mode = tab.dataset.tab;
+        syncModeUI();
+      });
+    });
+
+    meta.innerHTML = `Return target: <strong>${redirectUrl}</strong><br>State: <code>${state}</code><br>Nonce: <code>${nonce}</code>`;
+    syncModeUI();
+
+    document.getElementById('auth-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      setStatus('Contacting central auth service...');
+      const payload = {
+        email: document.getElementById('auth-email').value,
+        password: document.getElementById('auth-password').value,
+        redirect: redirectUrl,
+        state,
+        nonce,
+        mode,
+      };
+
+      try {
+        const response = await fetch('/api/auth/email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        if (!response.ok || !data.ok) throw new Error(data.error || 'Authentication failed');
+        setStatus('Authentication complete. Redirecting...');
+        window.location.href = data.redirectTo;
+      } catch (error) {
+        setStatus(error.message, true);
+      }
+    });
+
+    document.getElementById('guest-btn').addEventListener('click', async () => {
+      setStatus('Creating guest session...');
+      try {
+        const response = await fetch('/api/auth/anonymous', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ redirect: redirectUrl, state, nonce }),
+        });
+        const data = await response.json();
+        if (!response.ok || !data.ok) throw new Error(data.error || 'Guest session failed');
+        window.location.href = data.redirectTo;
+      } catch (error) {
+        setStatus(error.message, true);
+      }
+    });
+
+    document.getElementById('google-btn').addEventListener('click', () => {
+      const url = new URL('/oauth/google', window.location.origin);
+      url.searchParams.set('redirect', redirectUrl);
+      url.searchParams.set('state', state);
+      url.searchParams.set('nonce', nonce);
+      window.location.href = url.toString();
+    });
+
+    document.getElementById('github-btn').addEventListener('click', () => {
+      const url = new URL('/oauth/github', window.location.origin);
+      url.searchParams.set('redirect', redirectUrl);
+      url.searchParams.set('state', state);
+      url.searchParams.set('nonce', nonce);
+      window.location.href = url.toString();
+    });
+  </script>
+</body>
+</html>

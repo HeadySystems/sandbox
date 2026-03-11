@@ -1,0 +1,33 @@
+{
+  "name": "@heady/search-service",
+  "version": "1.0.0",
+  "description": "HEADY™ Hybrid Search Service - Full-text and vector search with CSL gating",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test src/**/*.test.js"
+  },
+  "keywords": [
+    "heady",
+    "search",
+    "hybrid-search",
+    "full-text",
+    "vector-search",
+    "tf-idf",
+    "cosine-similarity"
+  ],
+  "author": "HeadySystems Inc. (Eric Haywood)",
+  "license": "PROPRIETARY",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "node": "^20.0.0"
+  }
+}

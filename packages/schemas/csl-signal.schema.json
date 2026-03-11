@@ -1,0 +1,285 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heady.internal/schemas/csl-signal",
+  "title": "CSL Confidence Signal Schema",
+  "description": "Confidence Signal Layer (CSL) signal format for inter-service communication",
+  "type": "object",
+  "definitions": {
+    "ConfidenceSignal": {
+      "type": "object",
+      "description": "Confidence signal indicating data quality/reliability",
+      "properties": {
+        "signalId": {
+          "type": "string",
+          "pattern": "^sig_[a-z0-9]{24}$",
+          "description": "Unique signal identifier"
+        },
+        "dataId": {
+          "type": "string",
+          "description": "ID of the data being assessed"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence score (0-1)"
+        },
+        "level": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low", "minimal"],
+          "description": "Confidence level (mapped from score)"
+        },
+        "factors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Factor name (e.g., 'data_age', 'source_reliability')"
+              },
+              "weight": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Weight in overall confidence calculation"
+              },
+              "value": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Factor's contribution"
+              }
+            },
+            "required": ["name", "weight", "value"]
+          },
+          "description": "Factors contributing to confidence score"
+        },
+        "dataAge": {
+          "type": "object",
+          "description": "How fresh the underlying data is",
+          "properties": {
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "ageSeconds": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "sourceReliability": {
+          "type": "object",
+          "description": "Source data reliability metrics",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "Data source identifier"
+            },
+            "reliability": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "verifications": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of independent verifications"
+            },
+            "historicalAccuracy": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        "completeness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Data completeness ratio (proportion of available fields)"
+        },
+        "consistency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Data consistency score (cross-checks)"
+        },
+        "anomalies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["outlier", "missing", "inconsistent", "duplicate"]
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Detected anomalies in data"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional metadata",
+          "properties": {
+            "requestId": {
+              "type": "string",
+              "description": "Request correlation ID"
+            },
+            "service": {
+              "type": "string",
+              "description": "Service that generated signal"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Signal generation time"
+            }
+          }
+        }
+      },
+      "required": ["signalId", "dataId", "score", "level"],
+      "additionalProperties": false
+    },
+    "CSLGate": {
+      "type": "object",
+      "description": "CSL gate decision for data gating",
+      "properties": {
+        "gateId": {
+          "type": "string",
+          "pattern": "^gate_[a-z0-9]{24}$",
+          "description": "Unique gate identifier"
+        },
+        "signalId": {
+          "type": "string",
+          "description": "Associated confidence signal"
+        },
+        "decision": {
+          "type": "string",
+          "enum": ["pass", "caution", "block"],
+          "description": "Gate decision based on threshold"
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence threshold for this gate"
+        },
+        "signal": {
+          "$ref": "#/definitions/ConfidenceSignal",
+          "description": "Associated confidence signal"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "description": "Reason for gate decision"
+            },
+            "suggestedAction": {
+              "type": "string",
+              "enum": ["proceed", "retry", "escalate", "reject"],
+              "description": "Recommended action based on decision"
+            }
+          }
+        }
+      },
+      "required": ["gateId", "signalId", "decision", "threshold"],
+      "additionalProperties": false
+    },
+    "CSLMetrics": {
+      "type": "object",
+      "description": "CSL metrics for a data pipeline",
+      "properties": {
+        "pipelineId": {
+          "type": "string",
+          "description": "Data pipeline identifier"
+        },
+        "period": {
+          "type": "object",
+          "properties": {
+            "startTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "endTime": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "averageConfidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "minConfidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "maxConfidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "signalCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "gateDecisions": {
+          "type": "object",
+          "properties": {
+            "pass": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "caution": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "block": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "anomalyCounts": {
+          "type": "object",
+          "properties": {
+            "outlier": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missing": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inconsistent": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "duplicate": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "required": ["pipelineId", "period", "averageConfidence", "signalCount"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@heady/mcp-server",
+  "version": "5.0.0",
+  "description": "Heady™ Master Control Program — Full MCP server with 42 tools, stdio/HTTP/SSE transports, φ-scaled routing, CSL gates",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "start:stdio": "HEADY_MCP_TRANSPORT=stdio node src/index.js",
+    "start:http": "HEADY_MCP_TRANSPORT=http node src/index.js",
+    "start:sse": "HEADY_MCP_TRANSPORT=sse node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test src/__tests__/*.test.js",
+    "health": "curl -s http://localhost:3310/health | node -e \"process.stdin.pipe(process.stdout)\""
+  },
+  "engines": { "node": ">=20.0.0" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.4.0",
+    "uuid": "^9.0.1",
+    "ws": "^8.18.1",
+    "pino": "^8.21.0",
+    "pino-pretty": "^11.3.0"
+  },
+  "devDependencies": {},
+  "author": "HeadySystems Inc. <eric@headyconnection.org>",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HeadyConnection/Heady-Testing.git",
+    "directory": "services/heady-mcp-server"
+  },
+  "homepage": "https://headymcp.com",
+  "keywords": ["heady", "mcp", "model-context-protocol", "ai", "tools", "phi-scaled"]
+}
