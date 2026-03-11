@@ -77,7 +77,7 @@ jobs:
       url: https://pilot.headyme.com
     steps:
       - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v3
+      - uses: azure/setup-kubectl@v4
 
       - name: Configure kubectl
         run: |
