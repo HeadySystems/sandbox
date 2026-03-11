@@ -185,7 +185,7 @@ jobs:
       # Build and push using production Dockerfile
       - name: Build and push Docker image
         id: build-push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           # Use the production-optimized Dockerfile

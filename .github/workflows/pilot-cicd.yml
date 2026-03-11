@@ -61,7 +61,7 @@ jobs:
           password: \${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Push API Gateway
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ./services/heady-api-gateway
           push: true
